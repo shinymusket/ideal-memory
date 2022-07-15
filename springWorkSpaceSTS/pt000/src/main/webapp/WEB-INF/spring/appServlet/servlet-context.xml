@@ -39,8 +39,12 @@
 	<context:component-scan base-package="com.green.pt000" />
 	
 	<beans:bean id="memberController" class="com.green.homepage.member.controller.MemberController"/>
+	<beans:bean id="boardController" class="com.green.board.controller.BoardController"/>
 	
 	<beans:bean id="memberService" class="com.green.homepage.member.service.MemberServiceImpl"/>
+	<beans:bean id="boardService" class="com.green.homepage.board.service.BoardServiceImpl"/>
 	
 	<beans:bean id="memberDAO" class="com.green.homepage.member.db.MemberDAO"/>
+	<beans:bean id="boardDAO" class="com.green.homepage.board.db.BoardDAO"/>
+	
 </beans:beans>

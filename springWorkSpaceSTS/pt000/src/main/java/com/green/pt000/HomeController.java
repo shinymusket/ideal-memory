@@ -36,4 +36,9 @@ public class HomeController {
 		return "index";
 	}
 	
+	@RequestMapping(value = "/index.do")
+	public String index() throws Exception {
+		return "index";
+	}
+	
 }

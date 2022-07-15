@@ -56,4 +56,16 @@ public class MemberDAO {
 		return sqlsession.update("member.update_pw", member);
 	}
 	
+	// 마이페이지
+	@Transactional
+	public int update_mypage(MemberDTO member) throws Exception {
+		return sqlsession.update("member.update_mypage", member);
+	}
+	
+	// 회원탈퇴
+	
+	public int withdrawal(MemberDTO member) throws Exception {
+		return sqlsession.delete("member.withdrawal", member);
+	}
+	
 }

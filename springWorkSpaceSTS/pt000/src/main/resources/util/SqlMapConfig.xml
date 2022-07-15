@@ -2,6 +2,7 @@
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
 <configuration>
 	<typeAliases>
-		<typeAlias  alias="member" type="com.green.homepage.member.db.MemberDTO"/>
+		<typeAlias alias="member" type="com.green.homepage.member.db.MemberDTO"/>
+		<typeAlias alias="board" type="com.green.homepage.board.db.BoardDTO"/>
 	</typeAliases>
 </configuration>

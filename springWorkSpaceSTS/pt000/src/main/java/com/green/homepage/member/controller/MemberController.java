@@ -99,4 +99,36 @@ public class MemberController {
 	public void find_pw(@ModelAttribute MemberDTO member, HttpServletResponse response) throws Exception {
 		service.find_pw(response, member);
 	}
+	
+	// 마이페이지 이동
+	@RequestMapping(value = "/mypage.do")
+	public String mypage() throws Exception{
+		return "/member/mypage";
+	}
+	
+	// mypage 수정
+	@RequestMapping(value = "/update_mypage.do", method = RequestMethod.POST)
+	public String update_mypage(@ModelAttribute MemberDTO member, HttpSession session, RedirectAttributes rttr) throws Exception {
+		session.setAttribute("member", service.update_mypage(member));
+		rttr.addFlashAttribute("msg", "회원정보 수정 완료");
+		return "redirect:/member/mypage.do";
+	}
+	
+	// 비밀번호 변경
+	@RequestMapping(value = "/update_pw.do", method = RequestMethod.POST)
+	public String update_pw(@ModelAttribute MemberDTO member, @RequestParam("old_pw") String pld_pw, HttpSession session, HttpServletResponse response, RedirectAttributes rttr) throws Exception {
+		session.setAttribute("member", service.update_pw(member, pld_pw, response));
+		rttr.addFlashAttribute("msg", "비밀번호 수정 완료");
+		return "redirect:/member/mypage.do";
+	}
+	
+	// 회원 탈퇴
+	@RequestMapping(value = "/withdrawal.do", method = RequestMethod.POST)
+	public String withdrawal_form(@ModelAttribute MemberDTO member, HttpSession session, HttpServletResponse response) throws Exception {
+		if (service.withdrawal(member, response)) {
+			session.invalidate();
+		}
+		return "redirect:/index.do";
+	}
+	
 }
