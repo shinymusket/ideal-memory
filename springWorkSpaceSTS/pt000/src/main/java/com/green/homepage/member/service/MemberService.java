@@ -20,4 +20,6 @@ public interface MemberService {
 	public MemberDTO login(MemberDTO member, HttpServletResponse response) throws Exception;
 
 	public void logout(HttpServletResponse response) throws Exception;
+	
+	public String find_id(HttpServletResponse response, String email) throws Exception;
 }

@@ -45,4 +45,9 @@ public class MemberDAO {
 		
 	}
 	
+	// 아이디 찾기
+	public String find_id(String email) throws Exception {
+		return sqlsession.selectOne("member.find_id", email);
+	}
+	
 }
