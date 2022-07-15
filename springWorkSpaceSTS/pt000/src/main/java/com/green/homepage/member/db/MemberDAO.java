@@ -50,4 +50,10 @@ public class MemberDAO {
 		return sqlsession.selectOne("member.find_id", email);
 	}
 	
+	// 비밀번호 변경
+	@Transactional
+	public int update_pw(MemberDTO member) throws Exception {
+		return sqlsession.update("member.update_pw", member);
+	}
+	
 }

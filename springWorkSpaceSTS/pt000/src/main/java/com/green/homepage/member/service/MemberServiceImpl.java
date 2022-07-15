@@ -80,7 +80,7 @@ public class MemberServiceImpl implements MemberService {
 			member.setApproval_key(create_key());
 			manager.join_member(member);
 			// 인증 메일 발송
-			send_mail(member);
+			send_mail(member, "join");
 			return 1;
 		}
 	}
@@ -99,7 +99,7 @@ public class MemberServiceImpl implements MemberService {
 	
 	// 이메일 발송
 	@Override
-	public void send_mail(MemberDTO member) throws Exception {
+	public void send_mail(MemberDTO member, String div) throws Exception {
 		// Mail Server 설정
 		String charSet = "utf-8";
 		String hostSMTP = "smtp.naver.com";
@@ -110,18 +110,28 @@ public class MemberServiceImpl implements MemberService {
 		String subject = "";
 		String msg = "";
 		
-		// 회원가입 메일 내용
-		subject = "Spring Homepage 회원가입 인증 메일 입니다.";
-		msg += "<div align='center' style='border:1px solid black; font-family:verdana'>";
-		msg += "<h3 style='color: blue;'>";
-		msg += member.getId() + "님 회원가입을 환영합니다.</h3>";
-		msg += "<div style='font-size: 130%'>";
-		msg += "하단의 인증 버튼 클릭 시 정상적으로 회원가입이 완료됩니다.</div><br/>";
-		msg += "<form method='post' action='http://localhost:8085/pt000/member/approval_member.do'>";
-		msg += "<input type='hidden' name='email' value='" + member.getEmail() + "'>";
-		msg += "<input type='hidden' name='approval_key' value='" + member.getApproval_key() + "'>";
-		msg += "<input type='submit' value='인증'></form><br/></div>";
-
+		if(div.equals("join")) {
+			// 회원가입 메일 내용
+			subject = "Spring Homepage 회원가입 인증 메일 입니다.";
+			msg += "<div align='center' style='border:1px solid black; font-family:verdana'>";
+			msg += "<h3 style='color: blue;'>";
+			msg += member.getId() + "님 회원가입을 환영합니다.</h3>";
+			msg += "<div style='font-size: 130%'>";
+			msg += "하단의 인증 버튼 클릭 시 정상적으로 회원가입이 완료됩니다.</div><br/>";
+			msg += "<form method='post' action='http://localhost:8085/pt000/member/approval_member.do'>";
+			msg += "<input type='hidden' name='email' value='" + member.getEmail() + "'>";
+			msg += "<input type='hidden' name='approval_key' value='" + member.getApproval_key() + "'>";
+			msg += "<input type='submit' value='인증'></form><br/></div>";
+		} else if (div.equals("find_pw")) {
+			subject = "Spring Homepage 임시 비밀번호 입니다.";
+			msg += "<div align='center' style='border:1px solid black; font-family:verdana'>";
+			msg += "<h3 style='color: blue;'>";
+			msg += member.getId() + "님의 임시 비밀번호 입니다. 비밀번호를 변경하여 사용하세요.</h3>";
+			msg += "<p>임시 비밀번호 : ";
+			msg += member.getPw() + "</p></div>";
+		}
+		
+		
 		// 받는 사람 Email 주소
 		String mail = member.getEmail();
 		try {
@@ -240,6 +250,40 @@ public class MemberServiceImpl implements MemberService {
 		} else {
 			return id;
 		}
+	}
+	
+	// 비밀번호 찾기
+	@Override
+	public void find_pw(HttpServletResponse response, MemberDTO member) throws Exception {
+		response.setContentType("text/html;charset=utf-8");
+		PrintWriter out = response.getWriter();
+		// 아이디가 없으면
+		if(manager.check_id(member.getId()) == 0) {
+			out.print("아이디가 없습니다.");
+			out.close();
+		}
+		
+		// 가입에 사용한 이메일이 아니면
+		else if(!member.getEmail().equals(manager.login(member.getId()).getEmail())) {
+			out.print("잘못된 이메일 입니다.");
+			out.close();
+		} else {
+			// 임시 비밀번호 생성
+			String pw = "";
+			for (int i = 0; i < 12; i++) {
+				pw += (char) ((Math.random() * 26) + 97);
+			}
+			
+			member.setPw(pw);
+			// 비밀번호 변경
+			manager.update_pw(member);
+			// 비밀번호 변경 메일 발송
+			send_mail(member, "find_pw");
+			out.print("이메일로 임시 비밀번호를 발송하였습니다.");
+			out.close();
+		}
+		
+		
 	}
 
 }

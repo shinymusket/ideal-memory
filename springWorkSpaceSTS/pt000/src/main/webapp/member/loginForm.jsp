@@ -11,7 +11,10 @@
 	$(function(){
 		$("#find_id_btn").click(function(){
 			location.href='../member/find_id_form.do';
-		})
+		});
+		$("#find_pw_btn").click(function(){
+			location.href='../member/find_pw_form.do';
+		});
 	})
 </script>
 <title>Login Form</title>

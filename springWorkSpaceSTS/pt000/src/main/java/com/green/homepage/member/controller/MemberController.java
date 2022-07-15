@@ -87,4 +87,16 @@ public class MemberController {
 		return "/member/find_id";
 	}
 	
+	
+	// 비밀번호 찾기 폼
+	@RequestMapping(value = "/find_pw_form.do")
+	public String find_pw_form() throws Exception {
+		return "/member/find_pw_form";
+	}
+	
+	// 비밀번호 찾기
+	@RequestMapping(value = "/find_pw.do", method = RequestMethod.POST)
+	public void find_pw(@ModelAttribute MemberDTO member, HttpServletResponse response) throws Exception {
+		service.find_pw(response, member);
+	}
 }
