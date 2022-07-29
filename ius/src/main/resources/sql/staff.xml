@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="staff">
+	<!-- 전체 교직원 리스트 조회 -->
+	<select id="select_staff_list" resultType="staffVO">
+		SELECT staff_num, job_Kname, staff_id, staff_name, staff_rrn1, staff_rrn2, staff_addr,
+		staff_zipcode, staff_tel, TO_CHAR(staff_hireD, 'YYYY-MM-DD') AS "staff_hireD",  TO_CHAR(staff_retireD, 'YYYY-MM-DD') AS "staff_retireD", staff_workYn, staff_salary, staff_email
+		FROM staff s, jobClassifi j
+		WHERE s.staff_cls = j.staff_cls
+		ORDER BY staff_num DESC
+	</select>
+	
+	<!-- 교직원 등록을 위한 다음 생성 시퀀스값 확인하기 -->
+	<select id="select_staff_seq" resultType="int">
+		SELECT LAST_NUMBER FROM USER_SEQUENCES WHERE SEQUENCE_NAME = 'STAFF_SEQ'
+	</select>
+	
+	<!-- 직무 분류 항목 가져오기 -->
+	<select id="select_job_classifi" resultType="jobClassVO">
+		SELECT * FROM jobclassifi ORDER BY job_number ASC
+	</select>
+	
+	<!-- 직무 분류 항목 직무 코드 다음 번호 확인을 위한 전체 항목수 가져오기 -->
+	<select id="select_job_number" resultType="int">
+		SELECT COUNT(*) FROM jobclassifi
+	</select>
+	
+	<!-- 직무 분류 항목 추가하기 -->
+	<insert id="insert_job" parameterType="jobClassVO">
+		INSERT INTO jobClassifi VALUES (jobclassifi_seq.nextval, #{job_number}, #{job_Kname}, #{job_Ename})
+	</insert>
+	
+	<!-- 직무 코드로 명칭 가져오기 -->
+	<select id="select_job_classifi_by_num" resultType="jobClassVO">
+		SELECT * FROM jobClassifi WHERE staff_cls = #{staff_cls}
+	</select>
+	
+	<!-- 직무 코드로 항목 삭제 하기전 해당 항목의 교직원이 있는 지 유무 확인 -->
+	<select id="check_staff_from_staff_cls" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM staff WHERE staff_cls = #{staff_cls}	
+	</select>
+
+	<!-- 직무 코드로 항목 삭제하기 -->
+	<delete id="delete_job_classifi_by_num">
+		DELETE FROM jobClassifi WHERE staff_cls = #{staff_cls}
+	</delete>
+	
+	<!-- 직무 항목 수정하기 -->
+	<update id="update_job">
+		UPDATE jobClassifi SET job_Kname = #{job_Kname}, job_Ename = #{job_Ename} WHERE staff_cls = #{staff_cls}
+	</update>
+	
+	<!-- 교직원 아이디 중복 검사 -->
+	<select id="id_check" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM staffId WHERE staff_id = #{staff_id}
+	</select>
+	
+	<!-- 교직원 계정과 임시 비밀번호 등록, 권한, 가입날짜 등록 -->
+	<insert id="insert_staffId" parameterType="staffIdVO">
+		INSERT INTO staffId(staff_id, staff_pwd, auth_code, reg_date) VALUES (#{staff_id}, #{staff_pwd}, #{auth_code}, sysdate)
+	</insert>
+	
+	<!-- 교직원 계정 삭제 -->
+	<delete id="delete_staffId" parameterType="String">
+		DELETE FROM staffId WHERE staff_id = #{staff_id}
+	</delete>
+	
+	<!-- 교직원 등록 -->
+	<insert id="insert_staff" parameterType="staffVO">
+		INSERT INTO staff VALUES (staff_seq.NEXTVAL, #{staff_cls}, #{staff_id}, #{staff_name}, #{staff_rrn1}, #{staff_rrn2}, #{staff_addr},
+    #{staff_zipcode}, #{staff_tel}, TO_DATE(#{staff_hireD},'YYYY-MM-DD'), TO_DATE(#{staff_retireD},'YYYY-MM-DD'), #{staff_workYn}, #{staff_salary}, #{staff_email}) 	
+	</insert>
+	
+	<!-- 교직원 정보 상세보기 -->
+	<select id="select_staff_info" parameterType="String" resultType="staffVO">
+		SELECT staff_num, staff_cls, staff_id, staff_name, staff_rrn1, staff_rrn2, staff_addr,
+		staff_zipcode, staff_tel, TO_CHAR(staff_hireD, 'YYYY-MM-DD') AS "staff_hireD",  TO_CHAR(staff_retireD, 'YYYY-MM-DD') AS "staff_retireD", staff_workYn, staff_salary, staff_email
+		FROM staff 
+		WHERE staff_num = #{staff_num}	
+	</select>
+	
+	<!-- 교직원 삭제 -->
+	<delete id="delete_staff" parameterType="String">
+		DELETE FROM staff WHERE staff_num = #{staff_num}
+	</delete>
+	
+	<!-- 교직원 정보 수정 -->
+	<update id="update_staff" parameterType="staffVO">
+		UPDATE staff SET 
+		staff_cls = #{staff_cls},
+		staff_name = #{staff_name},
+		staff_rrn1 = #{staff_rrn1},
+		staff_rrn2 = #{staff_rrn2},
+		staff_addr = #{staff_addr},
+		staff_zipcode = #{staff_zipcode},
+		staff_tel = #{staff_tel},
+		staff_hireD = TO_DATE(#{staff_hireD},'YYYY-MM-DD'),
+		staff_retireD = TO_DATE(#{staff_retireD},'YYYY-MM-DD'),
+		staff_workYn = #{staff_workYn},
+		staff_salary = #{staff_salary},
+		staff_email = #{staff_email}
+		WHERE staff_num = #{staff_num}
+	</update>
+</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="staffAttendance">
+  	<!-- 근태 기록 조회하기  -->
+  	<select id="get_attend_info" parameterType="String" resultType="staffAttendanceVO">
+		SELECT attend_code, staff_id, TO_CHAR(attend_date, 'YYYY/MM/DD') AS "attend_date", 
+		attend_info, 
+		TO_CHAR(in_time, 'HH24:MI:SS') AS "in_time", TO_CHAR(out_time, 'HH24:MI:SS') AS "out_time"
+		FROM staffAttendance
+		WHERE staff_id = #{staff_id}
+  	</select>
+  	
+  	<!-- 날짜별 근태 기록 조회하기 -->
+  	<select id="get_attend_info_by_date" parameterType="hashmap" resultType="staffAttendanceVO">
+  		SELECT attend_code, staff_id, TO_CHAR(attend_date, 'YYYY/MM/DD') AS "attend_date", 
+		attend_info, 
+		TO_CHAR(in_time, 'HH24:MI:SS') AS "in_time", TO_CHAR(out_time, 'HH24:MI:SS') AS "out_time"
+		FROM staffAttendance
+		WHERE staff_id = #{staff_id}
+		AND attend_date BETWEEN TO_DATE(#{from}, 'YYYY-MM-DD') AND TO_DATE(#{to}, 'YYYY-MM-DD')
+  	</select>
+</mapper>

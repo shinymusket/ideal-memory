@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="equipment">
+  	<!-- 전체 비품 리스트 가져오기 -->
+  	<select id="get_all_equipment_list" resultType="equipmentVO">
+  		SELECT e.equipment_num, s.staff_name, c.equip_cls_name, e.equipment_name, e.equipment_count, TO_CHAR(e.equipment_regdate, 'YYYY-MM-DD') AS equipment_regdate, e.equipment_cate
+		FROM equipment e, staff s, equipcls c
+		WHERE e.staff_id = s.staff_id 
+		AND c.equip_cls_num = e.equip_cls_num
+  	</select>
+  	
+  	<!-- 비품 등록을 위한 마지막 시퀀스 번호 가져오기 -->
+  	<select id="select_equipment_seq" resultType="int">
+  		SELECT LAST_NUMBER FROM USER_SEQUENCES WHERE SEQUENCE_NAME = 'EQUIPMENT_SEQ'
+  	</select>
+  	
+  	<!-- 교직원 아이디로 이름 가져오기 -->
+  	<select id="select_staff_name_by_id" parameterType="String" resultType="String">
+  		SELECT staff_name FROM staff WHERE staff_id = #{staff_id}
+  	</select>
+  	
+  	<!-- 시설(비품) 분류 항목 리스트 가져오기  -->
+  	<select id="select_equip_cls_list" resultType="equipClsVO">
+  		SELECT * FROM equipcls
+  	</select>
+  	
+  	<!-- 시설(비품) 분류 항목 - 코드로 항목 정보 가져오기 -->
+  	<select id="select_equip_cls_by_num" parameterType="String" resultType="equipClsVO">
+		SELECT * FROM equipcls WHERE equip_cls_num = #{equip_cls_num}	
+  	</select>
+  	
+  	<!-- 시설(비품) 분류 항목 - 항목 추가하기 -->
+  	<insert id="insert_equip_cls" parameterType="equipClsVO">
+  		INSERT INTO equipcls VALUES(equipcls_seq.nextval, #{equip_cls_name}, #{equip_num})
+  	</insert>
+  	
+  	<!-- 시설(비품) 분류 항목 전체 수 가져오기 -->
+  	<select id="select_equip_cls_cnt" resultType="int">
+  		SELECT COUNT(*) FROM equipcls
+  	</select>
+  	
+  	<!-- 시설(비품) 분류 항목 삭제하기 -->
+  	<delete id="delete_equip_cls" >
+  		DELETE FROM equipcls WHERE equip_cls_num = #{equip_cls_num}
+  	</delete>
+  	
+  	<!-- 시설(비품) 분류 항목 수정하기 -->
+  	<update id="update_equip_cls" parameterType="equipClsVO">
+  		UPDATE equipcls SET equip_cls_name = #{equip_cls_name} WHERE equip_cls_num = #{equip_cls_num}
+  	</update>
+  	
+  	<!-- 시설(비품) 등록하기 -->
+  	<insert id="insert_equipment" parameterType="equipmentVO">
+  		INSERT INTO equipment 
+  		VALUES(EQUIPMENT_SEQ.nextval, #{staff_id}, #{equipment_name}, #{equipment_count}, 
+  		TO_DATE(#{equipment_regdate}, 'YYYY-MM-DD'), #{equip_cls_num}, #{equipment_cate})
+  	</insert>
+  	
+  	<!-- 시설(비품) 정보 가져오기 -->
+ 	<select id="select_equipment_by_num" parameterType="String" resultType="equipmentVO">
+ 		SELECT e.equipment_num, s.staff_id, s.staff_name, c.equip_cls_num, c.equip_cls_name, e.equipment_name, e.equipment_count, TO_CHAR(e.equipment_regdate, 'YYYY-MM-DD') AS equipment_regdate, e.equipment_cate
+		FROM equipment e, staff s, equipcls c
+		WHERE e.staff_id = s.staff_id AND c.equip_cls_num = e.equip_cls_num
+		AND equipment_num = #{equipment_num}
+ 	</select>
+ 	
+ 	<!-- 시설(비품) 정보 수정 혹은 삭제하기 전 해당 항목의 데이터가 있는지 조회-->
+ 	<select id="check_equipment_from_cls" parameterType="String" resultType="int">
+ 		SELECT COUNT(*) FROM equipment WHERE equip_cls_num = #{equip_cls_num}
+ 	</select>
+ 	
+ 	<!-- 시설(비품) 정보 수정하기 -->
+ 	<update id="update_equipment" parameterType="equipmentVO">
+ 		UPDATE equipment
+ 		SET equip_cls_num = #{equip_cls_num},
+ 		equipment_name = #{equipment_name},
+ 		equipment_count = #{equipment_count},
+ 		equipment_regdate = TO_DATE(#{equipment_regdate}, 'YYYY-MM-DD')
+ 		WHERE equipment_num = #{equipment_num}
+ 	</update>
+ 	
+ 	
+ 	<!-- 시설(비품) 정보 삭제 전 해당 항목의 구매내역이 있는지 확인 --> 	
+ 	<select id="check_purchase_cnt_from_equipment" parameterType="String" resultType="int">
+ 		SELECT COUNT(*) FROM purchase WHERE equipment_num = #{equipment_num}
+ 	</select>
+ 	
+ 	<!-- 시설(비품) 정보 삭제하기 -->
+ 	<delete id="delete_equipment" parameterType="String">
+ 		DELETE FROM equipment
+ 		WHERE equipment_num = #{equipment_num}
+ 	</delete>
+ 
+ 
+ 
+ 
+ 	<!-- 구매품 등록 -->
+ 
+ 	<!-- 구매품 등록을 위한 다음 구매번호 시퀀스 가져오기-->
+  	<select id="select_purchase_seq" resultType="int">
+  		SELECT LAST_NUMBER FROM USER_SEQUENCES WHERE SEQUENCE_NAME = 'PURCHASE_SEQ'
+  	</select>
+ 	
+	<!-- 교직원 아이디로 이름과 사번 가져오기 -->
+	<select id="select_staff_num_name_by_id" parameterType="String" resultType="StaffVO">
+		SELECT staff_num, staff_name FROM staff WHERE staff_id = #{staff_id}
+	</select>
+	
+	<!-- 구매품 등록을 위한 재정 리스트 가져오기 -->
+	<select id="select_finance_list" resultType="financeVO">
+		SELECT * FROM finance
+	</select>
+	
+	<!-- 구매 등록  -->
+	<insert id="insert_purchase">
+		INSERT INTO purchase
+		VALUES(purchase_seq.nextval, #{finance_num}, #{staff_num}, #{equipment_num} ,#{purchase_date}, #{purchase_price}, #{purchase_count})
+	</insert>
+	
+	<!-- 구매 리스트 가져오기 -->
+	<select id="select_purchase_list" resultType="purchaseVO">
+		SELECT p.purchase_num, p.finance_num, s.staff_name, e.equipment_num, e.equipment_name, TO_CHAR(p.purchase_date, 'YYYY-MM-DD') AS "purchase_date", p.purchase_price, p.purchase_count
+		FROM purchase p , staff s, equipment e
+		WHERE p.staff_num = s.staff_num
+		AND p.equipment_num = e.equipment_num
+	</select>
+	
+	<!-- 구매 정보 가져오기  -->
+	<select id="select_purchase_info" parameterType="String" resultType="purchaseVO">
+		SELECT p.purchase_num, p.finance_num, f.finance_cls, s.staff_name, e.equipment_num, e.equipment_name, TO_CHAR(p.purchase_date, 'YYYY-MM-DD') AS "purchase_date", p.purchase_price, p.purchase_count
+		FROM purchase p , staff s, equipment e, finance f
+		WHERE p.staff_num = s.staff_num
+		AND p.equipment_num = e.equipment_num
+		AND p.finance_num = f.finance_num
+		AND purchase_num = #{purchase_num}
+	</select>
+	
+	<!-- 구매 정보 삭제하기 -->
+	<delete id="delete_purchase" parameterType="String">
+		DELETE FROM purchase WHERE purchase_num = #{purchase_num}
+	</delete>
+	
+	<!-- 구매 정보 수정하기 -->
+	<update id="update_purchase" parameterType="purchaseVO">
+		UPDATE purchase SET 
+		finance_num = #{finance_num},
+		equipment_num = #{equipment_num},
+		purchase_date = TO_DATE(#{purchase_date}, 'YYYY-MM-DD'),
+		purchase_price = #{purchase_price},
+		purchase_count = #{purchase_count}
+		WHERE purchase_num = #{purchase_num}
+	</update>
+	
+ 	
+</mapper>

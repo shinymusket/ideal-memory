@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+	<typeAliases>
+		<typeAlias alias="budgetVO" type="com.indieus.ius.vo.BudgetVO"/>
+		<typeAlias alias="financeVO" type="com.indieus.ius.vo.FinanceVO"/>
+		<typeAlias alias="staffVO" type="com.indieus.ius.vo.StaffVO"/>
+		<typeAlias alias="staffIdVO" type="com.indieus.ius.vo.StaffIdVO"/>
+		<typeAlias alias="jobClassVO" type="com.indieus.ius.vo.JobClassifiVO"/>
+		<typeAlias alias="authorityVO" type="com.indieus.ius.vo.AuthorityVO"/>
+		<typeAlias alias="staffAttendanceVO" type="com.indieus.ius.vo.StaffAttendanceVO"/>
+		<typeAlias alias="equipmentVO" type="com.indieus.ius.vo.EquipmentVO"/>
+		<typeAlias alias="equipClsVO" type="com.indieus.ius.vo.EquipClsVO"/>
+		<typeAlias alias="purchaseVO" type="com.indieus.ius.vo.PurchaseVO"/>
+		<typeAlias alias="kinderVO" type="com.indieus.ius.vo.KinderVO"/>
+		<typeAlias alias="shuttleVO" type="com.indieus.ius.vo.ShuttleVO"/>
+	</typeAliases>
+
+</configuration>

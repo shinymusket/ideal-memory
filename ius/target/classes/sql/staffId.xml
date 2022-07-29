@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="staffId">
+ 	<!-- 아이디 체크 -->
+ 	<select id="check_id" parameterType="String" resultType="int">
+		SELECT COUNT(*) from staffId WHERE staff_id = #{staff_id}	
+ 	</select>
+ 	
+ 	<!-- 로그인 -->
+ 	<select id="login" parameterType="String" resultType="staffIdVO">
+		SELECT * FROM staffId WHERE staff_id = #{staff_id}
+ 	</select>
+ 	
+ 	<!-- 로그인 접속일자 수정 -->
+ 	<update id="update_log" parameterType="String">
+		UPDATE staffId set log_date = SYSDATE WHERE staff_id = #{staff_id}	
+ 	</update>
+</mapper>

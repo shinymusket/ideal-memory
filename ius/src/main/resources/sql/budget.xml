@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="budget">
+	<!-- 전체 예산 항목 조회 -->
+  	<select id="select_all_budget" resultType="budgetVO">
+  		SELECT * FROM budget
+  	</select>
+  
+  	<!-- 년도별 총수입 예산 조회 -->
+ 	<select id="select_total_Income" parameterType="String" resultType="int">
+ 		SELECT sum(budget_total) FROM budget WHERE budget_iE = 'In' AND budget_year = #{budget_year} 
+ 	</select>  
+  
+  	<!-- 년도별 총지출 예산 조회 -->
+ 	<select id="select_total_Expense" parameterType="String" resultType="int">
+ 		SELECT sum(budget_total) FROM budget WHERE budget_iE = 'Ex' AND budget_year = #{budget_year} 
+ 	</select>  
+  
+  	
+  	<!-- 수입/지출 별 예산 항목 조회 -->
+  	<select id="select_all_budget_by_iE" parameterType="String" resultType="budgetVO">
+  		SELECT * FROM budget WHERE budget_iE = #{budget_iE}
+  	</select>
+  
+  	<!-- 예산 년도 조회 -->
+  	<select id="select_all_budget_year" resultType="String">
+  		SELECT DISTINCT(budget_year) FROM budget
+  	</select>
+  	
+  	<!-- 날짜별 예산 년도 조회 -->
+  	<select id="select_budget_by_year" parameterType="hashmap" resultType="budgetVO">
+  		<if test="budgetType == 'total'">
+  			SELECT * FROM budget WHERE budget_year = #{seachYear}
+  		</if>
+  		<if test="budgetType != 'total'">
+  			SELECT * FROM budget WHERE budget_year = #{seachYear} AND budget_iE = #{budgetType}
+  		</if>
+  	</select>
+  	
+  	<!-- 예산 항목 추가 -->
+  	<insert id="register_budget" parameterType="budgetVO">
+  		INSERT INTO budget (budget_num, budget_year, budget_iE, budget_cls, budget_total) VALUES (BUDGET_SEQ.nextval, #{budget_year}, #{budget_iE}, #{budget_cls}, #{budget_total})
+  	</insert>
+  	
+  	<!-- 예산 정보 조회 -->
+  	<select id="select_budget_by_num" parameterType="String" resultType="budgetVO">
+  		SELECT * FROM budget WHERE budget_num = #{budget_num}
+  	</select>
+  	
+  	<!-- 예산 항목 삭제 -->
+  	<delete id="delete_budget_by_num" parameterType="String">
+  		DELETE FROM budget WHERE budget_num = #{budget_num}
+  	</delete>
+  	
+  	<!-- 예산 항목 수정 -->
+  	<update id="update_budget" parameterType="budgetVO">
+  		UPDATE budget SET budget_cls = #{budget_cls}, budget_total = #{budget_total}, budget_iE = #{budget_iE}, budget_year = #{budget_year} WHERE budget_num = #{budget_num}
+  	</update>
+  	
+</mapper>

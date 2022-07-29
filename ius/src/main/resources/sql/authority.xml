@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="authority">
+	
+	<!-- 교직원 번호로 권한 코드 가져오기 -->
+	<select id="select_auth_code_by_staff_num" parameterType="String" resultType="String">
+		SELECT i.auth_code 
+		FROM staff s, staffId i
+		WHERE s.staff_id = i.staff_id
+		AND s.staff_num = #{staff_num}
+	</select>
+	
+	<!-- 권한 코드로 권한 정보 가져오기 -->
+	<select id="select_auth_by_code" parameterType="String" resultType="authorityVO">
+		SELECT * 
+		FROM authority
+		WHERE auth_code = #{auth_code}
+	</select>
+	
+	<!-- 권한 코드 추가하기 전 이미 존재하는 권한 타입인지 체크 -->
+	<select id="select_cnt_auth" parameterType="authorityVO" resultType="int">
+		SELECT COUNT(*) 
+		FROM authority
+		WHERE M = #{m} AND T = #{t} AND D = #{d} AND F = #{f} AND S = #{s} AND I = #{i}
+		AND E = #{e} AND G = #{g}
+	</select>
+	
+	<!-- 설정된 권한 내용으로 존재하는 권한 코드 가져오기 -->
+	<select id="select_auth_by_content" parameterType="authorityVO" resultType="String">
+		SELECT auth_code 
+		FROM authority
+		WHERE M = #{m} AND T = #{t} AND D = #{d} AND F = #{f} AND S = #{s} AND I = #{i}
+		AND E = #{e} AND G = #{g}
+	</select>
+	
+	<!-- 교직원 코드로 교직원 아이디 가져오기 -->
+	<select id="select_staff_id_by_staff_num" parameterType="String" resultType="String">
+		SELECT staff_id FROM staff
+		WHERE staff_num = #{staff_num}
+	</select>
+	
+	<!-- 교직원 계정 가져오기 -->
+	<select id="select_staff_id" parameterType="String" resultType="staffIdVO">
+		SELECT * FROM staffId WHERE staff_id = #{staff_id}
+	</select>
+	
+	<!-- 새로운 권한 코드 생성을 위한 현재 코드 갯수 가져오기 -->
+	<select id="select_total_cnt_auth" resultType="int">
+		SELECT COUNT(*) FROM authority
+	</select>
+	
+	<!-- 새로운 권한 코드 생성 -->
+	<select id="insert_new_auth" parameterType="authorityVO">
+		INSERT INTO authority VALUES(#{auth_code}, #{auth_name}, #{m}, #{t}, #{d}, #{f}, #{s}, #{i}, #{e}, #{g})
+	</select>
+	
+	
+	<!-- 권한 코드 설정 -->
+	<update id="update_auth_by_staff_num" parameterType="staffIdVO">
+		UPDATE staffId SET auth_code = #{auth_code} WHERE staff_id = #{staff_id} 
+	</update>
+</mapper>

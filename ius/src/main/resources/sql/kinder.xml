@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="kinder">
+	<!-- 전체 원생 리스트 가져오기 -->
+	<select id="select_kinder_list" resultType="kinderVO">
+		SELECT kinder_num, shuttle_num, staff_name, kinder_name, kinder_regYn, kinder_rrn1, kinder_rrn2, kinder_addr, kinder_zipcode, kinder_tel, TO_CHAR(kinder_regdate, 'YYYY-MM-DD') AS "kinder_regdate", kinder_retireDate
+		FROM kinder k, staff s
+		WHERE k.staff_num = s.staff_num
+	</select>
+	
+	<!-- 원생 등록을 위한 다음 시퀀스 번호 가져오기 -->
+	<select id="select_next_kinder_seq" resultType="int">
+		SELECT LAST_NUMBER FROM USER_SEQUENCES WHERE SEQUENCE_NAME = 'KINDER_SEQ'
+	</select>
+	
+	<!-- 원생 등록을 위한 셔틀 버스 리스트 불러오기 -->
+	<select id="select_all_shuttle_List" resultType="shuttleVO">
+		SELECT * FROM shuttle
+	</select>
+	
+	<!-- 원생 등록을 위한 담임 선생님 리스트 가져오기(버스기사, 영양사 교직원 제외)  -->
+	<select id="select_home_teacher_for_kinder" resultType="staffVO">
+		SELECT * FROM Staff WHERE staff_cls NOT IN (3,4)
+	</select>
+	
+	<!-- 원생 등록  -->
+	<insert id="insert_kinder" parameterType="kinderVO">
+		INSERT INTO kinder VALUES(kinder_seq.nextval, #{shuttle_num}, #{staff_num}, #{kinder_regYn}, #{kinder_name}, #{kinder_rrn1}, #{kinder_rrn2}, #{kinder_addr}, #{kinder_zipcode}, #{kinder_tel}, #{kinder_regdate}, #{kinder_retireDate}, #{kinder_picture})
+	</insert>
+	
+	<!-- 원생 검색 -->
+	<select id="search_kinder_list" parameterType="hashmap" resultType="kinderVO">
+		SELECT kinder_num, shuttle_num, staff_name, kinder_name, kinder_regYn, kinder_rrn1, kinder_rrn2, kinder_addr, kinder_zipcode, kinder_tel, TO_CHAR(kinder_regdate, 'YYYY-MM-DD') AS "kinder_regdate", kinder_retireDate
+		FROM kinder k, staff s
+		WHERE k.staff_num = s.staff_num
+		<if test='searchType == "kinder_num"'>
+		AND kinder_num = #{searchContent}
+		</if>
+		<if test='searchType == "staff_name"'>
+		AND staff_name = #{searchContent}
+		</if>
+		<if test='searchType == "kinder_name"'>
+		AND kinder_name = #{searchContent}
+		</if>
+		<if test='searchType == "shuttle_num"'>
+		AND shuttle_num = #{searchContent}
+		</if>
+		<if test='searchType == "kinder_regYn"'>
+		AND kinder_regYn = #{search_regYn}
+		</if>
+		<if test='searchType == "kinder_regdate"'>
+		AND kinder_regdate BETWEEN TO_DATE(#{searchDateFrom}, 'YYYY-MM-DD') AND TO_DATE(#{searchDateTO}, 'YYYY-MM-DD')
+		</if>
+		<if test='searchType == "kinder_retireDate"'>
+		AND kinder_retireDate BETWEEN TO_DATE(#{searchDateFrom}, 'YYYY-MM-DD') AND TO_DATE(#{searchDateTO}, 'YYYY-MM-DD')
+		</if>
+	</select>
+	
+	<!-- 원생 정보 조회 -->
+	<select id="select_kinder_info" parameterType="String" resultType="kinderVO">
+		SELECT kinder_num, shuttle_num, staff_name, kinder_name, kinder_regYn, kinder_rrn1, kinder_rrn2, kinder_addr, kinder_zipcode, kinder_tel, TO_CHAR(kinder_regdate, 'YYYY-MM-DD') AS "kinder_regdate", kinder_retireDate, kinder_picture
+		FROM kinder k, staff s
+		WHERE k.staff_num = s.staff_num
+		AND kinder_num = #{kinder_num}
+	</select>
+	
+	<!-- 원생 정보 삭제 -->
+	<delete id="delete_kinder_info" parameterType="String">
+		DELETE FROM kinder WHERE kinder_num = #{kinder_num}
+	</delete>
+
+</mapper>

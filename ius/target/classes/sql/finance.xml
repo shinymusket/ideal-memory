@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="finance">
+	<!-- 전체 재정 내역 조회 -->
+	<select id="select_finance_list" resultType="financeVO">
+		SELECT f.finance_num, b.budget_cls, s.staff_name, TO_CHAR(f.finance_edate, 'YYYY-MM-DD') AS "finance_edate", f.finance_cls, f.finance_ie, f.finance_amount, f.finance_eYear 
+		FROM finance f, budget b, staff s
+		WHERE f.budget_num = b.budget_num AND
+		f.staff_num = s.staff_num
+	</select>
+	
+  	<!-- 재정 전체 회계 년도 조회 -->
+  	<select id="select_all_finance_eYear" resultType="String">
+  		SELECT DISTINCT(finance_eYear) FROM finance
+  	</select>
+	
+  	<!-- 회계 년도별 조회 -->
+  	<select id="select_finance_by_year" parameterType="hashmap" resultType="financeVO">
+  		SELECT f.finance_num, b.budget_cls, s.staff_name, TO_CHAR(f.finance_edate, 'YYYY-MM-DD') AS "finance_edate", f.finance_cls, f.finance_ie, f.finance_amount, f.finance_eYear 
+		FROM finance f, budget b, staff s
+  		WHERE f.budget_num = b.budget_num AND
+		f.staff_num = s.staff_num AND
+  		f.finance_eYear = #{finance_eYear}
+  		<if test="financeType != 'total'">
+  		AND f.finance_ie = #{financeType}
+  		</if>
+  	</select>
+	
+	
+	<!-- 년도별 재정 총 수입 가져오기 --> 
+	<select id="select_total_income" parameterType="String" resultType="int">
+		SELECT sum(finance_amount) FROM finance WHERE finance_iE = 'In' AND finance_eYear = #{finance_eYear} 
+	</select>
+	
+	<!-- 년도별 재정 총 지출 가져오기 -->
+	<select id="select_total_Expense" parameterType="String" resultType="int">
+		SELECT sum(finance_amount) FROM finance WHERE finance_iE = 'Ex' AND finance_eYear = #{finance_eYear} 
+	</select>
+	
+
+	<!-- 재정등록을 위한 다음 시퀀스 값 확인하기 -->
+	<select id="select_finance_seq" resultType="int">
+		SELECT LAST_NUMBER FROM USER_SEQUENCES WHERE SEQUENCE_NAME = 'FINANCE_SEQ'
+	</select>
+	
+	<!-- 재정등록 -->
+	<insert id="insert_finance" parameterType="financeVO">
+		INSERT INTO finance VALUES( FINANCE_SEQ.nextval, #{budget_num}, #{staff_num},TO_DATE(#{finance_eDate},'YYYYMMDD'), #{finance_cls}, #{finance_iE}, #{finance_amount}, #{finance_eYear}) 
+	</insert>
+	
+	<!-- 재정 상세보기 -->
+	<select id="select_finance_info" parameterType="String" resultType="financeVO">
+		SELECT f.finance_num, b.budget_cls, s.staff_name, TO_CHAR(f.finance_edate, 'YYYY-MM-DD') AS "finance_edate", 
+			   f.finance_cls, f.finance_ie, f.finance_amount, f.budget_num, f.staff_num, f.finance_eYear
+		FROM finance f, budget b, staff s
+		WHERE f.budget_num = b.budget_num 
+		AND f.staff_num = s.staff_num
+		AND finance_num = #{finance_num}
+	</select>
+	
+	<!-- 재정 내역 삭제 전 재정 내역의 구매 내역이 있는지 조회-->
+	<select id="select_purchase_cnt_from_finance" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM purchase
+		WHERE finance_num = #{finance_num}
+	</select>
+	
+	<!-- 재정 내역 삭제 -->
+	<delete id="delete_finance" parameterType="String">
+		DELETE FROM finance WHERE finance_num = #{finance_num}
+	</delete>
+	
+	<!-- 재정 내역 수정 -->
+	<update id="update_finance" parameterType="financeVO">
+		UPDATE finance SET 
+		finance_num = #{finance_num}, 
+		budget_num = #{budget_num}, 
+		staff_num = #{staff_num},
+		finance_eDate = TO_DATE(#{finance_eDate},'YYYY-MM-DD'), 
+		finance_cls = #{finance_cls}, 
+		finance_iE = #{finance_iE}, 
+		finance_amount = #{finance_amount},
+		finance_eYear = #{finance_eYear} 
+		WHERE finance_num = #{finance_num}
+	</update>
+	
+	<!-- 재정 내역 상세보기 중 구매내역 가져오기-->
+	<select id="select_purchase_from_finance_num" parameterType="String" resultType="purchaseVO">
+		SELECT p.purchase_num, p.finance_num, f.finance_cls, s.staff_name, e.equipment_name, TO_CHAR(p.purchase_date, 'YYYY-MM-DD') AS "purchase_date", p.purchase_price, p.purchase_count
+		FROM purchase p , staff s, equipment e, finance f
+		WHERE p.staff_num = s.staff_num
+		AND p.equipment_num = e.equipment_num
+		AND p.finance_num = f.finance_num
+		AND f.finance_num = #{finance_num}
+	</select>
+	
+	<!-- 재정 내역 상세보기 중 구매내역의 총합 가져오기 -->
+	<select id="select_purchase_sum_from_finance_num" parameterType="String" resultType="int">
+		SELECT SUM(purchase_price) FROM purchase WHERE finance_num = #{finance_num}
+	</select>
+	
+	
+</mapper>
