@@ -1,0 +1,252 @@
+@charset "EUC-KR";
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+*{
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Nanum Gothic', sans-serif;
+}
+
+a{
+    text-decoration: none;
+    color: black;
+}
+
+ul {
+    list-style: none;
+}
+
+/* 컨테이너 */
+#container{
+    margin: 0 auto;
+}
+
+/* 최소 사이즈 */
+/* @media screen and (max-width: 1600px) {
+    #container {
+        margin: 0 auto;
+        width: 100% ;
+        background-color: antiquewhite;
+    }
+} */
+
+/************헤더 ************/
+header{
+    width: 100%;
+    height: 100px;
+}
+
+#logInfo {
+    width: 200px;
+    height: 100px;
+    float: right;
+    text-align: right;
+    padding-right: 10px;
+    padding-top: 20px;
+}
+
+#logInfo a {
+    margin: 10px;
+    font-size: 14px;
+    color: #666;
+}
+
+
+/************ 네비게이션 ************/
+nav {
+    position: fixed;
+    left:0;
+    height: 100%;
+    top: 0;
+    right: auto;
+    bottom: auto;
+    display: block;
+    overflow: visible;
+    margin-top: 0vw;
+    width: 250px;
+    background-color: #486890;
+    overflow-x: hidden;
+}
+
+nav::-webkit-scrollbar {
+    width: 13px;
+}
+nav::-webkit-scrollbar-thumb {
+    background-color: #415f85;
+}
+nav::-webkit-scrollbar-track {
+    background-color: rgb(235, 235, 235);
+}
+
+#logo {
+    width: 250px;
+    height: 100px;
+    text-align: center;
+    padding-top: 20px;
+}
+#logo > a {
+    color: white;
+    font-size: 30px;
+}
+
+#sideMenu {
+    position: absolute;
+    display: block;
+    height: 60px;
+    padding-top: 30px;
+    letter-spacing: -1px;
+}
+#sideMenu > li:last-child {
+    padding-bottom: 30px;
+}
+#sideMenu > li > a {
+    display: block;
+    color: #fff;
+    font-weight: 600;
+    font-size: 27px;
+    padding-left: 40px;
+    margin-bottom: 30px;
+}
+
+#sideMenu > li > ul {
+    margin: 0;
+    width: 220px;
+}
+
+#sideMenu > li > ul > li > a {
+    color: #fff;
+    display: block;
+    padding-left: 45px;
+    padding-bottom: 30px;
+}
+
+#sideMenu li a span {
+    position: relative;
+}
+
+#sideMenu li a span:after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -8px;
+    height: 2px;
+    width: 0;
+    background-color: aliceblue;
+    transition: .4s;
+}
+
+#sideMenu li a span:before {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    right: 50%;
+    height: 2px;
+    width: 0;
+    background-color: aliceblue;
+    transition: .4s;
+}
+
+#sideMenu li a:hover span:after {
+    width: 50%;
+}
+#sideMenu li a:hover span:before {
+    width: 50%;
+}
+
+.copyright {
+    position: relative;
+    left: 5px;
+    top: 750px;
+    font-size: 12px;
+    color: #fff;
+    margin-left: 35px;
+    padding-bottom: 10px;
+    line-height: 24px;
+}
+
+
+/************ 콘텐츠 섹션 ************/
+article {
+    background-color: aquamarine;
+    width: 1300px;
+    padding-bottom: 50px;
+    margin-left: 300px;
+}
+#title_bar {
+    float: left;
+    background-color: coral;
+    width: 500px;
+    height: 100px;
+    padding-top: 20px;
+    padding-left: 30px;
+}
+#title_bar p {
+    padding-left: 5px;
+    font-size: 15px;
+    padding-left: 20px;
+    padding-bottom: 7px;
+}
+#title_bar h3 {
+    font-size: 30px;
+    margin-top: 5px;
+    letter-spacing: -1px;
+    padding-left: 16px;
+    border-left: solid #486890 3px;
+}
+
+#title_top{
+    background-color: cornflowerblue;
+    float: right;
+    height: 100px;
+    width: 700px;
+    /* background-color: lightskyblue; */
+    text-align: right;
+    padding-right: 25px;
+    padding-top: 40px;
+}
+
+#title_top input {
+    height: 35px;
+    line-height: 35px;
+}
+#title_top input[type="button"]{
+    width: 60px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+#title_top input[value="검색"]{
+    margin-left: -6px;
+    margin-right: 10px;
+}
+#title_top input[value="등록"], #title_top input[value="삭제"] {
+    border-radius: 4px;
+}
+#title_top input[type="text"]{
+    width: 300px;
+    padding-left: 5px;
+    outline: none;
+}
+
+#content{
+    clear: both;
+    padding: 30px;
+    background-color: aqua;
+}
+
+
+/************ 푸터 ************/
+
+footer{
+    clear: both;
+    width: 1300px;
+    height: 50px;
+    padding: 10px;
+    background-color: gold;
+    margin-left: 300px;
+}
+
+footer > p {
+    text-align: center;
+    font-size: 14px;
+}

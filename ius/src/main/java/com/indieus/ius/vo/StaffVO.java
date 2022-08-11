@@ -16,13 +16,30 @@ public class StaffVO {
 	 private String staff_workYn;
 	 private int staff_salary;
 	 private String staff_email;
+	 private String staff_picture;
 
 	 private String staff_sex; // 주민등록번호 뒷자리 중 첫자리가 홀수이면 남성, 짝수이면 여성
 	 private String staff_birth; // 주민등록번호 앞자리의 데이터
 	 private String staff_age; // 주민등록번호 맨 앞자리의 데이터와 맨 뒷번호의 첫자리
 
 	 private String job_Kname;
+	 private String class_name;
 
+	public String getClass_name() {
+		return class_name;
+	}
+
+	public void setClass_name(String class_name) {
+		this.class_name = class_name;
+	}
+
+	public String getStaff_picture() {
+		return staff_picture;
+	}
+
+	public void setStaff_picture(String staff_picture) {
+		this.staff_picture = staff_picture;
+	}
 
 	public String getJob_Kname() {
 		return job_Kname;
@@ -42,7 +59,6 @@ public class StaffVO {
 	}
 
 
-
 	public String getStaff_birth() {
 		return staff_birth;
 	}
@@ -55,8 +71,6 @@ public class StaffVO {
 	public void setStaff_age(String staff_age) {
 		this.staff_age = staff_age;
 	}
-
-
 
 
 	public String getStaff_num() {

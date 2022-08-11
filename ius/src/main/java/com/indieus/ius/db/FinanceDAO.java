@@ -2,12 +2,14 @@ package com.indieus.ius.db;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.indieus.ius.vo.BudgetVO;
 import com.indieus.ius.vo.FinanceVO;
 import com.indieus.ius.vo.PurchaseVO;
 
@@ -64,7 +66,6 @@ public class FinanceDAO {
 		return sqlsession.selectOne("finance.select_finance_seq");
 	}
 
-
 	// 재정등록
 	@Transactional
 	public int insertFinance(FinanceVO fVo) throws Exception {
@@ -101,6 +102,16 @@ public class FinanceDAO {
 	// 재정 사용 구매 내역 총합 가져오기
 	public int selectPurchaseSumFromNum(String finance_num) throws Exception {
 		return sqlsession.selectOne("finance.select_purchase_sum_from_finance_num", finance_num);
+	}
+
+	// 년도별 예산 항목 리스트 가져오기
+	public List<BudgetVO> getBudgetList(Map<String, Object> map) throws Exception {
+		return sqlsession.selectList("finance.select_all_budget_list", map);
+	}
+
+	// 재정 검색 기능
+	public List<FinanceVO> searchFinance(Map<String, Object> map) throws Exception {
+		return sqlsession.selectList("finance.search_finance_list", map);
 	}
 
 }

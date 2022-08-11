@@ -26,7 +26,7 @@ public class StaffAttendanceController {
 	private StaffAttendanceServiceImpl service;
 
 	// 초기화면으로 이동
-	@RequestMapping(value = "attendance_list", method = RequestMethod.GET)
+	@RequestMapping(value = "/attendance_list", method = RequestMethod.GET)
 	public String list(Model model) throws Exception {
 		List<StaffVO> staffList = staffService.selectStaffList();
 		model.addAttribute("staffList", staffList);

@@ -16,6 +16,50 @@ public class KinderVO {
 	private String kinder_retireDate;
 	private String kinder_picture;
 
+	private String class_name;
+	private String father_name;
+	private String mather_name;
+
+	private String kinder_sex;
+	private String kinder_birth;
+	private String kinder_age;
+
+	private String staff_name;
+	private int allergy_code;
+
+	private int allergy_check;
+
+	public int getAllergy_check() {
+		return allergy_check;
+	}
+	public void setAllergy_check(int allergy_check) {
+		this.allergy_check = allergy_check;
+	}
+	public int getAllergy_code() {
+		return allergy_code;
+	}
+	public void setAllergy_code(int allergy_code) {
+		this.allergy_code = allergy_code;
+	}
+
+	public String getFather_name() {
+		return father_name;
+	}
+	public void setFather_name(String father_name) {
+		this.father_name = father_name;
+	}
+	public String getMather_name() {
+		return mather_name;
+	}
+	public void setMather_name(String mather_name) {
+		this.mather_name = mather_name;
+	}
+	public String getClass_name() {
+		return class_name;
+	}
+	public void setClass_name(String class_name) {
+		this.class_name = class_name;
+	}
 	public String getKinder_picture() {
 		return kinder_picture;
 	}
@@ -34,11 +78,6 @@ public class KinderVO {
 	public void setKinder_retireDate(String kinder_retireDate) {
 		this.kinder_retireDate = kinder_retireDate;
 	}
-	private String kinder_sex;
-	private String kinder_birth;
-	private String kinder_age;
-
-	private String staff_name;
 
 
 	public String getShuttle_num() {

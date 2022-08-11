@@ -40,5 +40,4 @@ public class BudgetVO {
 		this.budget_total = budget_total;
 	}
 
-
 }

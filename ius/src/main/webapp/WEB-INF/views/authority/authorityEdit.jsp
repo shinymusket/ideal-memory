@@ -1,11 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="path" value="${pageContext.request.contextPath}"/>     
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>권한 관리</title>
+<link type="text/css" rel="stylesheet" href="${path}/resources/css/articleF.css">
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script type="text/javascript">
  function getInfo(num) {
@@ -32,9 +34,6 @@
 					$("#staff_num").val(staff_num);
 					
 					value = retVal.authorityInfo;		
-					
-					
-					
 					if (value.m == "Y") {
 						$("#master").prop('checked', true);
 						$("#teacher").prop('disabled', true);
@@ -44,9 +43,17 @@
 						$("#info").prop('disabled', true);
 						$("#event").prop('disabled', true);
 						$("#gallery").prop('disabled', true);
-						
-						
+		
+					} else {
+						$("#teacher").prop('disabled', false);
+						$("#dietitian").prop('disabled', false);
+						$("#facilities").prop('disabled', false);
+						$("#bus").prop('disabled', false);
+						$("#info").prop('disabled', false);
+						$("#event").prop('disabled', false);
+						$("#gallery").prop('disabled', false);
 					};
+					
 					if (value.t == "Y") {
 						$("#teacher").prop('checked', true);
 					};
@@ -197,91 +204,109 @@ $(function(){
 </script>
 </head>
 <body>
-	<h1>권한 부여</h1>
-	<div id="btns">
-		<input type="button" value="홈으로" onclick="location.href='../main/'">
-		<input type="button" value="교직원 관리" onclick="location.href='../staff/staff_list'">
-	</div>
+<%@include file="../include/header.jsp" %>
+<%@include file="../include/nav.jsp" %>
+
+	<article>
+			<div id="title_bar">
+				<p>경영 정보</p>
+				<h3>권한 부여</h3>
+			</div>
 	
-	<table id="staffInfo" border="1" style="float: left;">
-		<tr>
-			<th>교직원 코드</th>
-			<th>교직원 이름</th>
-			<th>교직원 아이디</th>
-			<th>직무</th>
-		</tr>
-		<c:if test="${staffList != null}">
-			<c:forEach items="${staffList}" var="staff">
-				<tr>
-					<td>${staff.staff_num}</td>
-					<td>${staff.staff_name}</td>
-					<td><a href="javascript:getInfo(${staff.staff_num})">${staff.staff_id}</a></td>
-					<td>${staff.job_Kname}</td>
-				</tr>
-			</c:forEach>
-		</c:if>	
-	</table>
+			<!-- 오른쪽 기능 박스 (검색 등등 필요없으면 div 안에 내용 지워도 무방)-->
+			<div id="title_top">
+			</div>
 	
-	<table id="authorityInfo" border="1" style="float: left; display: none;">
-		<tr>
-			<th>권한</th>
-			<td>여부</td>
-		</tr>
-		<tr>
-			<th>관리자</th>
-			<td>
-				<input type="checkbox" id="master">
-			</td>
-		</tr>
-		<tr>
-			<th>교사</th>
-			<td>
-				<input type="checkbox" id="teacher">
-			</td>
-		</tr>
-		<tr>
-			<th>급식</th>
-			<td>
-				<input type="checkbox" id="dietitian">
-			</td>
-		</tr>
-		<tr>
-			<th>시설</th>
-			<td>
-				<input type="checkbox" id="facilities">
-			</td>
-		</tr>
-		<tr>
-			<th>셔틀버스</th>
-			<td>
-				<input type="checkbox" id="bus">
-			</td>
-		</tr>
-		<tr>
-			<th>안내사항</th>
-			<td>
-				<input type="checkbox" id="info">
-			</td>
-		</tr>
-		<tr>
-			<th>행사 및 일정</th>
-			<td>
-				<input type="checkbox" id="event">
-			</td>
-		</tr>
-		<tr>
-			<th>갤러리</th>
-			<td>
-				<input type="checkbox" id="gallery">
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2">
-				<input type="hidden" id="staff_num">
-				<input type="button" id="register" value="등록">
-			</td>
-		</tr>
-		
-	</table>
+			<section>
+				<div id="content">
+					<div id="btns">
+						<input type="button" value="교직원 관리" onclick="location.href='../staff/staff_list'">
+					</div>
+					
+					<table id="staffInfo" border="1" style="float: left;">
+						<tr>
+							<th>교직원 코드</th>
+							<th>교직원 이름</th>
+							<th>교직원 아이디</th>
+							<th>직무</th>
+						</tr>
+						<c:if test="${staffList != null}">
+							<c:forEach items="${staffList}" var="staff">
+								<tr>
+									<td>${staff.staff_num}</td>
+									<td>${staff.staff_name}</td>
+									<td><a href="javascript:getInfo(${staff.staff_num})">${staff.staff_id}</a></td>
+									<td>${staff.job_Kname}</td>
+								</tr>
+							</c:forEach>
+						</c:if>	
+					</table>
+				
+					<table id="authorityInfo" border="1" style="float: left; display: none;">
+						<tr>
+							<th>권한</th>
+							<td>여부</td>
+						</tr>
+						<tr>
+							<th>관리자</th>
+							<td>
+								<input type="checkbox" id="master">
+							</td>
+						</tr>
+						<tr>
+							<th>교사</th>
+							<td>
+								<input type="checkbox" id="teacher">
+							</td>
+						</tr>
+						<tr>
+							<th>급식</th>
+							<td>
+								<input type="checkbox" id="dietitian">
+							</td>
+						</tr>
+						<tr>
+							<th>시설</th>
+							<td>
+								<input type="checkbox" id="facilities">
+							</td>
+						</tr>
+						<tr>
+							<th>셔틀버스</th>
+							<td>
+								<input type="checkbox" id="bus">
+							</td>
+						</tr>
+						<tr>
+							<th>안내사항</th>
+							<td>
+								<input type="checkbox" id="info">
+							</td>
+						</tr>
+						<tr>
+							<th>행사 및 일정</th>
+							<td>
+								<input type="checkbox" id="event">
+							</td>
+						</tr>
+						<tr>
+							<th>갤러리</th>
+							<td>
+								<input type="checkbox" id="gallery">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<input type="hidden" id="staff_num">
+								<input type="button" id="register" value="등록">
+							</td>
+						</tr>
+					</table>
+				</div>
+			</section>
+	</article> 
+
+	
+<%@include file="../include/footer.jsp" %>	
 </body>
 </html>

@@ -1,17 +1,20 @@
 package com.indieus.ius.vo;
 
 public class EquipmentVO {
+
 	private String equipment_num;
 	private String staff_id;
 	private String equip_cls_num;
 	private String equipment_name;
 	private int equipment_count;
 	private String equipment_regdate;
+
 	private String equipment_cate;
 
 
 	private String staff_name;
 	private String equip_cls_name;
+
 
 
 	public String getEquipment_cate() {
@@ -26,6 +29,7 @@ public class EquipmentVO {
 	public void setEquip_cls_name(String equip_cls_name) {
 		this.equip_cls_name = equip_cls_name;
 	}
+
 	public String getStaff_name() {
 		return staff_name;
 	}
@@ -69,8 +73,5 @@ public class EquipmentVO {
 	public void setEquipment_regdate(String equipment_regdate) {
 		this.equipment_regdate = equipment_regdate;
 	}
-
-
-
 
 }

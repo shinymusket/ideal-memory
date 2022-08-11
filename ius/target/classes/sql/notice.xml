@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="notice">
+	<!-- 전체 공지사항 게시물 조회 -->
+	<select id="select_all_notice_list" resultType="noticeVO">
+		SELECT notice_num, n.staff_id, s.staff_name, notice_title, notice_content, TO_CHAR(notice_writeDate, 'YYYY-MM-DD') AS "notice_writeDate", notice_readCount 
+		FROM notice n, staff s
+		WHERE n.staff_id = s.staff_id
+		ORDER BY notice_num DESC
+	</select>
+	
+	<!-- 공지사항 등록 -->
+	<insert id="insert_notice" parameterType="noticeVO">
+		INSERT INTO notice (notice_num, staff_id, notice_title, notice_content, notice_writeDate) VALUES(notice_seq.nextval, #{staff_id}, #{notice_title}, #{notice_content}, SYSDATE)
+	</insert>
+	
+	<!-- 공지사항 글 조회수 증가 -->
+	<update id="update_read_count" parameterType="int">
+		UPDATE notice SET notice_readcount = notice_readcount+1 WHERE notice_num = #{notice_num}
+	</update>
+	
+	<!-- 공지사항 조회 -->
+	<select id="select_notice_info" parameterType="int" resultType="noticeVO">
+		SELECT notice_num, n.staff_id, s.staff_name, notice_title, notice_content, notice_writeDate, notice_readCount 
+		FROM notice n, staff s
+		WHERE n.staff_id = s.staff_id
+		AND notice_num = #{notice_num}
+	</select>
+	
+	<!-- 공지사항 글 삭제 -->
+	<delete id="delete_notice" parameterType="int">
+		DELETE FROM notice WHERE notice_num = #{notice_num}
+	</delete>
+	
+	<!-- 공지사항 글 수정 -->
+	<update id="update_notice" parameterType="noticeVO">
+		UPDATE notice SET notice_title = #{notice_title}, notice_content = #{notice_content} WHERE notice_num = #{notice_num}
+	</update>
+	
+	<!-- 공지사항 글 검색 -->
+	<select id="search_notice_list" parameterType="hashmap" resultType="noticeVO">
+		SELECT notice_num, n.staff_id, s.staff_name, notice_title, notice_content, TO_CHAR(notice_writeDate, 'YYYY-MM-DD') AS "notice_writeDate", notice_readCount 
+		FROM notice n, staff s
+		WHERE n.staff_id = s.staff_id
+		<if test="searchType == 'notice_num'">
+		AND notice_num = #{searchContent}
+		</if>
+		<if test="searchType == 'notice_title'">
+		AND notice_title = #{searchContent}
+		</if>
+		<if test="searchType == 'staff_name'">
+		AND s.staff_name = #{searchContent}
+		</if>
+		ORDER BY notice_num DESC
+	</select>
+	
+	<!-- 공지사항별 댓글 리스트 가져오기 -->
+	<select id="select_reply_list_for_notice" parameterType="hashmap" resultType="noticeReplyVO">
+		SELECT r.*, staff_name FROM noticeReply r, staff s 
+		WHERE r.staff_id = s.staff_id
+		AND notice_num = #{notice_num}
+		ORDER BY reply_num ASC
+	</select>
+	
+	<!-- 댓글 등록하기  -->
+	<insert id="insert_reply">
+		INSERT INTO noticeReply VALUES (noticeReply_seq.nextval, #{notice_num}, #{staff_id}, #{reply_content}, SYSDATE)
+	</insert>
+	
+	<!-- 댓글 정보 가져오기 -->
+	<select id="select_reply_info" parameterType="hashmap" resultType="noticeReplyVO">
+		SELECT r.*, staff_name FROM noticeReply r, staff s 
+		WHERE r.staff_id = s.staff_id
+		AND reply_num = #{reply_num}
+	</select>
+	
+	<!-- 댓글 수정 -->
+	<update id="update_reply" parameterType="hashmap">
+		UPDATE noticeReply SET reply_content = #{reply_content}, reply_date = SYSDATE WHERE reply_num = #{reply_num}
+	</update>
+	
+	<!-- 댓글 삭제 -->
+	<delete id="delete_reply" parameterType="hashmap">
+		DELETE FROM noticeReply WHERE reply_num = #{reply_num}
+	</delete>
+	
+	<!-- 메인글에 게시하기 위한 최신 공지글 8개 가져오기 -->
+	<select id="select_notice_list_for_main" resultType="noticeVO">
+		SELECT *
+				FROM (
+						SELECT ROWNUM RN, A.*
+								FROM (
+										SELECT notice_num, notice_title, TO_CHAR(notice_writeDate, 'YYYY-MM-DD') AS "notice_writeDate" FROM notice
+                                        ORDER BY notice_num DESC
+										) A
+								)
+		WHERE RN BETWEEN 1 AND 8
+	</select>
+</mapper>

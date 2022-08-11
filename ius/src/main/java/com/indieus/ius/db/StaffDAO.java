@@ -1,6 +1,7 @@
 package com.indieus.ius.db;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,13 @@ public class StaffDAO {
 	public List<StaffVO> selectStaffList() throws Exception {
 		return sqlsession.selectList("staff.select_staff_list");
 	}
+
+	// 교직원 검색하기
+	public List<StaffVO> searchStaffList(Map<String, Object> map) throws Exception {
+		return sqlsession.selectList("staff.search_staff_list", map);
+
+	}
+
 
 	// 교직원 등록을 위한 다음 시퀀스 값 조회
 	public int selectStaffSeq() throws Exception {
@@ -48,7 +56,6 @@ public class StaffDAO {
 	public JobClassifiVO selectJobClassifiByNum(String staff_cls) throws Exception {
 		return sqlsession.selectOne("staff.select_job_classifi_by_num", staff_cls);
 	}
-
 
 	// 직무 코드로 직무 항목 삭제전 해당 데이터의 교직원 유무 확인
 	public int checkStaffFromStaffCls(String staff_cls) throws Exception {
@@ -91,6 +98,13 @@ public class StaffDAO {
 		return sqlsession.insert("staff.insert_staff", sVo);
 	}
 
+	// 교직원 담당 반 정보 등록(Null)
+	@Transactional
+	public int insertStaffClassInfo(String staff_num) throws Exception {
+		return sqlsession.insert("staff.insert_staff_class_info", staff_num);
+	}
+
+
 	// 교직원 상세정보
 	public StaffVO selectStaffInfo(String staff_num) throws Exception {
 		return sqlsession.selectOne("staff.select_staff_info", staff_num);
@@ -108,11 +122,22 @@ public class StaffDAO {
 		return sqlsession.update("staff.update_staff", sVo);
 	}
 
+	// 교직원 사번으로 직무코드 가져오기
+	public String selectStaffClsByStaffNum(String staff_num) throws Exception {
+		return sqlsession.selectOne("staff.select_staff_cls_by_staff_num", staff_num);
+	}
 
+	//  로그인 되어 있는 세션 정보(아이디)로 교직원 정보 가져오기
+	public StaffVO selectStaffInfoStaffId(String staff_id) throws Exception {
+		return sqlsession.selectOne("staff.select_staff_info_by_staff_id", staff_id);
+	}
 
+	// 교직원의 학급 데이터 삭제
+	@Transactional
+	public void deleteClassInfo(String staff_num) throws Exception{
+		sqlsession.delete("staff.delete_class_info_by_staff_num", staff_num);
 
-
-
+	}
 
 
 

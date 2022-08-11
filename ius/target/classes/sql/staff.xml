@@ -7,8 +7,27 @@
 		staff_zipcode, staff_tel, TO_CHAR(staff_hireD, 'YYYY-MM-DD') AS "staff_hireD",  TO_CHAR(staff_retireD, 'YYYY-MM-DD') AS "staff_retireD", staff_workYn, staff_salary, staff_email
 		FROM staff s, jobClassifi j
 		WHERE s.staff_cls = j.staff_cls
-		ORDER BY staff_num DESC
+		AND delete_column = 'N'
+		ORDER BY staff_num ASC
 	</select>
+	
+	<!-- 교직원 검색 -->
+	<select id="search_staff_list" parameterType="hashmap" resultType="staffVO">
+		SELECT staff_num, job_Kname, staff_id, staff_name, staff_rrn1, staff_rrn2, staff_addr,
+		staff_zipcode, staff_tel, TO_CHAR(staff_hireD, 'YYYY-MM-DD') AS "staff_hireD",  TO_CHAR(staff_retireD, 'YYYY-MM-DD') AS "staff_retireD", staff_workYn, staff_salary, staff_email
+		FROM staff s, jobClassifi j
+		WHERE s.staff_cls = j.staff_cls
+		AND staff_workYn = #{staff_workYn}
+		AND delete_column = 'N'
+		<if test="staff_name != null and staff_name != ''">
+			AND staff_name = #{staff_name}
+		</if>
+		<if test="staff_cls != null and staff_cls != ''">
+			AND s.staff_cls = #{staff_cls}
+		</if>	
+		ORDER BY staff_num ASC
+	</select>
+	
 	
 	<!-- 교직원 등록을 위한 다음 생성 시퀀스값 확인하기 -->
 	<select id="select_staff_seq" resultType="int">
@@ -57,31 +76,45 @@
 	
 	<!-- 교직원 계정과 임시 비밀번호 등록, 권한, 가입날짜 등록 -->
 	<insert id="insert_staffId" parameterType="staffIdVO">
-		INSERT INTO staffId(staff_id, staff_pwd, auth_code, reg_date) VALUES (#{staff_id}, #{staff_pwd}, #{auth_code}, sysdate)
+		INSERT INTO staffId(staff_id, staff_pwd, auth_code, reg_date, delete_column) VALUES (#{staff_id}, #{staff_pwd}, #{auth_code}, sysdate, 'N')
 	</insert>
 	
 	<!-- 교직원 계정 삭제 -->
 	<delete id="delete_staffId" parameterType="String">
-		DELETE FROM staffId WHERE staff_id = #{staff_id}
+		UPDATE staffId SET delete_column = 'Y' WHERE staff_id = #{staff_id}
 	</delete>
 	
 	<!-- 교직원 등록 -->
 	<insert id="insert_staff" parameterType="staffVO">
 		INSERT INTO staff VALUES (staff_seq.NEXTVAL, #{staff_cls}, #{staff_id}, #{staff_name}, #{staff_rrn1}, #{staff_rrn2}, #{staff_addr},
-    #{staff_zipcode}, #{staff_tel}, TO_DATE(#{staff_hireD},'YYYY-MM-DD'), TO_DATE(#{staff_retireD},'YYYY-MM-DD'), #{staff_workYn}, #{staff_salary}, #{staff_email}) 	
+    #{staff_zipcode}, #{staff_tel}, TO_DATE(#{staff_hireD},'YYYY-MM-DD'), TO_DATE(#{staff_retireD},'YYYY-MM-DD'), #{staff_workYn}, #{staff_salary}, #{staff_email}
+    	<if test="staff_picture != null and staff_picture != ''">
+   		, #{staff_picture}, 'N')
+    	</if>
+    	<if test="staff_picture == null or staff_picture == ''">
+   		, NULL, 'N')
+    	</if>
+	
 	</insert>
 	
+	<!-- 교직원 담당 반 정보 등록 null -->
+	<insert id="insert_staff_class_info" parameterType="String">
+		INSERT INTO class VALUES (class_seq.nextval, #{staff_num}, NULL, NULL, NULL)
+	</insert>
+
 	<!-- 교직원 정보 상세보기 -->
 	<select id="select_staff_info" parameterType="String" resultType="staffVO">
-		SELECT staff_num, staff_cls, staff_id, staff_name, staff_rrn1, staff_rrn2, staff_addr,
-		staff_zipcode, staff_tel, TO_CHAR(staff_hireD, 'YYYY-MM-DD') AS "staff_hireD",  TO_CHAR(staff_retireD, 'YYYY-MM-DD') AS "staff_retireD", staff_workYn, staff_salary, staff_email
-		FROM staff 
-		WHERE staff_num = #{staff_num}	
+		SELECT DISTINCT s.staff_num AS "STAFF_NUM", s.staff_cls, job_kname, class_name, staff_id, staff_name, staff_rrn1, staff_rrn2, staff_addr,
+		staff_zipcode, staff_tel, TO_CHAR(staff_hireD, 'YYYY-MM-DD') AS "staff_hireD",  TO_CHAR(staff_retireD, 'YYYY-MM-DD') AS "staff_retireD", staff_workYn, staff_salary, staff_email, staff_picture
+		FROM staff s, jobclassifi j, class c
+		WHERE s.staff_cls = j.staff_cls
+		AND s.staff_num = c.staff_num
+		AND s.staff_num = #{staff_num}
 	</select>
-	
+
 	<!-- 교직원 삭제 -->
 	<delete id="delete_staff" parameterType="String">
-		DELETE FROM staff WHERE staff_num = #{staff_num}
+		UPDATE staff SET delete_column = 'Y' WHERE staff_num = #{staff_num}
 	</delete>
 	
 	<!-- 교직원 정보 수정 -->
@@ -99,6 +132,30 @@
 		staff_workYn = #{staff_workYn},
 		staff_salary = #{staff_salary},
 		staff_email = #{staff_email}
+		<if test="staff_picture != null and staff_picture != ''">
+   		, staff_picture = #{staff_picture}
+    	</if>
 		WHERE staff_num = #{staff_num}
 	</update>
+	
+	<!-- 교직원 사번으로 직무코드 가져오기 -->
+	<select id="select_staff_cls_by_staff_num" parameterType="String" resultType="String">
+		SELECT staff_cls FROM staff WHERE staff_num = #{staff_num}
+	</select>
+	
+	<!-- 로그인 되어 있는 세션 정보(아이디)로 교직원 정보 가져오기 -->
+	<select id="select_staff_info_by_staff_id" parameterType="String" resultType="staffVO">
+		SELECT s.*
+		FROM staffId i, staff s
+		WHERE i.staff_id = s.staff_id
+		AND i.staff_id = #{staff_id}
+	</select>
+	
+	<!-- 담당 반 내역 지우기  -->
+	<delete id="delete_class_info_by_staff_num" parameterType="String">
+		DELETE class WHERE staff_num = #{staff_num}
+	</delete>
+	
+	
+	
 </mapper>

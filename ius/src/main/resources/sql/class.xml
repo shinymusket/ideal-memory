@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="class">
+  	<!-- 전체 학급 리스트 가져오기 -->
+  	<select id="select_all_class_list" resultType="classVO">
+  		SELECT DISTINCT class_number, class_name, staff_name
+		FROM class c, staff s
+		WHERE c.staff_num = s.staff_num
+		AND class_number IS NOT NULL
+		ORDER BY class_number ASC
+  	</select>
+  	
+  	<!-- 학급 정보 가져오기 -->
+  	<select id="select_class_by_class_num" parameterType="String" resultType="classVO">
+  		SELECT DISTINCT class_number, class_name, s.staff_num, staff_name, staff_tel 
+		FROM class c, staff s
+		WHERE c.staff_num = s.staff_num
+		AND class_number  = #{class_number} 
+  	</select>
+  	
+  	<!-- 학급별 학생 리스트 가져오기 -->
+  	<select id="select_class_kinder_by_class_num" parameterType="String" resultType="kinderVO">
+  		SELECT k.kinder_num, kinder_name, kinder_tel
+		FROM class c, kinder k
+		WHERE c.kinder_num = k.kinder_num
+		AND kinder_regYn = 'Y'
+		AND class_number = #{class_number}
+  	</select>
+  	
+  	<!-- 학급 등록을 위한 마지막 학급 번호 값 가져오기 -->
+  	<select id="select_class_last_number" resultType="int">
+  		SELECT MAX(class_number) FROM class
+  	</select>
+  	
+  	<!-- 학급 등록을 위한 담당 교사 리스트 가져오기 (반을 맡고 있지 않은 교사) -->
+  	<select id="select_class_home_teacher" resultType="staffVO">
+  		SELECT DISTINCT s.staff_num, staff_name 
+		FROM staff s, class c
+		WHERE s.staff_num = c.staff_num 
+		AND staff_cls NOT IN (3, 4)
+		AND class_number IS NULL
+  	</select>
+  	
+  	<!-- 학급 등록 -->
+  	<update id="update_class" parameterType="ClassVO">
+  		UPDATE class SET class_number = #{class_number}, class_name = #{class_name}
+  		WHERE staff_num = #{staff_num}
+  	</update>
+ 	
+ 	<!-- 학급 정보 수정 -->
+ 	<update id="update_class_info" parameterType="hashmap">
+ 		UPDATE class SET staff_num = #{new_staff_num}, class_name= #{class_name}
+ 		WHERE class_number = #{class_number}
+ 	</update>
+ 	
+ 	<!-- 학급 정보 수정 후 기본 데이터 값이 하나도 없는지 유무 체크  -->
+ 	<select id="select_class_cnt_by_staff_num" parameterType="String" resultType="int">
+ 		SELECT COUNT(*) FROM class WHERE staff_num = #{staff_num}
+ 	</select>
+ 	
+ 	<!-- 기존에 담당 반이 없던 교사가 반을 맡았을 시 기존 Null 데이터 삭제 -->
+ 	<delete id="delete_null_class_by_staff_num" parameterType="String">
+ 		DELETE FROM class WHERE staff_num = #{staff_num} AND class_number IS NULL
+ 	</delete>
+  	
+  	<!-- 원생의 학급 반 담당 선생님이 변경되었을 때, 원생 정보의 담당 교사도 변경 -->
+  	<update id="update_home_teacher_for_kinder" parameterType="kinderVO">
+  		UPDATE kinder SET staff_num = #{staff_num} WHERE kinder_num = #{kinder_num}
+  	</update>
+  
+  	<!-- 학급 정보 삭제 (삭제시 학급 번호(시퀀스X)와 학급 이름만 삭제) -->
+	<update id="delete_class_info" parameterType="hashmap">
+  		UPDATE class SET class_name = NULL, class_number = NULL WHERE class_number = #{class_number}
+  	</update>
+  	
+  	
+</mapper>

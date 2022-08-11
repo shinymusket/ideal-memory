@@ -26,7 +26,6 @@ public class BudgetServiceImpl implements BudgetService {
 		return manager.selectBudgetByBudgetIe(budget_iE);
 	}
 
-
 	// 예산 리스트 가져오기 Ajax
 	@Override
 	public Object getBudgetList() throws Exception {
@@ -66,28 +65,33 @@ public class BudgetServiceImpl implements BudgetService {
 		return manager.registerBudget(bVo);
 	}
 
-
 	// 예산 정보조회
 	@Override
 	public BudgetVO selectBudgetNyNum(String budget_num) throws Exception {
 		return manager.selectBudgetByNum(budget_num);
 	}
 
-	// 예산 항목 삭제
+	// 예산 항목 삭제시 예산 항목으로 생성된 재정 데이터가 있는지 확인
 	@Override
-	public int deleteBudget(String budget_num) {
-		return manager.deleteBudget(budget_num);
+	public Object countFinanceFromBudget(Map<String, Object> map) throws Exception {
+		int result = manager.countFinanceFromBudget(map);
+
+		Map<String, Object> data = new HashMap();
+		data.put("result", result);
+		return data;
 	}
 
+	// 예산 항목 삭제
+	@Override
+	public int deleteBudget(String budget_num) throws Exception {
+		return manager.deleteBudget(budget_num);
+	}
 
 	// 예산 항목 수정
 	@Override
 	public int updateBudget(BudgetVO bVo) throws Exception {
 		return manager.updateBudget(bVo);
 	}
-
-
-
 
 
 

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="parent">
+	<!-- 원생 명단 리스트 가져오기  -->
+	<select id="select_kinder_list_include_parent_name" resultType="kinderVO">
+		SELECT k.kinder_num, kinder_name, p1.parent_name AS "father_name", p2.parent_name AS "mather_name"  
+		FROM kinder k, parent p1, parent p2 
+		WHERE k.kinder_num = p1.kinder_num(+)
+		AND k.kinder_num = p2.kinder_num(+)
+		AND (p1.relation = '부' OR p1.relation IS NULL)
+		AND (p2.relation = '모' OR p2.relation IS NULL)
+		AND delete_column = 'N'
+	</select>
+	
+	<!-- 전체 학급 번호와 이름 리스트 가져오기  -->
+	<select id="select_all_class_num_name" resultType="classVO">
+		SELECT DISTINCT class_number, class_name 
+		FROM class
+		WHERE class_number IS NOT NULL 
+		AND class_name IS NOT NULL
+	</select>
+	
+	<!-- 원생별 부모 정보 받아오기 -->
+	<select id="select_kinder_parents" parameterType="String" resultType="kinderVo">
+		SELECT p1.parent_name AS "father_name", p2.parent_name AS "mather_name" 
+		FROM parent p1, parent p2
+		WHERE p1.relation = '부'
+		AND p2.relation ='모'
+		AND p1.kinder_num = #{kinder_num}
+		AND p2.kinder_num = #{kinder_num}
+	</select>
+	
+	<!-- 원생 조회  -->
+	<select id="select_kinder_by_name" parameterType="String" resultType="kinderVO">
+		SELECT k.kinder_num, kinder_name, staff_name, class_name
+		FROM kinder k, staff s, class c
+		WHERE k.staff_num = s.staff_num
+		AND c.kinder_num = k.kinder_num
+		AND kinder_name = #{kinder_name}
+	</select>
+	
+ 	<!-- 원생의 부모 데이터가 이미 있는지 조사 -->
+	<select id="select_kinder_get_parent" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) FROM parent
+		WHERE kinder_num = #{kinder_num}
+		AND relation = #{relation}
+	</select>
+	
+	<!-- 부모님 정보 등록  -->
+	<insert id="insert_parent" parameterType="parentVO">
+		INSERT INTO parent VALUES(parent_seq.nextval, #{kinder_num}, #{relation}, #{parent_tel}, #{parent_email}, #{parent_sex}, TO_DATE(#{parent_birth}, 'YYYY-MM-DD'), #{parent_name})
+	</insert>
+	
+	<!-- 원생 번호로 간략한 원생 정보 가져오기 -->
+	<select id="select_kinder_info_by_kinder_num" parameterType="String" resultType="kinderVO">
+		SELECT k.kinder_name, class_name, staff_name
+		FROM kinder k, class c, staff s
+		WHERE k.kinder_num = c.kinder_num
+		AND k.staff_num = s.staff_num
+		AND k.kinder_num = #{kinder_num}
+	</select>
+	
+	<!-- 학부모 정보 삭제 -->
+	<delete id="delete_parent_info" parameterType="hashmap">
+		DELETE FROM parent WHERE kinder_num = #{kinder_num} AND relation = #{relation}
+	</delete>
+	
+	<!-- 학부모 정보 수정 -->
+	<update id="update_parent_info" parameterType="hashmap">
+		UPDATE parent SET parent_name = #{parent_name}, parent_tel = #{parent_tel}, parent_email = #{parent_email}, parent_sex = #{parent_sex}, parent_birth = #{parent_birth} WHERE kinder_num = #{kinder_num} AND relation = #{relation}
+	</update>
+	
+	
+	
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="attendance">
+	<!-- 출결 정보 가져오기  -->
+	<select id="select_attendance_by_kinder_num" parameterType="String" resultType="attendanceVO">
+		SELECT attend_code, kinder_num, TO_CHAR(attend_date, 'YYYY-MM-DD') AS "attend_date", attend_info, 
+		TO_CHAR(in_time, 'HH24:MI:SS') AS "in_time", TO_CHAR(out_time, 'HH24:MI:SS') AS "out_time" 
+		FROM attendance WHERE kinder_num = #{kinder_num}
+	</select>
+	
+	<!-- 검색한 원생 리스트 가져오기 -->
+	<select id="search_kinder" parameterType="hashmap" resultType="kinderVO">
+		SELECT k.kinder_num, shuttle_num, staff_name, kinder_name, class_name, kinder_regYn, kinder_rrn1, kinder_rrn2, kinder_addr, kinder_zipcode, kinder_tel, TO_CHAR(kinder_regdate, 'YYYY-MM-DD') AS "kinder_regdate", kinder_retireDate
+		FROM kinder k, staff s, class c
+		WHERE k.staff_num = s.staff_num
+		AND c.kinder_num = k.kinder_num
+		<if test="searchType == 'kinder_num' and searchContent != null and searchContent != ''">
+		AND k.kinder_num = #{searchContent}
+		</if>
+		<if test="searchType == 'kinder_name' and searchContent != null and searchContent != ''">
+		AND kinder_name = #{searchContent}
+		</if>
+		<if test="searchType == 'class_name' and searchContent != null and searchContent != ''">
+		AND class_name = #{searchContent}
+		</if>
+		<if test="searchType == 'staff_name' and searchContent != null and searchContent != ''">
+		AND staff_name = #{searchContent}
+		</if>			
+		ORDER BY kinder_num ASC
+	</select>
+	
+	<!-- 날짜별 출결 내역 조회  -->
+	<select id="select_attendance" parameterType="hashmap" resultType="attendanceVO">
+		SELECT attend_code, kinder_num, TO_CHAR(attend_date, 'YYYY-MM-DD') AS "attend_date", attend_info, 
+		TO_CHAR(in_time, 'HH24:MI:SS') AS "in_time", TO_CHAR(out_time, 'HH24:MI:SS') AS "out_time" 
+		FROM attendance WHERE kinder_num = #{kinder_num}
+		AND attend_date BETWEEN TO_DATE(#{date_from}, 'YYYY-MM-DD') AND TO_DATE(#{date_to}, 'YYYY-MM-DD')
+	</select>
+	
+	<!-- 학생별 최근 출결 정보 3개 가져오기 -->
+	<select id="select_latest_attendance" parameterType="String" resultType="attendanceVO">
+		SELECT ROWNUM, A.*
+		FROM (
+		    SELECT attend_code, kinder_num, TO_CHAR(attend_date, 'YYYY-MM-DD') AS "attend_date", attend_info, 
+			TO_CHAR(in_time, 'HH24:MI:SS') AS "in_time", TO_CHAR(out_time, 'HH24:MI:SS') AS "out_time" 
+			FROM attendance WHERE kinder_num = #{kinder_num}
+			ORDER BY attend_date DESC) A
+		WHERE ROWNUM  BETWEEN 1 AND 3
+	</select>
+	
+</mapper>

@@ -66,6 +66,14 @@ public class BudgetController {
 		return "/budget/budgetInfo";
 	}
 
+	// 예산 항목 삭제시 예산 항목으로 생성된 재정 데이터가 있는지 확인
+	@ResponseBody
+	@RequestMapping(value = "count_finance_from_budget", method = RequestMethod.POST)
+	public Object countFinanceFromBudget(@RequestParam Map<String, Object> map) throws Exception {
+		return service.countFinanceFromBudget(map);
+	}
+
+
 	// 예산 항목 삭제
 	@RequestMapping(value = "/budget_delete", method = RequestMethod.GET)
 	public String delete(@RequestParam String budget_num, RedirectAttributes rttr) throws Exception {

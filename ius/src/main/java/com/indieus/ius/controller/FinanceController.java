@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ import com.indieus.ius.service.StaffServiceImpl;
 import com.indieus.ius.vo.BudgetVO;
 import com.indieus.ius.vo.FinanceVO;
 import com.indieus.ius.vo.PurchaseVO;
+import com.indieus.ius.vo.StaffIdVO;
 import com.indieus.ius.vo.StaffVO;
 
 @Controller
@@ -33,7 +35,6 @@ public class FinanceController {
 	private StaffServiceImpl staffService;
 	@Autowired
 	private BudgetServiceImpl budgetService;
-
 
 	// 재정관리 처음 화면 - 리스트 불러오기
 	@RequestMapping(value = "/finance_list", method = RequestMethod.GET)
@@ -57,24 +58,36 @@ public class FinanceController {
 		return service.getFinanceListByYear(map);
 	}
 
+	// 예산 항목 리스트 가져오기 Ajax
+	@ResponseBody
+	@RequestMapping(value = "/get_budget_list", method = RequestMethod.POST)
+	public Object getBudgetList(@RequestParam Map<String, Object> map) throws Exception {
+		return service.getBudgetList(map);
+	}
 
 	// 재정등록 폼
 	@RequestMapping(value = "/finance_register_form", method = RequestMethod.GET)
-	public String registerForm(Model model, @RequestParam String iE) throws Exception {
+	public String registerForm(Model model, @RequestParam String iE, HttpSession session) throws Exception {
 		// 예산 코드 가져오기
+
 		int finance_num = service.selectFinanceSeq();
 		// 예산 항목 가져오기
 		List<BudgetVO> budgetList = budgetService.selectBudgetByBudgetIe(iE);
-		// 교직원 명단 가져오기
-		List<StaffVO> staffList = staffService.selectStaffList();
+
+		// 로그인되어 있는 정보로 입력하기
+		StaffIdVO staff = (StaffIdVO)session.getAttribute("staff");
+		// 사번과 이름값 가져오기
+		String staff_id = staff.getStaff_id();
+		StaffVO staffInfo = staffService.selectStaffInfoStaffId(staff_id);
 
 		model.addAttribute("iE", iE);
 		model.addAttribute("finance_num", finance_num);
 		model.addAttribute("budgetList", budgetList);
-		model.addAttribute("staffList", staffList);
+		model.addAttribute("staffInfo", staffInfo);
 
 		return "/finance/financeRegisterForm";
 	}
+
 
 	// 재정 등록
 	@RequestMapping(value = "/finance_register", method = RequestMethod.POST)
@@ -85,21 +98,35 @@ public class FinanceController {
 
 	// 재정 정보 상세보기
 	@RequestMapping(value = "/finance_info", method = RequestMethod.GET)
-	public String info(Model model, @RequestParam String finance_num) throws Exception {
+	public String info(Model model, @RequestParam String finance_num, HttpSession session) throws Exception {
+
+		// 로그인되어 있는 정보로 입력하기
+		StaffIdVO staff = (StaffIdVO)session.getAttribute("staff");
+		// 사번과 이름값 가져오기
+		String staff_id = staff.getStaff_id();
+		StaffVO staffInfo = staffService.selectStaffInfoStaffId(staff_id);
+		String log_staff_num = staffInfo.getStaff_num();
+
 		FinanceVO fVo = service.selectFinanceByNum(finance_num);
 		List<PurchaseVO> purchaseList = service.selectPurchaseFromNum(finance_num);
-		int purchaseSum = service.selectPurchaseSumFromNum(finance_num);
+		int purchaseSum = 0;
+		try {
+			purchaseSum = service.selectPurchaseSumFromNum(finance_num);
+		} catch(NullPointerException e) {
+			purchaseSum = 0;
+		}
 
 		model.addAttribute("finance", fVo);
 		model.addAttribute("purchaseList", purchaseList);
 		model.addAttribute("purchaseSum", purchaseSum);
+		model.addAttribute("log_staff_num", log_staff_num);
 
 		return "/finance/finance_info";
 	}
 
 	// 재정 내역 삭제
 	@RequestMapping(value = "/finance_delete", method = RequestMethod.GET)
-	public String delete(@RequestParam String finance_num, RedirectAttributes rttr, HttpServletResponse response) throws Exception {
+	public String delete(@RequestParam String finance_num, RedirectAttributes rttr,  HttpServletResponse response) throws Exception {
 		int result =  service.deleteFinance(finance_num, response);
 
 		if (result == 0) {
@@ -108,21 +135,25 @@ public class FinanceController {
 			rttr.addFlashAttribute("result", result);
 			return "redirect:./finance_list";
 		}
-
 	}
 
 	// 재정 수정 폼
 	@RequestMapping(value = "/finance_update_form", method = RequestMethod.GET)
-	public String updateForm(Model model, @RequestParam String finance_num) throws Exception {
+	public String updateForm(Model model, @RequestParam String finance_num, HttpSession session) throws Exception {
+		// 로그인되어 있는 정보로 입력하기
+		StaffIdVO staff = (StaffIdVO) session.getAttribute("staff");
+		// 사번과 이름값 가져오기
+		String staff_id = staff.getStaff_id();
+		StaffVO staffInfo = staffService.selectStaffInfoStaffId(staff_id);
+
 		FinanceVO fVo = service.selectFinanceByNum(finance_num);
 		String iE = fVo.getFinance_iE();
 
 		List<BudgetVO> budgetList = budgetService.selectBudgetByBudgetIe(iE);
-		List<StaffVO> staffList = staffService.selectStaffList();
 
 		model.addAttribute("budgetList", budgetList);
-		model.addAttribute("staffList", staffList);
 		model.addAttribute("finance", fVo);
+		model.addAttribute("staffInfo", staffInfo);
 		return "/finance/finance_update_form";
 	}
 
@@ -131,6 +162,13 @@ public class FinanceController {
 	public String update(@ModelAttribute FinanceVO fVo, RedirectAttributes rttr) throws Exception {
 		rttr.addFlashAttribute("result", service.updateFinance(fVo));
 		return "redirect:./finance_list";
+	}
+
+	// 재정 검색 기능 Ajax
+	@ResponseBody
+	@RequestMapping(value = "/search_finance", method = RequestMethod.POST)
+	public Object searchFinance(@RequestParam Map<String, Object> map) throws Exception {
+		return service.searchFinance(map);
 	}
 
 }

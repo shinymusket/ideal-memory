@@ -1,12 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="equipment">
+	<!-- 총 리스트 갯수 출력 -->
+	<select id="countEquipment" resultType="int">
+		SELECT COUNT(*)
+		FROM equipment e, staff s, equipcls c
+		WHERE e.staff_id = s.staff_id 
+		AND c.equip_cls_num = e.equip_cls_num
+	</select>
+	
+	<!-- 페이징 처리 후 리스트 조회 -->
+	<select id="selectEquipment" parameterType="pagingVO" resultType="equipmentVO">
+		SELECT *
+				FROM (
+						SELECT ROWNUM RN, A.*
+								FROM (
+										SELECT e.equipment_num, s.staff_name, c.equip_cls_name, e.equipment_name, e.equipment_count, TO_CHAR(e.equipment_regdate, 'YYYY-MM-DD') AS equipment_regdate, e.equipment_cate
+										FROM equipment e, staff s, equipcls c
+										WHERE e.staff_id = s.staff_id 
+										AND c.equip_cls_num = e.equip_cls_num
+										ORDER BY equipment_num DESC
+										) A
+								)
+		WHERE RN BETWEEN #{start} AND #{end}
+	</select>
+	
+	<!-- 검색된 리스트 총 갯수 출력 -->
+	<select id="countSearchEquipment" parameterType="equipmentSearchVO"  resultType="int">
+		SELECT COUNT(*)
+		FROM equipment e, staff s, equipcls c
+		WHERE e.staff_id = s.staff_id 
+		AND c.equip_cls_num = e.equip_cls_num
+
+		<choose>
+			<when test="searchType == 'equip_cls_name'">
+				AND e.equip_cls_num = #{equip_cls_num}
+			</when>
+			<when test="searchType == 'equipment_cate'">
+				<if test="equipment_cate == 'equipment'">
+				AND equipment_cate = '시설(비품)'
+				</if>
+				<if test="equipment_cate == 'purchase'">
+				AND equipment_cate = '구매품'
+				</if>
+			</when>
+			<when test="searchType == 'equipment_regdate'">
+				AND equipment_regdate IN TO_DATE(#{searchDate}, 'YYYY-MM-DD')
+			</when>
+			<when test="searchType == 'equipment_num'">
+				AND e.equipment_num = #{searchContent}
+			</when>
+			<when test="searchType == 'staff_name'">
+				AND s.staff_name = #{searchContent}
+			</when>
+			<when test="searchType == 'equipment_name'">
+				AND equipment_name = #{searchContent}
+			</when>
+			<otherwise></otherwise>
+		</choose>
+		
+	</select>
+	
+	
+ 	<!-- 시설(비품) 검색 -->
+	<select id="search_equipment" parameterType="equipmentSearchVO" resultType="equipmentVO">
+		SELECT *
+				FROM (
+						SELECT ROWNUM RN, A.*
+								FROM (
+										SELECT e.equipment_num, s.staff_name, c.equip_cls_name, e.equipment_name, e.equipment_count, TO_CHAR(e.equipment_regdate, 'YYYY-MM-DD') AS equipment_regdate, e.equipment_cate
+										FROM equipment e, staff s, equipcls c
+										WHERE e.staff_id = s.staff_id 
+										AND c.equip_cls_num = e.equip_cls_num
+								
+										<choose>
+											<when test="searchType == 'equip_cls_name'">
+												AND e.equip_cls_num = #{equip_cls_num}
+											</when>
+											<when test="searchType == 'equipment_cate'">
+												<if test="equipment_cate == 'equipment'">
+												AND equipment_cate = '시설(비품)'
+												</if>
+												<if test="equipment_cate == 'purchase'">
+												AND equipment_cate = '구매품'
+												</if>
+											</when>
+											<when test="searchType == 'equipment_regdate'">
+												AND equipment_regdate IN TO_DATE(#{searchDate}, 'YYYY-MM-DD')
+											</when>
+											<when test="searchType == 'equipment_num'">
+												AND e.equipment_num = #{searchContent}
+											</when>
+											<when test="searchType == 'staff_name'">
+												AND s.staff_name = #{searchContent}
+											</when>
+											<when test="searchType == 'equipment_name'">
+												AND equipment_name = #{searchContent}
+											</when>
+											<otherwise></otherwise>
+										</choose>
+										ORDER BY equipment_num DESC
+										) A
+								)
+		WHERE RN BETWEEN #{start} AND #{end}
+	</select>
+
+
+
   	<!-- 전체 비품 리스트 가져오기 -->
   	<select id="get_all_equipment_list" resultType="equipmentVO">
   		SELECT e.equipment_num, s.staff_name, c.equip_cls_name, e.equipment_name, e.equipment_count, TO_CHAR(e.equipment_regdate, 'YYYY-MM-DD') AS equipment_regdate, e.equipment_cate
 		FROM equipment e, staff s, equipcls c
 		WHERE e.staff_id = s.staff_id 
 		AND c.equip_cls_num = e.equip_cls_num
+		ORDER BY equipment_num DESC
   	</select>
   	
   	<!-- 비품 등록을 위한 마지막 시퀀스 번호 가져오기 -->
@@ -92,8 +199,6 @@
  	</delete>
  
  
- 
- 
  	<!-- 구매품 등록 -->
  
  	<!-- 구매품 등록을 위한 다음 구매번호 시퀀스 가져오기-->
@@ -123,6 +228,34 @@
 		FROM purchase p , staff s, equipment e
 		WHERE p.staff_num = s.staff_num
 		AND p.equipment_num = e.equipment_num
+		ORDER BY p.purchase_num DESC
+	</select>
+	
+	<!-- 구매 리스트 검색하기 -->
+	<select id="search_purchase_list" parameterType="hashmap" resultType="purchaseVO">
+		SELECT p.purchase_num, p.finance_num, s.staff_name, e.equipment_num, e.equipment_name, TO_CHAR(p.purchase_date, 'YYYY-MM-DD') AS "purchase_date", p.purchase_price, p.purchase_count
+		FROM purchase p , staff s, equipment e
+		WHERE p.staff_num = s.staff_num
+		AND p.equipment_num = e.equipment_num
+		<if test='searchType == "purchase_num"'>
+		AND purchase_num = #{searchContent}
+		</if>
+		<if test='searchType == "finance_num"'>
+		AND finance_num = #{searchContent}
+		</if>
+		<if test='searchType == "staff_name"'>
+		AND s.staff_name = #{searchContent}
+		</if>
+		<if test='searchType == "equipment_num"'>
+		AND p.equipment_num = #{searchContent}
+		</if>
+		<if test='searchType == "equipment_name"'>
+		AND e.equipment_name = #{searchContent}
+		</if>
+		<if test='searchType == "purchase_date"'>
+		AND purchase_date IN TO_DATE(#{searchDate}, 'YYYY-MM-DD')
+		</if>
+		ORDER BY p.purchase_num DESC
 	</select>
 	
 	<!-- 구매 정보 가져오기  -->
@@ -141,7 +274,7 @@
 	</delete>
 	
 	<!-- 구매 정보 수정하기 -->
-	<update id="update_purchase" parameterType="purchaseVO">
+ 	<update id="update_purchase" parameterType="purchaseVO">
 		UPDATE purchase SET 
 		finance_num = #{finance_num},
 		equipment_num = #{equipment_num},
@@ -151,5 +284,4 @@
 		WHERE purchase_num = #{purchase_num}
 	</update>
 	
- 	
 </mapper>

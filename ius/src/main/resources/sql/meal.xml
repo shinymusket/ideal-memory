@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="meal">
+
+	<select id="all_meal_menu_view" resultType="mealMenuVO">
+		SELECT * FROM menu_tbl
+	</select>
+	
+	<select id="allergy_info" resultType="allergyVO">
+		SELECT * FROM Allergy_tbl
+	</select>
+	
+	<insert id="insert_meal_menu" parameterType="java.util.Map">
+		<foreach collection="list" item="item" open="INSERT ALL" close="SELECT * FROM DUAL">
+		INTO menu_tbl(menu_num, staff_num, meal_code, meal_menu, menu_eDate, menu_calorie, allergy_num, menu_wDate)
+		VALUES
+		(get_menu_seq, 3, #{item.meal_code},
+		#{item.meal_menu}, #{item.menu_edate}, #{item.menu_calorie}, #{item.allergy_num}, sysdate)
+		</foreach>
+	</insert>
+	
+	<select id="meal_select_by_num" parameterType="String" resultType="mealMenuVO">
+		SELECT * FROM menu_tbl WHERE menu_edate = #{menu_edate}
+	</select>
+	
+	<delete id="meal_delete" parameterType="java.util.Map">
+		DELETE FROM menu_tbl WHERE menu_num = #{menu_num}
+	</delete>
+	
+	<update id="modify_update_meal_menu" parameterType="java.util.List">
+		MERGE INTO menu_tbl m
+		USING (
+			<foreach collection="list" item="item" open="" close="" index="index" separator="UNION">
+			SELECT
+				#{item.menu_num} as menu_num,
+				#{item.meal_code} as meal_code,
+				#{item.meal_menu} as meal_menu,
+				#{item.allergy_num} as allergy_num,
+				#{item.menu_edate} as menu_edate,
+				#{item.menu_calorie} as menu_calorie
+			FROM DUAL
+			</foreach>
+			) t1
+			ON(t1.menu_num = m.menu_num)
+			WHEN MATCHED THEN
+			    UPDATE
+			    SET
+			    	m.meal_menu = t1.meal_menu,
+			    	m.menu_calorie = t1.menu_calorie,
+			    	m.allergy_num = t1.allergy_num,
+			   		m.menu_wDate = sysdate 
+			WHEN NOT MATCHED THEN
+			INSERT(menu_num, staff_num, meal_code, meal_menu, menu_eDate, menu_calorie, allergy_num, menu_wDate)
+			VALUES(get_menu_seq, 3, t1.meal_code,
+			t1.meal_menu, t1.menu_edate, t1.menu_calorie, t1.allergy_num, sysdate)
+	</update>
+	
+	<!-- 메인뷰에 띄울 오늘의 식단 정보 가져오기 -->
+	<select id="select_today_menu_for_main" parameterType="String" resultType="mealMenuVO">
+		SELECT meal_code, meal_menu, allergy_num
+		FROM menu_tbl
+		WHERE menu_edate = #{today_date}
+	</select>
+	
+	<!--https://kutar37.tistory.com/entry/mybatis-%EB%8B%A4%EC%A4%91-insert  -->
+</mapper>

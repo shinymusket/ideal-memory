@@ -3,9 +3,12 @@
 <mapper namespace="kinder">
 	<!-- 전체 원생 리스트 가져오기 -->
 	<select id="select_kinder_list" resultType="kinderVO">
-		SELECT kinder_num, shuttle_num, staff_name, kinder_name, kinder_regYn, kinder_rrn1, kinder_rrn2, kinder_addr, kinder_zipcode, kinder_tel, TO_CHAR(kinder_regdate, 'YYYY-MM-DD') AS "kinder_regdate", kinder_retireDate
-		FROM kinder k, staff s
+		SELECT k.kinder_num, shuttle_num, staff_name, kinder_name, class_name, kinder_regYn, kinder_rrn1, kinder_rrn2, kinder_addr, kinder_zipcode, kinder_tel, TO_CHAR(kinder_regdate, 'YYYY-MM-DD') AS "kinder_regdate", kinder_retireDate
+		FROM kinder k, staff s, class c
 		WHERE k.staff_num = s.staff_num
+		AND c.kinder_num = k.kinder_num
+		AND k.delete_column = 'N'
+		ORDER BY kinder_num ASC
 	</select>
 	
 	<!-- 원생 등록을 위한 다음 시퀀스 번호 가져오기 -->
@@ -18,23 +21,84 @@
 		SELECT * FROM shuttle
 	</select>
 	
-	<!-- 원생 등록을 위한 담임 선생님 리스트 가져오기(버스기사, 영양사 교직원 제외)  -->
+	<!-- 원생 등록을 위한 담임 선생님 리스트 가져오기(담당 학급이 없는 선생님, 버스기사, 영양사 교직원 제외)  -->
 	<select id="select_home_teacher_for_kinder" resultType="staffVO">
-		SELECT * FROM Staff WHERE staff_cls NOT IN (3,4)
+		SELECT DISTINCT s.staff_num, staff_cls, staff_name
+		FROM Staff s, Class c 
+		WHERE s.staff_num = c.staff_num
+		AND class_number IS NOT NULL
+		AND staff_cls NOT IN (3,4)
 	</select>
+	
+	<!-- 기존의 해당하는 알러지 코드가 있는지 유무 확인  -->
+	<select id="check_allergy_info" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) FROM allergyInfo WHERE a1 = #{a1} AND a2 = #{a2} AND a3 = #{a3} AND a4 = #{a4} AND a5 = #{a5} AND a6 = #{a6} AND a7 = #{a7} AND a8 = #{a8} AND a9 = #{a9} AND a10 = #{a10} AND a11 = #{a11} AND a12 = #{a12} AND a13 = #{a13} AND a14 = #{a14}
+		AND a15 = #{a15} AND a16 = #{a16} AND a17 = #{a17} AND a18 = #{a18}
+	</select>
+	
+	
+	<!-- 원생 등록을 위한 원생 알러지 코드 생성 -->
+	<insert id="set_allergy_info" parameterType="hashmap">
+		INSERT INTO allergyInfo VALUES(allergyInfo_seq.nextval, #{a1}, #{a2}, #{a3}, #{a4}, #{a5}, #{a6}, #{a7}, #{a8}, #{a9}, #{a10}, #{a11}, #{a12}, #{a13}, #{a14}, #{a15}, #{a16}, #{a17}, #{a18})
+	</insert>
+	
+	<!-- 알러지 코드명 가져오기 -->
+	<select id="select_allergy_info" parameterType="hashmap" resultType="int">
+		SELECT allergy_code FROM allergyInfo WHERE a1 = #{a1} AND a2 = #{a2} AND a3 = #{a3} AND a4 = #{a4} AND a5 = #{a5} AND a6 = #{a6} AND a7 = #{a7} AND a8 = #{a8} AND a9 = #{a9} AND a10 = #{a10} AND a11 = #{a11} AND a12 = #{a12} AND a13 = #{a13} AND a14 = #{a14}
+		AND a15 = #{a15} AND a16 = #{a16} AND a17 = #{a17} AND a18 = #{a18}
+	</select>
+	
+	<!-- 알러지 보유 유무 체크 -->
+	<select id="check_allergy" resultType="int">
+		SELECT allergy_code FROM allergyInfo WHERE a1 = 'N' AND a2 = 'N' AND a3 = 'N' AND a4 = 'N' AND a5 = 'N' AND a6 = 'N' AND a7 = 'N' AND a8 = 'N' AND a9 = 'N' AND a10 = 'N' AND a11 = 'N' AND a12 = 'N' AND a13 = 'N' AND a14 = 'N'
+		AND a15 = 'N' AND a16 = 'N' AND a17 = 'N' AND a18 = 'N'
+	</select>
+	
 	
 	<!-- 원생 등록  -->
 	<insert id="insert_kinder" parameterType="kinderVO">
-		INSERT INTO kinder VALUES(kinder_seq.nextval, #{shuttle_num}, #{staff_num}, #{kinder_regYn}, #{kinder_name}, #{kinder_rrn1}, #{kinder_rrn2}, #{kinder_addr}, #{kinder_zipcode}, #{kinder_tel}, #{kinder_regdate}, #{kinder_retireDate}, #{kinder_picture})
+		INSERT INTO kinder VALUES(kinder_seq.nextval, #{shuttle_num}, #{staff_num}, #{kinder_regYn}, #{kinder_name}, #{kinder_rrn1}, #{kinder_rrn2}, #{kinder_addr}, #{kinder_zipcode}, #{kinder_tel}, #{kinder_regdate}, #{kinder_retireDate}
+		<if test="kinder_picture != null and kinder_picture != ''">
+   		, #{kinder_picture}
+    	</if>
+    	<if test="kinder_picture == null or kinder_picture == ''">
+   		, NULL
+    	</if>
+    	, #{allergy_code}, #{allergy_check}, 'N')
 	</insert>
+	
+	
+	<!-- 담임교사반 최초 배정 학생인지 확인 -->
+	<select id="select_cnt_class_number_by_staff_num" parameterType="String" resultType="int">
+		SELECT COUNT(kinder_num) FROM class WHERE staff_num = #{staff_num}
+	</select>
+	
+	<!-- 담임교사 반 배정을 위한 담임교사 반 정보 가져오기 -->
+	<select id="select_class_info_by_staff_num" parameterType="String" resultType="classVO">
+		SELECT DISTINCT staff_num, class_name, class_number FROM class WHERE staff_num = #{staff_num}
+	</select>
+	
+	<!-- 담임교사반 최초 배정 학생인 경우 기존의 Null 데이터를 활용  -->
+	<update id="update_class_kinder_num" parameterType="classVO">
+		UPDATE class SET kinder_num = #{kinder_num} WHERE class_number = #{class_number} AND staff_num = #{staff_num}
+	</update>
+	
+	
+	
+	<!-- 원생 등록시 담임교사 반 배정 -->
+	<insert id="insert_kinder_home_teacher_class" parameterType="classVO">
+		INSERT INTO class(class_num, staff_num, kinder_num, class_name, class_number) VALUES(class_seq.nextval, #{staff_num}, #{kinder_num}, #{class_name}, #{class_number})
+	</insert>
+	
 	
 	<!-- 원생 검색 -->
 	<select id="search_kinder_list" parameterType="hashmap" resultType="kinderVO">
-		SELECT kinder_num, shuttle_num, staff_name, kinder_name, kinder_regYn, kinder_rrn1, kinder_rrn2, kinder_addr, kinder_zipcode, kinder_tel, TO_CHAR(kinder_regdate, 'YYYY-MM-DD') AS "kinder_regdate", kinder_retireDate
-		FROM kinder k, staff s
+		SELECT k.kinder_num, shuttle_num, staff_name, kinder_name, class_name, kinder_regYn, kinder_rrn1, kinder_rrn2, kinder_addr, kinder_zipcode, kinder_tel, TO_CHAR(kinder_regdate, 'YYYY-MM-DD') AS "kinder_regdate", kinder_retireDate
+		FROM kinder k, staff s, class c
 		WHERE k.staff_num = s.staff_num
+		AND c.kinder_num = k.kinder_num
 		<if test='searchType == "kinder_num"'>
-		AND kinder_num = #{searchContent}
+		AND k.kinder_num = #{searchContent}
 		</if>
 		<if test='searchType == "staff_name"'>
 		AND staff_name = #{searchContent}
@@ -58,15 +122,63 @@
 	
 	<!-- 원생 정보 조회 -->
 	<select id="select_kinder_info" parameterType="String" resultType="kinderVO">
-		SELECT kinder_num, shuttle_num, staff_name, kinder_name, kinder_regYn, kinder_rrn1, kinder_rrn2, kinder_addr, kinder_zipcode, kinder_tel, TO_CHAR(kinder_regdate, 'YYYY-MM-DD') AS "kinder_regdate", kinder_retireDate, kinder_picture
-		FROM kinder k, staff s
+		SELECT k.kinder_num, kinder_picture, kinder_name, class_name, s.staff_num, staff_name, shuttle_num, kinder_rrn1, kinder_rrn2,
+		kinder_addr, kinder_zipcode, kinder_tel, TO_CHAR(kinder_regdate, 'YYYY-MM-DD') AS "kinder_regdate", 
+		TO_CHAR(kinder_retireDate, 'YYYY-MM-DD') AS "kinder_retireDate" , kinder_regYn, allergy_code, allergy_check
+		FROM kinder k, staff s, class c
 		WHERE k.staff_num = s.staff_num
-		AND kinder_num = #{kinder_num}
+		AND k.kinder_num = c.kinder_num
+		AND k.kinder_num = #{kinder_num}
 	</select>
+	
+	<!-- 원생 정보 조회시 부모님 이름 가져오기  -->
+	<select id="select_parent_name_by_kinder_num" parameterType="hashmap" resultType="String">
+		SELECT parent_name FROM parent WHERE kinder_num = #{kinder_num} AND relation = #{relation}
+	</select>
+	
+	<!-- 부모님 정보 가져오기 -->
+	<select id="select_parent_info_by_kinder_num" parameterType="hashmap" resultType="parentVO">
+		SELECT parent_num, kinder_num, relation, parent_tel, parent_email, parent_sex, TO_CHAR(parent_birth, 'YYYY-MM-DD') AS "parent_birth", parent_name
+		FROM parent
+		WHERE kinder_num = #{kinder_num} AND relation = #{relation}
+	</select>
+	
+	<!-- 원생 정보 삭제전 원생의 학급 데이터 삭제 -->
+	<delete id="delete_kinder_num_from_class" parameterType="String">
+		DELETE FROM class WHERE kinder_num = #{kinder_num}
+	</delete>
+	
+	<!-- 원생 정보 조회 - 알러지 정보 조회 Ajax  -->
+	<select id="get_allergy_info" parameterType="int" resultType="allergyInfoVO">
+		SELECT * FROM allergyInfo WHERE allergy_code = #{allergy_code}
+	</select>
+	
 	
 	<!-- 원생 정보 삭제 -->
 	<delete id="delete_kinder_info" parameterType="String">
-		DELETE FROM kinder WHERE kinder_num = #{kinder_num}
+		UPDATE kinder SET delete_column = 'Y' WHERE kinder_num = #{kinder_num}
 	</delete>
+	
+	<!-- 원생 정보 수정 -->
+	<update id="update_kinder" parameterType="KinderVO">
+		UPDATE kinder SET
+		shuttle_num = #{shuttle_num}, 
+		staff_num = #{staff_num}, 
+		kinder_regYn = #{kinder_regYn}, 
+		kinder_name = #{kinder_name}, 
+		kinder_rrn1 = #{kinder_rrn1}, 
+		kinder_rrn2 = #{kinder_rrn2},
+		kinder_addr = #{kinder_addr}, 
+		kinder_zipcode = #{kinder_zipcode}, 
+		kinder_tel = #{kinder_tel}, 
+		kinder_regdate = TO_DATE(#{kinder_regdate}, 'YYYY-MM-DD'), 
+		kinder_retireDate = TO_DATE(#{kinder_retireDate}, 'YYYY-MM-DD'),
+		allergy_code = #{allergy_code}, 
+		allergy_check = #{allergy_check}
+		<if test="kinder_picture != '' and kinder_picture != null">
+		, kinder_picture = #{kinder_picture}
+		</if>
+		WHERE kinder_num = #{kinder_num}
+	</update>
 
 </mapper>

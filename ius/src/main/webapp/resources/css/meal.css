@@ -1,0 +1,52 @@
+@charset "EUC-KR";
+
+.calendar_nav {
+	width: 100%;
+	font-size: 20px;
+}
+
+
+.meal_calendar{
+	width: 1200px;
+	margin: 0 auto;
+	cellspacing: 1px;
+	cellpadding: 1px;
+	word-wrap:break-word;
+	word-break:break-all;
+	background-color: #fff;
+}
+
+.meal_calendar, .meal_calendar tr, .meal_calendar th, .meal_calendar td {
+	border: solid 1px;
+	border-collapse: collapse;
+}
+
+.meal_calendar > thead > tr> td {
+	width: 100px;
+	height: 40px;
+	text-align: center;
+	word-break:break-all;
+	font-weight: bold;
+}
+
+.meal_calendar > tbody > tr> td {
+	width: 100px;
+	height: 90px;
+	padding: 5px;
+	word-break: break-all;
+	line-height: 24px;
+}
+
+
+.break_menu, .lunch_menu, .snack_menu {
+	width: 100%;
+	line-height: 25px;
+	text-align: center;
+}
+
+.menu_title{
+	width:100%;
+	font-size: 13px;
+	word-spacing: -1px;
+}
+

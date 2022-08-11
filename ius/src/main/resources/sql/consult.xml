@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="consult">
+	<resultMap type="consultVO" id="MyBean">
+		<result property="contents" column="contents" jdbcType="LONGVARCHAR"
+		javaType="java.lang.String"
+		typeHandler="com.indieus.ius.typehandler.MyLongTypeHandler"/>
+	</resultMap>
+
+	<!-- 원생별 상담 일지 정보 가져오기 (최근 날짜 순 10개씩 출력) -->
+	<select id="select_consult_by_kinder_num" parameterType="hashmap" resultType="consultVO">
+		SELECT ROWNUM, A.*
+		FROM (
+		    SELECT consult_code, consult_date, staff_name, kinder_name, relation, parent_name, consult_content
+		    FROM consult c, staff s, class c2, parent p, kinder k
+		    WHERE c.kinder_num = k.kinder_num 
+		    AND c.parent_num = p.parent_num
+		    AND c.staff_num = s.staff_num
+		    AND c.kinder_num = c2.kinder_num
+		    AND c.kinder_num = #{kinder_num}
+		    ORDER BY consult_date DESC) A
+		WHERE ROWNUM  BETWEEN 1 AND 10
+	</select>
+	
+	<!-- 원생 번호로 이름 가져오기 -->
+	<select id="select_kinder_name_by_num" parameterType="hashmap" resultType="String">
+		SELECT kinder_name FROM kinder WHERE kinder_num = #{kinder_num}
+	</select>
+	
+	
+	<!-- 원생별 상담 일지 날짜로 조회하기 (최근 날짜 순 10개씩 출력) -->
+	<select id="select_consult_by_date" parameterType="hashmap" resultType="consultVO">
+		SELECT ROWNUM, A.*
+		FROM (
+			SELECT consult_code, consult_date, staff_name, kinder_name, relation, parent_name, consult_content
+			FROM consult c, staff s, class c2, parent p, kinder k
+			WHERE c.kinder_num = k.kinder_num 
+			AND c.parent_num = p.parent_num
+			AND c.staff_num = s.staff_num
+			AND c.kinder_num = c2.kinder_num
+			AND c.kinder_num = #{kinder_num}
+			AND consult_date BETWEEN #{date_from} AND #{date_to}
+			ORDER BY consult_date DESC) A
+		WHERE ROWNUM  BETWEEN 1 AND 10	
+	</select>
+	
+	<!-- 원생 번호와 가족 관계로 부모님 성함 가져오기 -->
+	<select id="select_parent_num_name" parameterType="hashmap" resultType="parentVO">
+		SELECT * FROM parent WHERE kinder_num = #{kinder_num} AND relation = #{relation}
+	</select>
+	
+	<!-- 상담 일지 수정 혹은 삭제를 위해 데이터 값 가져오기 -->
+	<select id="select_consult_by_consult_code" parameterType="hashmap" resultType="consultVO">
+		  SELECT consult_code, consult_date, s.staff_num, staff_name, k.kinder_num, kinder_name, relation, p.parent_num, parent_name, consult_content
+		    FROM consult c, staff s, class c2, parent p, kinder k
+		    WHERE c.kinder_num = k.kinder_num 
+		    AND c.parent_num = p.parent_num
+		    AND c.staff_num = s.staff_num
+		    AND c.kinder_num = c2.kinder_num
+		    AND consult_code = #{consult_code}
+	</select>
+	
+	<!-- 상담 일지 등록 -->
+	<insert id="insert_consult" parameterType="hashmap">
+		INSERT INTO consult VALUES (consult_seq.nextval, #{kinder_num}, #{parent_num}, #{staff_num}, SYSDATE, #{consult_content})
+	</insert>
+	
+	<!-- 상담 일지 수정 -->
+	<update id="update_consult" parameterType="hashmap">
+		UPDATE consult SET kinder_num = #{kinder_num}, parent_num = #{parent_num}, staff_num = #{staff_num}, consult_content = #{consult_content} 
+		WHERE consult_code = #{consult_code}
+	</update>
+	
+	<!-- 상담 일지 삭제 -->
+	<delete id="delete_consult" parameterType="hashmap">
+		DELETE FROM consult WHERE consult_code = #{consult_code}
+	</delete>
+	
+	<!-- 원생 정보에서 보여줄 최근 상담 기록 1개 -->
+	<select id="select_latest_consult" parameterType="String" resultType="consultVO">
+		SELECT ROWNUM, A.*
+		FROM (
+		    SELECT consult_code, consult_date, staff_name, kinder_name, relation, parent_name, consult_content
+		    FROM consult c, staff s, class c2, parent p, kinder k
+		    WHERE c.kinder_num = k.kinder_num 
+		    AND c.parent_num = p.parent_num
+		    AND c.staff_num = s.staff_num
+		    AND c.kinder_num = c2.kinder_num
+		    AND c.kinder_num = #{kinder_num}
+		    ORDER BY consult_date DESC) A
+		WHERE ROWNUM = 1
+	</select>
+	
+</mapper>

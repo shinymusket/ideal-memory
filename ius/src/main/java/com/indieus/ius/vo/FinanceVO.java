@@ -5,6 +5,7 @@ public class FinanceVO {
 	private String budget_num;
 	private String staff_num;
 	private String finance_eYear;
+
 	private String finance_eDate;
 	private String finance_cls;
 	private String finance_iE;
@@ -12,10 +13,6 @@ public class FinanceVO {
 
 	private String budget_cls;
 	private String staff_name;
-
-
-
-
 
 	public String getBudget_cls() {
 		return budget_cls;
@@ -37,6 +34,7 @@ public class FinanceVO {
 	public void setFinance_eYear(String finance_eYear) {
 		this.finance_eYear = finance_eYear;
 	}
+
 	public String getFinance_num() {
 		return finance_num;
 	}

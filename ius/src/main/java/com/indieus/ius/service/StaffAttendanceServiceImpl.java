@@ -21,9 +21,9 @@ public class StaffAttendanceServiceImpl implements StaffAttendanceService {
 
 		List<StaffAttendanceVO> attendInfo = manager.getAttendInfo(staff_id);
 
-		Map<String, Object> retVal = new HashMap();
-		retVal.put("attendInfo", attendInfo);
-		return retVal;
+		Map<String, Object> data = new HashMap();
+		data.put("attendInfo", attendInfo);
+		return data;
 	}
 
 	// 날짜로 조회하여 근태 정보 받아오기 Ajax

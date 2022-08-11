@@ -2,6 +2,7 @@ package com.indieus.ius.db;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,6 @@ public class BudgetDAO {
 		HashMap<String, String> selectInfo = new HashMap<>();
 		selectInfo.put("seachYear", seachYear);
 		selectInfo.put("budgetType", budgetType);
-
 		return sqlsession.selectList("budget.select_budget_by_year", selectInfo);
 	}
 
@@ -59,7 +59,6 @@ public class BudgetDAO {
 		return sqlsession.selectList("budget.select_all_budget_year");
 	}
 
-
 	// 예산 항목 추가
 	@Transactional
 	public int registerBudget(BudgetVO bVo) throws Exception {
@@ -71,15 +70,20 @@ public class BudgetDAO {
 		return sqlsession.selectOne("budget.select_budget_by_num", budget_num);
 	}
 
+	// 예산 항목 삭제시 예산 항목으로 생성된 재정 데이터가 있는지 확인
+	public int countFinanceFromBudget(Map<String, Object> map) throws Exception {
+		return sqlsession.selectOne("budget.count_finance_from_budget", map);
+	}
+
 	// 예산 항목 삭제
 	@Transactional
-	public int deleteBudget(String budget_num) {
+	public int deleteBudget(String budget_num) throws Exception {
 		return sqlsession.delete("budget.delete_budget_by_num", budget_num);
 	}
 
 	// 예산 항목 수정
 	@Transactional
-	public int updateBudget(BudgetVO bVo) {
+	public int updateBudget(BudgetVO bVo) throws Exception {
 		return sqlsession.update("budget.update_budget", bVo);
 	}
 

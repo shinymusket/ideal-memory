@@ -2,6 +2,7 @@ package com.indieus.ius.controller;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.indieus.ius.service.StaffServiceImpl;
@@ -27,12 +29,34 @@ public class StaffController {
 	@Autowired
 	private StaffServiceImpl service;
 
-	// 교직원 명단 불러오기
+	// 교직원 명단 이동
 	@RequestMapping(value = "/staff_list", method = RequestMethod.GET)
 	public String list(Model model) throws Exception {
-		List<StaffVO> list = service.selectStaffList();
-		model.addAttribute("staffList", list);
+		List<JobClassifiVO> jobList = service.selectJobList();
+		model.addAttribute("jobList", jobList);
+
 		return "/staff/staffList";
+	}
+
+	// 교직원 명단 불러오기 Ajax
+	@ResponseBody
+	@RequestMapping(value = "/get_staff_list", method = RequestMethod.POST)
+	public Object getStaffList() throws Exception {
+		return service.getStaffList();
+	}
+
+	// 교직원 명단 검색하기 Ajax
+	@ResponseBody
+	@RequestMapping(value = "/search_staff_list", method = RequestMethod.POST)
+	public Object searchStaffList(@RequestParam Map<String, Object> map) throws Exception {
+		return service.searchStaffList(map);
+	}
+
+	// 교직원 정보 조회 Ajax
+	@ResponseBody
+	@RequestMapping(value = "/get_staff_by_staff_num", method = RequestMethod.POST)
+	public Object getStaffByStaffNum(@RequestParam Map<String, Object> map) throws Exception {
+		return service.getStaffByStaffNum(map);
 	}
 
 	// 교직원 등록 폼 이동
@@ -107,8 +131,8 @@ public class StaffController {
 
 	// 교직원 등록
 	@RequestMapping(value = "/staff_register", method = RequestMethod.POST)
-	public String register(@ModelAttribute StaffVO sVo, RedirectAttributes rttr) throws Exception {
-		rttr.addFlashAttribute("result", service.insertStaff(sVo));
+	public String register(@ModelAttribute StaffVO sVo, @RequestParam MultipartFile staff_picFile, RedirectAttributes rttr) throws Exception {
+		rttr.addFlashAttribute("result", service.insertStaff(sVo, staff_picFile));
 		return "redirect:./staff_list";
 	}
 
@@ -141,8 +165,8 @@ public class StaffController {
 
 	// 교직원 정보 수정
 	@RequestMapping(value = "/staff_update", method = RequestMethod.POST)
-	public String update(@ModelAttribute StaffVO sVo, RedirectAttributes rttr) throws Exception {
-		rttr.addFlashAttribute("result", service.updateStaff(sVo));
+	public String update(@ModelAttribute StaffVO sVo, @RequestParam MultipartFile staff_picFile, RedirectAttributes rttr) throws Exception {
+		rttr.addFlashAttribute("result", service.updateStaff(sVo, staff_picFile));
 		return "redirect:./staff_list";
 	}
 

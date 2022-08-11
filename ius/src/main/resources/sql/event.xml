@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="event">
+	
+	<!-- 모든 일정 가져오기  -->
+	<select id="select_all_event_list" resultType="eventVO">
+		SELECT * FROM event
+	</select>
+	
+	<!-- 일정 추가하기 -->
+	<insert id="insert_event" parameterType="eventVO">
+		INSERT INTO event VALUES (event_seq.nextval, #{staff_id}, #{event_name}, TO_DATE(#{event_date}, 'YYYY-MM-DD'))
+	</insert>
+	
+	<!-- 날짜로 일정 조회하기 -->
+	<select id="select_by_event_date" parameterType="String" resultType="eventVO">
+		SELECT * FROM event
+		WHERE event_date = #{event_date}
+	</select>
+	
+	<!-- 행사 번호로 행사 명, 작성자 id 가져오기 -->
+	<select id="select_by_event_num" parameterType="hashmap" resultType="eventVO">
+		SELECT event_name, staff_id FROM event WHERE event_num = #{event_num}
+	</select>
+	
+	<!-- 행사 번호로 행사 삭제하기 -->
+	<delete id="delete_by_event_num" parameterType="hashmap">
+		DELETE FROM event WHERE event_num = #{event_num}
+	</delete>
+	
+	<!-- 행사 명 수정하기 -->
+	<update id="update_event_name" parameterType="hashmap">
+		UPDATE event SET event_name = #{event_name} WHERE event_num = #{event_num}
+	</update>
+	
+	<!-- 메인화면에 띄울 행사 리스트 정보 최대(8개까지) 가져오기 -->
+	<select id="select_event_list_for_main" parameterType="String" resultType="eventVO">
+		SELECT *
+				FROM (
+						SELECT ROWNUM RN, A.*
+								FROM (
+										SELECT event_num, event_name FROM event WHERE event_date = #{today_date} 
+                                        ORDER BY event_num ASC
+										) A
+								)
+		WHERE RN BETWEEN 1 AND 8
+	</select>
+</mapper>

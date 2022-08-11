@@ -50,7 +50,8 @@ input[required="required"]{
     padding: 10px;
 }
 
-input[type="submit"]{
+input[type="submit"], input[type="button"] {
+	margin-bottom: 5px;
     background-color: rgb(91, 103, 141);
     color: #fff;
     font-weight: bold;

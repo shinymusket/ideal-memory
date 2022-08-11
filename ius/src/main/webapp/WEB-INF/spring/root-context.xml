@@ -23,6 +23,10 @@
 		<property name="username" value="${user}" />
 		<property name="password" value="${pwd}" />
 	</bean>
+	
+	<!--  -->
+	
+	
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />

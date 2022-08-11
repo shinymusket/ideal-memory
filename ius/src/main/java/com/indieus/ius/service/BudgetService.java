@@ -19,7 +19,9 @@ public interface BudgetService {
 
 	public int registerBudget(BudgetVO bVo) throws Exception;
 
-	BudgetVO selectBudgetNyNum(String budget_num) throws Exception;
+	public BudgetVO selectBudgetNyNum(String budget_num) throws Exception;
+
+	public Object countFinanceFromBudget(Map<String, Object> map) throws Exception;
 
 	public int deleteBudget(String budget_num) throws Exception;
 

@@ -1,0 +1,36 @@
+@charset "EUC-KR";
+
+table {
+	width: 100%;
+	border: 1px solid;
+	text-align: center;
+	border-collapse: collapse;
+}
+
+th, tr, td {
+	border: 1px solid;
+	border-collapse: collapse;
+	padding: 10px;
+}
+
+#break th, #break tr, #break td, #lunch th, #lunch tr, #lunch td, #snack th, #snack tr, #snack td{
+	padding: 10px;
+}
+
+th {
+	background-color: #486890;
+	color: #fff;
+}
+
+input[type="text"] {
+	width: 81%;
+	height: 25px;
+}
+
+#deleteInput:hover {
+	cursor: pointer;
+}
+
+input[type="button"] {
+	cursor: pointer;
+}

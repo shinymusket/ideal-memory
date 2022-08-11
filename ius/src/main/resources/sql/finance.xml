@@ -45,7 +45,7 @@
 	
 	<!-- 재정등록 -->
 	<insert id="insert_finance" parameterType="financeVO">
-		INSERT INTO finance VALUES( FINANCE_SEQ.nextval, #{budget_num}, #{staff_num},TO_DATE(#{finance_eDate},'YYYYMMDD'), #{finance_cls}, #{finance_iE}, #{finance_amount}, #{finance_eYear}) 
+		INSERT INTO finance VALUES( FINANCE_SEQ.nextval, #{budget_num}, #{staff_num}, TO_DATE(#{finance_eDate},'YYYY-MM-DD'), #{finance_cls}, #{finance_iE}, #{finance_amount}, #{finance_eYear}) 
 	</insert>
 	
 	<!-- 재정 상세보기 -->
@@ -58,12 +58,13 @@
 		AND finance_num = #{finance_num}
 	</select>
 	
+
 	<!-- 재정 내역 삭제 전 재정 내역의 구매 내역이 있는지 조회-->
 	<select id="select_purchase_cnt_from_finance" parameterType="String" resultType="int">
 		SELECT COUNT(*) FROM purchase
 		WHERE finance_num = #{finance_num}
 	</select>
-	
+
 	<!-- 재정 내역 삭제 -->
 	<delete id="delete_finance" parameterType="String">
 		DELETE FROM finance WHERE finance_num = #{finance_num}
@@ -82,6 +83,7 @@
 		finance_eYear = #{finance_eYear} 
 		WHERE finance_num = #{finance_num}
 	</update>
+
 	
 	<!-- 재정 내역 상세보기 중 구매내역 가져오기-->
 	<select id="select_purchase_from_finance_num" parameterType="String" resultType="purchaseVO">
@@ -98,5 +100,35 @@
 		SELECT SUM(purchase_price) FROM purchase WHERE finance_num = #{finance_num}
 	</select>
 	
+	<!-- 년도별 예산 항목 리스트 가져오기 -->
+	<select id="select_all_budget_list" parameterType="hashmap" resultType="budgetVO">
+		SELECT * FROM budget
+		WHERE budget_year = #{finance_year}
+		<if test="finance_type != 'total'">
+		AND budget_iE = #{finance_type} 
+		</if>
+	</select>
 	
+	<!-- 재정 검색 기능 -->
+	<select id="search_finance_list" parameterType="hashmap" resultType="financeVO">
+		SELECT f.finance_num, b.budget_cls, s.staff_name, TO_CHAR(f.finance_edate, 'YYYY-MM-DD') AS "finance_edate", f.finance_cls, f.finance_ie, f.finance_amount, f.finance_eYear 
+		FROM finance f, budget b, staff s
+		WHERE f.budget_num = b.budget_num
+		AND f.staff_num = s.staff_num
+		AND f.finance_eYear = #{finance_year}
+		AND f.finance_ie = #{finance_type}
+		<if test="search_type == 'finance_code'">
+		AND finance_num = #{search_content}
+		</if>
+		<if test="search_type == 'budget_name'">
+		AND f.budget_num = #{budget_num}
+		</if>
+		<if test="search_type == 'finance_eDate'">
+		AND finance_eDate = #{search_date}
+		</if>
+		<if test="search_type == 'finance_cls'">
+		AND finance_cls = #{search_content}
+		</if>
+	</select>
+
 </mapper>

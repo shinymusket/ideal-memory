@@ -22,6 +22,7 @@
   		SELECT * FROM budget WHERE budget_iE = #{budget_iE}
   	</select>
   
+
   	<!-- 예산 년도 조회 -->
   	<select id="select_all_budget_year" resultType="String">
   		SELECT DISTINCT(budget_year) FROM budget
@@ -35,6 +36,7 @@
   		<if test="budgetType != 'total'">
   			SELECT * FROM budget WHERE budget_year = #{seachYear} AND budget_iE = #{budgetType}
   		</if>
+
   	</select>
   	
   	<!-- 예산 항목 추가 -->
@@ -45,6 +47,10 @@
   	<!-- 예산 정보 조회 -->
   	<select id="select_budget_by_num" parameterType="String" resultType="budgetVO">
   		SELECT * FROM budget WHERE budget_num = #{budget_num}
+  	</select>
+  	
+  	<select id="count_finance_from_budget" parameterType="hashmap" resultType="int">
+  		SELECT COUNT(*) FROM finance WHERE budget_num = #{budget_num}
   	</select>
   	
   	<!-- 예산 항목 삭제 -->

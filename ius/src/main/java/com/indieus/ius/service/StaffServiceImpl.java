@@ -1,9 +1,13 @@
 package com.indieus.ius.service;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,8 +17,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.indieus.ius.db.StaffDAO;
+import com.indieus.ius.utils.UploadFileUtils;
 import com.indieus.ius.vo.JobClassifiVO;
 import com.indieus.ius.vo.StaffIdVO;
 import com.indieus.ius.vo.StaffVO;
@@ -37,13 +43,132 @@ public class StaffServiceImpl implements StaffService {
 	@Inject
 	private StaffDAO manager;
 
-	// 교직원 목록 가져오기
+	@Resource(name="uploadPath")
+	private String uploadPath;
+
+	// 직무 리스트 가져오기
+	@Override
+	public List<JobClassifiVO> selectJobList() throws Exception {
+		return manager.selectJobClassifi();
+	}
+
+	// 교직원 명단 가져오기
 	@Override
 	public List<StaffVO> selectStaffList() throws Exception {
-		List<StaffVO> VoList = manager.selectStaffList();
+		List<StaffVO> staffList = manager.selectStaffList();
 
-		if (VoList.size() != 0) {
-			for (StaffVO element : VoList) {
+		if (staffList.size() != 0) {
+			for (StaffVO element : staffList) {
+				String rrn1 = element.getStaff_rrn1();
+				String rrn2 = element.getStaff_rrn2();
+
+				int backNum = Integer.parseInt(rrn2.substring(0, 1));
+
+				// 가져온 주민등록번호로 성별값 입력
+				if ((backNum % 2) == 1) {
+					 element.setStaff_sex("M");
+				} else {
+					 element.setStaff_sex("F");
+				}
+
+				// 가져온 주민등록번호로 생년월일 값 입력
+				String birth = "";
+				if (backNum == 3 || backNum == 4) {
+					birth += "20";
+
+				} else if (backNum == 1 || backNum == 2) {
+					birth += "19";
+				}
+
+				birth += rrn1;
+				element.setStaff_birth(birth);
+
+				// 가져온 주민등록번호로 만 나이 계산
+				int birthYear = Integer.parseInt(birth.substring(0, 4));
+				int birthMonth = Integer.parseInt(birth.substring(4, 6));
+				int birthDay = Integer.parseInt(birth.substring(6, 8));
+
+				Calendar current = Calendar.getInstance();
+				int currentYear = current.get(Calendar.YEAR);
+				int currentMonth = current.get(Calendar.MONTH)+1;
+				int currentDay = current.get(Calendar.DAY_OF_MONTH);
+
+				int ageNum = currentYear-birthYear;
+				if (birthMonth * 100 + birthDay > currentMonth * 100 + currentDay) {
+					ageNum--;
+				}
+				String age = Integer.toString(ageNum);
+
+				element.setStaff_age(age);
+
+			}
+		}
+		return staffList;
+	}
+
+	// 교직원 목록 가져오기 Ajax
+	@Override
+	public Object getStaffList() throws Exception {
+		List<StaffVO> staffList = manager.selectStaffList();
+
+		if (staffList.size() != 0) {
+			for (StaffVO element : staffList) {
+				String rrn1 = element.getStaff_rrn1();
+				String rrn2 = element.getStaff_rrn2();
+
+				int backNum = Integer.parseInt(rrn2.substring(0, 1));
+
+				// 가져온 주민등록번호로 성별값 입력
+				if ((backNum % 2) == 1) {
+					 element.setStaff_sex("M");
+				} else {
+					 element.setStaff_sex("F");
+				}
+
+				// 가져온 주민등록번호로 생년월일 값 입력
+				String birth = "";
+				if (backNum == 3 || backNum == 4) {
+					birth += "20";
+
+				} else if (backNum == 1 || backNum == 2) {
+					birth += "19";
+				}
+
+				birth += rrn1;
+				element.setStaff_birth(birth);
+
+				// 가져온 주민등록번호로 만 나이 계산
+				int birthYear = Integer.parseInt(birth.substring(0, 4));
+				int birthMonth = Integer.parseInt(birth.substring(4, 6));
+				int birthDay = Integer.parseInt(birth.substring(6, 8));
+
+				Calendar current = Calendar.getInstance();
+				int currentYear = current.get(Calendar.YEAR);
+				int currentMonth = current.get(Calendar.MONTH)+1;
+				int currentDay = current.get(Calendar.DAY_OF_MONTH);
+
+				int ageNum = currentYear-birthYear;
+				if (birthMonth * 100 + birthDay > currentMonth * 100 + currentDay) {
+					ageNum--;
+				}
+				String age = Integer.toString(ageNum);
+
+				element.setStaff_age(age);
+
+			}
+		}
+		Map<String, Object> data = new HashMap();
+		data.put("staffList", staffList);
+		return data;
+
+	}
+
+	// 교직원 검색 Ajax
+	@Override
+	public Object searchStaffList(Map<String, Object> map) throws Exception {
+		List<StaffVO> staffList = manager.searchStaffList(map);
+		if (staffList.size() != 0) {
+			for (StaffVO element : staffList) {
 				String rrn1 = element.getStaff_rrn1();
 				String rrn2 = element.getStaff_rrn2();
 
@@ -89,8 +214,71 @@ public class StaffServiceImpl implements StaffService {
 			}
 		}
 
-		return VoList;
+		Map<String, Object> data = new HashMap();
+		data.put("staffList", staffList);
+		return data;
 	}
+
+
+	// 교직원 정보 조회 Ajax
+	@Override
+	public Object getStaffByStaffNum(Map<String, Object> map) throws Exception {
+		String staff_num = (String) map.get("staff_num");
+		String staff_cls = manager.selectStaffClsByStaffNum(staff_num);
+
+		StaffVO staff = new StaffVO();
+		staff = manager.selectStaffInfo(staff_num);
+
+
+		String rrn1 = staff.getStaff_rrn1();
+		String rrn2 = staff.getStaff_rrn2();
+
+		int backNum = Integer.parseInt(rrn2.substring(0, 1));
+
+		// 가져온 주민등록번호로 성별값 입력
+		if ((backNum % 2) == 1) {
+			staff.setStaff_sex("M");
+		} else {
+			staff.setStaff_sex("F");
+		}
+
+		// 가져온 주민등록번호로 생년월일 값 입력
+		String birth = "";
+		if (backNum == 3 || backNum == 4) {
+			birth += "20";
+
+		} else if (backNum == 1 || backNum == 2) {
+			birth += "19";
+		}
+
+		birth += rrn1;
+		staff.setStaff_birth(birth);
+
+		// 가져온 주민등록번호로 만 나이 계산
+		int birthYear = Integer.parseInt(birth.substring(0, 4));
+		int birthMonth = Integer.parseInt(birth.substring(4, 6));
+		int birthDay = Integer.parseInt(birth.substring(6, 8));
+
+		Calendar current = Calendar.getInstance();
+		int currentYear = current.get(Calendar.YEAR);
+		int currentMonth = current.get(Calendar.MONTH)+1;
+		int currentDay = current.get(Calendar.DAY_OF_MONTH);
+
+		int ageNum = currentYear-birthYear;
+		if (birthMonth * 100 + birthDay > currentMonth * 100 + currentDay) {
+			ageNum--;
+		}
+		String age = Integer.toString(ageNum);
+
+		staff.setStaff_age(age);
+
+
+		Map<String, Object> data = new HashMap();
+		data.put("staff", staff);
+		return data;
+	}
+
+
 
 	// 교직원 등록을 위한 현재 시퀀스값 가져오기
 	@Override
@@ -143,7 +331,6 @@ public class StaffServiceImpl implements StaffService {
 
 	}
 
-
 	// 직무 목록 추가하기
 	@Override
 	public void insertJobList(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -191,7 +378,6 @@ public class StaffServiceImpl implements StaffService {
 		manager.updateJobList(jVo);
 	}
 
-
 	// 교직원 아이디 중복 검사
 	@Override
 	public int idCheck(String staff_id) throws Exception  {
@@ -200,13 +386,28 @@ public class StaffServiceImpl implements StaffService {
 
 	// 교직원 등록
 	@Override
-	public int insertStaff(StaffVO sVo) throws Exception {
+	public int insertStaff(StaffVO sVo, MultipartFile staff_picFile) throws Exception {
+		MultipartFile file = staff_picFile;
+
+		String imgUploadPath = uploadPath + File.separator + "imgUpload";
+		String ymdPath = UploadFileUtils.calcPath(imgUploadPath);
+		String fileName = null;
+
+		if(file.getSize() > 0 ) {
+			fileName = UploadFileUtils.fileUpload(imgUploadPath, file.getOriginalFilename(), file.getBytes(), ymdPath);
+			sVo.setStaff_picture(File.separator + "imgUpload" + ymdPath + File.separator + fileName);
+		}
+
 		String staff_id = sVo.getStaff_id();
 		StaffIdVO sIvo = createTempPwd(sVo);
 		manager.insertStaffId(sIvo);
 		sendMail(sVo, sIvo);
 
+		String staff_num = sVo.getStaff_num();
 		int result = manager.insertStaff(sVo);
+
+		// 담당 반 데이터 삽입.
+		manager.insertStaffClassInfo(staff_num);
 		return result;
 	}
 
@@ -233,7 +434,6 @@ public class StaffServiceImpl implements StaffService {
 		msg += sIvo.getStaff_pwd() + "</p>";
 		msg += "<a href='http://localhost:8085/ius/'>홈페이지로 이동</a></div>";
 
-
 		String mail = sVo.getStaff_email();
 		try {
 			HtmlEmail email = new HtmlEmail();
@@ -253,7 +453,6 @@ public class StaffServiceImpl implements StaffService {
 		} catch(Exception e) {
 			System.out.println("메일발송 실패 : " + e);
 		}
-
 	}
 
 	// 교직원 계정 등록
@@ -287,7 +486,6 @@ public class StaffServiceImpl implements StaffService {
 	}
 
 
-
 	// 교직원 정보 상세조회
 	@Override
 	public StaffVO selectStaffInfo(String staff_num) throws Exception {
@@ -298,32 +496,50 @@ public class StaffServiceImpl implements StaffService {
 	// 교직원 삭제
 	@Override
 	public int deleteStaff(String staff_num) throws Exception {
+		// 계정 불러오기
 		StaffVO sVo = manager.selectStaffInfo(staff_num);
+		String staff_id = sVo.getStaff_id();
+
+		// 학급 정보 삭제
+		manager.deleteClassInfo(staff_num);
+		// 교직원 정보 삭제
 		int result = manager.deleteStaff(staff_num);
-		manager.deleteStaffid(sVo.getStaff_id());
+
+		manager.deleteStaffid(staff_id);
 		return result;
 	}
 
 	// 교직원 정보수정
 	@Override
-	public int updateStaff(StaffVO sVo) throws Exception {
-		int result = manager.updateStaff(sVo);
-		return result;
+	public int updateStaff(StaffVO sVo, MultipartFile staff_picFile) throws Exception {
+
+		if(staff_picFile.getSize() != 0) { // 수정 프로필 요청 사진이 있을 시
+			MultipartFile file = staff_picFile;
+
+			String imgUploadPath = uploadPath + File.separator + "imgUpload";
+			String ymdPath = UploadFileUtils.calcPath(imgUploadPath);
+			String fileName = null;
+
+			if(file != null) {
+				fileName = UploadFileUtils.fileUpload(imgUploadPath, file.getOriginalFilename(), file.getBytes(), ymdPath);
+			} else {
+				fileName = uploadPath + File.separator + "images" + File.separator + "none.png";
+			}
+
+			System.out.println(imgUploadPath);
+			System.out.println(ymdPath);
+
+			sVo.setStaff_picture(File.separator + "imgUpload" + ymdPath + File.separator + fileName);
+		}
+
+		return manager.updateStaff(sVo);
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+	//  로그인 되어 있는 세션 정보(아이디)로 교직원 정보 가져오기
+	@Override
+	public StaffVO selectStaffInfoStaffId(String staff_id) throws Exception {
+		return manager.selectStaffInfoStaffId(staff_id);
+	}
 
 
 
