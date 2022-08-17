@@ -1,0 +1,154 @@
+select * from staff WHERE staff_num = 14;
+
+select * from  shuttle;
+
+
+CREATE TABLE shuttle_bus(
+    shuttle_id CHAR(10),
+    car_num VARCHAR(20),
+    driver_num VARCHAR(20),
+    shuttle_hour CHAR(2),
+    shuttle_minute CHAR(2),
+    shuttle_route VARCHAR(20)
+);
+
+CREATE SEQUENCE shuttle_seq
+NOCACHE;
+
+INSERT INTO shuttle_bus
+VALUES(shuttle_seq.nextval, '13가35631', '14', '09', '42', '수원역');
+INSERT INTO shuttle_bus
+VALUES(shuttle_seq.nextval, '13가35631', '14', '09', '52', '수원역');
+INSERT INTO shuttle_bus
+VALUES(shuttle_seq.nextval, '13가35631', '14', '10', '24', '수원역');
+INSERT INTO shuttle_bus
+VALUES(shuttle_seq.nextval, '13가35631', '14', '07', '55', '수원역');
+
+select * from shuttle_bus;
+
+-- 시간대 정렬해서 조회
+select * from shuttlebus 
+ORDER BY shuttle_hour ASC, shuttle_minute ASC;
+
+SELECT LAST_NUMBER FROM USER_SEQUENCES WHERE SEQUENCE_NAME = 'SHUTTLE_SEQ';
+
+SELECT LAST_NUMBER FROM USER_SEQUENCES WHERE SEQUENCE_NAME = 'STAFF_SEQ';
+
+--
+--create or replace NONEDITIONABLE FUNCTION get_shuttle_seq RETURN NUMBER IS
+--BEGIN
+--  RETURN shuttle_seq.nextval;
+--END;
+
+--CREATE OR REPLACE NONEDITIONABLE FUNCTION get_route_seq RETURN NUMBER IS
+--BEGIN
+--    RETURN route_seq.nextval;
+--END;
+
+DROP FUNCTION get_route_seq;
+---------------------------------------------------------------------------------
+
+-- 시퀀스 넣는 함수
+--create or replace NONEDITIONABLE FUNCTION get_shuttle_seq RETURN NUMBER IS
+--BEGIN
+--  RETURN shuttle_seq.nextval;
+--END;
+COMMIT;
+
+
+CREATE TABLE shuttle_bus(
+    shuttle_id CHAR(10),
+    shuttle_name VARCHAR2(20),
+    car_num VARCHAR(20),
+    driver_num VARCHAR2(20)
+);
+
+CREATE TABLE shuttle_route(
+    route_id VARCHAR(10),
+    shuttle_num CHAR(10),
+    shuttle_hour CHAR(2),
+    shuttle_minute CHAR(2),
+    bus_stop VARCHAR2(100)
+);
+
+CREATE SEQUENCE shuttle_seq
+NOCACHE;
+
+CREATE SEQUENCE route_seq
+NOCACHE;
+
+COMMIT;
+
+-- 메인 리스트 불러오기
+SELECT shuttle_id, shuttle_name, car_num, driver_num, staff_name, staff_tel 
+FROM shuttle_bus sb LEFT OUTER JOIN staff st
+ON st.staff_num = sb.driver_num
+ORDER BY shuttle_name ASC;
+
+ALTER TABLE shuttle
+ADD(shuttle_name VARCHAR2(30));
+
+SELECT * FROM shuttle;
+SELECT * FROM shuttle_bus;
+SELECT * FROM shuttle_route;
+
+commit;
+
+INSERT INTO shuttle_route
+VALUES(get_route_seq, 8, 06, 12, '테스트');
+
+ALTER TABLE shuttle_route
+RENAME COLUMN shuttle_id TO shuttle_num;
+
+DELETE FROM shuttle WHERE shuttle_num = 5;
+
+COMMIT;
+SELECT shuttle_num, shuttle_name, shuttle_carnum, sb.staff_num, staff_name, staff_tel 
+		FROM shuttle sb LEFT OUTER JOIN staff st
+		ON st.staff_num = sb.staff_num
+		ORDER BY shuttle_name ASC;
+        
+SELECT *
+FROM shuttle_bus sb JOIN staff st
+ON st.staff_num = sb.driver_num
+WHERE shuttle_id = 1;
+
+DROP TABLE shuttle_bus;
+DROP FUNCTION get_shuttle_seq;
+DROP SEQUENCE shuttle_seq;
+DROP TABLE shuttle_bus;
+DROP TABLE shuttle_route;
+
+-- 다음 시퀀스 불러오기
+SELECT LAST_NUMBER FROM USER_SEQUENCES WHERE SEQUENCE_NAME = 'SHUTTLE_SEQ';
+
+-- 데이터
+INSERT INTO shuttle_bus
+VALUES(shuttle_seq.nextval, '13가35631', '14', '09', '42', '수원역');
+INSERT INTO shuttle_bus
+VALUES(shuttle_seq.nextval, '13가35631', '14', '09', '52', '수원역');
+INSERT INTO shuttle_bus
+VALUES(shuttle_seq.nextval, '13가35631', '14', '10', '24', '수원역');
+INSERT INTO shuttle_bus
+VALUES(shuttle_seq.nextval, '13가35631', '14', '07', '55', '수원역');
+
+COMMIT;
+
+SELECT shuttle_num, shuttle_name, staff_name, staff_tel
+FROM shuttle sb JOIN staff st
+ON st.staff_num = sb.staff_num
+WHERE shuttle_num = 17
+AND DELETE_COLUMN = 'N';
+
+SELECT * FROM shuttle_route;
+
+INSERT INTO staffid
+VALUES ('driver2', '1234', 'C', null, sysdate);
+
+INSERT INTO staff
+VALUES (staff_seq.nextval, '3', 'driver2', '이기사', '990104', '1222421', '수원시 권선구', '123-456', '010-4321-4321', '2022-05-11', null, 'Y', 3000000, 'driver2@naver.com', null);
+
+UPDATE shuttle SET
+SHUTTLE_NAME = '어쩔티비호'
+WHERE shuttle_num = 16;
+COMMIT;

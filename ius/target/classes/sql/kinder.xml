@@ -32,19 +32,22 @@
 	
 	<!-- 기존의 해당하는 알러지 코드가 있는지 유무 확인  -->
 	<select id="check_allergy_info" parameterType="hashmap" resultType="int">
-		SELECT COUNT(*) FROM allergyInfo WHERE a1 = #{a1} AND a2 = #{a2} AND a3 = #{a3} AND a4 = #{a4} AND a5 = #{a5} AND a6 = #{a6} AND a7 = #{a7} AND a8 = #{a8} AND a9 = #{a9} AND a10 = #{a10} AND a11 = #{a11} AND a12 = #{a12} AND a13 = #{a13} AND a14 = #{a14}
+		SELECT COUNT(*) FROM allergyInfo WHERE a1 = #{a1} AND a2 = #{a2} AND a3 = #{a3} AND a4 = #{a4} AND a5 = #{a5} AND a6 = #{a6} AND a7 = #{a7} AND a8 = #{a8} 
+		AND a9 = #{a9} AND a10 = #{a10} AND a11 = #{a11} AND a12 = #{a12} AND a13 = #{a13} AND a14 = #{a14}
 		AND a15 = #{a15} AND a16 = #{a16} AND a17 = #{a17} AND a18 = #{a18}
 	</select>
 	
 	
 	<!-- 원생 등록을 위한 원생 알러지 코드 생성 -->
 	<insert id="set_allergy_info" parameterType="hashmap">
-		INSERT INTO allergyInfo VALUES(allergyInfo_seq.nextval, #{a1}, #{a2}, #{a3}, #{a4}, #{a5}, #{a6}, #{a7}, #{a8}, #{a9}, #{a10}, #{a11}, #{a12}, #{a13}, #{a14}, #{a15}, #{a16}, #{a17}, #{a18})
+		INSERT INTO allergyInfo VALUES(allergyInfo_seq.nextval, #{a1}, #{a2}, #{a3}, #{a4}, #{a5}, #{a6}, #{a7}, #{a8}, #{a9}, #{a10}, 
+		#{a11}, #{a12}, #{a13}, #{a14}, #{a15}, #{a16}, #{a17}, #{a18})
 	</insert>
 	
 	<!-- 알러지 코드명 가져오기 -->
 	<select id="select_allergy_info" parameterType="hashmap" resultType="int">
-		SELECT allergy_code FROM allergyInfo WHERE a1 = #{a1} AND a2 = #{a2} AND a3 = #{a3} AND a4 = #{a4} AND a5 = #{a5} AND a6 = #{a6} AND a7 = #{a7} AND a8 = #{a8} AND a9 = #{a9} AND a10 = #{a10} AND a11 = #{a11} AND a12 = #{a12} AND a13 = #{a13} AND a14 = #{a14}
+		SELECT allergy_code FROM allergyInfo WHERE a1 = #{a1} AND a2 = #{a2} AND a3 = #{a3} AND a4 = #{a4} AND a5 = #{a5} AND a6 = #{a6} AND a7 = #{a7} AND a8 = #{a8} 
+		AND a9 = #{a9} AND a10 = #{a10} AND a11 = #{a11} AND a12 = #{a12} AND a13 = #{a13} AND a14 = #{a14}
 		AND a15 = #{a15} AND a16 = #{a16} AND a17 = #{a17} AND a18 = #{a18}
 	</select>
 	
@@ -180,5 +183,11 @@
 		</if>
 		WHERE kinder_num = #{kinder_num}
 	</update>
+	
+	<!-- 노 알러지 코드 생성 -->
+	<insert id="create_no_allergy_code">
+		INSERT INTO allergyInfo VALUES (0, 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N')
+	</insert>
+	
 
 </mapper>

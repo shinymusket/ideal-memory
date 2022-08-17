@@ -135,6 +135,13 @@ public class KinderDAO {
 	public int updateKinder(KinderVO kVo) throws Exception {
 		return sqlsession.update("kinder.update_kinder", kVo);
 	}
-	
+
+	// 노 알러지 코드가 없을 경우  새로 생성
+	@Transactional
+	public int createNoAllergyCode() throws Exception {
+		sqlsession.insert("kinder.create_no_allergy_code");
+		return 0;
+	}
+
 
 }

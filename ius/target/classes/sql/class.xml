@@ -27,6 +27,29 @@
 		AND class_number = #{class_number}
   	</select>
   	
+  	<!-- 학급별 학생 명단과 부모님 성함 가져오기 -->
+  	<select id="select_class_kinder_and_parent_by_class_num" parameterType="String" resultType="kinderVO">
+  		SELECT k.kinder_num, kinder_name
+  		FROM kinder k, class c
+		WHERE c.kinder_num = k.kinder_num
+		AND class_number = #{class_number} 
+		AND k.delete_column = 'N'
+  	</select>
+  	
+  	<!-- 
+  	SELECT k.kinder_num, kinder_name, p1.parent_name AS "father_name", p2.parent_name AS "mather_name"  
+		FROM kinder k, parent p1, parent p2, class c
+		WHERE k.kinder_num = p1.kinder_num(+)
+		AND k.kinder_num = p2.kinder_num(+)
+		AND k.kinder_num = c.kinder_num(+)
+		AND kinder_regYn = 'Y'
+		AND (p1.relation = '부' OR p1.relation IS NULL)
+		AND (p2.relation = '모' OR p2.relation IS NULL)
+		AND delete_column = 'N'
+		AND class_number = #{class_number}
+  	 -->
+  	
+
   	<!-- 학급 등록을 위한 마지막 학급 번호 값 가져오기 -->
   	<select id="select_class_last_number" resultType="int">
   		SELECT MAX(class_number) FROM class

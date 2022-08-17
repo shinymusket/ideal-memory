@@ -3,6 +3,8 @@ package com.indieus.ius.controller;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,12 +45,19 @@ public class MealMenuController {
 		return "/meal/allergyInfo";
 	}
 
+//	@RequestMapping(value = "/addMenu", method = RequestMethod.POST)
+//	public String inputMenu(String menu_edate, @RequestParam(value="meal_code[]") String[] meal_code, @RequestParam(value="menu[]") String[] menu, @RequestParam(value="kcal[]") int[] kcal, @RequestParam(value="allergy[]") String[] allergy) throws Exception {
+//
+//	//System.out.println(list);
+//		service.inputMenu(menu_edate, meal_code, menu, kcal, allergy);
+//
+//		return "redirect:./meal_list";
+//	}
+
 	@RequestMapping(value = "/addMenu", method = RequestMethod.POST)
-	public String inputMenu(String menu_edate, @RequestParam(value="meal_code[]") String[] meal_code, @RequestParam(value="menu[]") String[] menu, @RequestParam(value="kcal[]") int[] kcal, @RequestParam(value="allergy[]") String[] allergy) throws Exception {
+	public String inputMenu(HttpServletRequest request) throws Exception {
 
-	//System.out.println(list);
-		service.inputMenu(menu_edate, meal_code, menu, kcal, allergy);
-
+		service.inputMenu(request);
 		return "redirect:./meal_list";
 	}
 
@@ -70,10 +79,9 @@ public class MealMenuController {
 	}
 
 	@RequestMapping(value = "/modifyMealMenu", method = RequestMethod.POST)
-	public String modifyUpdateMenu(String menu_edate, @RequestParam(value="menu_num[]") String[] menu_num, @RequestParam(value="meal_code[]") String[] meal_code, @RequestParam(value="menu[]") String[] menu, @RequestParam(value="kcal[]") int[] kcal,
-			@RequestParam(value="allergy[]") String[] allergy) throws Exception {
+	public String modifyUpdateMenu(HttpServletRequest request) throws Exception {
 
-		service.modifyUpdateMenu(menu_edate, menu_num, meal_code, menu, kcal, allergy);
+		service.modifyUpdateMenu(request);
 		return "redirect:./meal_list";
 	}
 

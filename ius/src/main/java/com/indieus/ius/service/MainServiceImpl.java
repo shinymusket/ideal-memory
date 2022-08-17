@@ -19,7 +19,6 @@ import com.indieus.ius.db.MainDAO;
 import com.indieus.ius.db.MealMenuDAO;
 import com.indieus.ius.db.NoticeDAO;
 import com.indieus.ius.utils.UploadFileUtils;
-import com.indieus.ius.vo.AllergyInfoVO;
 import com.indieus.ius.vo.AuthorityVO;
 import com.indieus.ius.vo.EventVO;
 import com.indieus.ius.vo.MealMenuVO;
@@ -41,7 +40,7 @@ public class MainServiceImpl implements MainService {
 	private MealMenuDAO mealManager;
 	@Inject
 	private KinderDAO kinderManager;
-	
+
 	@Value("${host.smtp.id}")
 	private String hostSMTPid;
 	@Value("${host.smtp.pwd}")
@@ -201,10 +200,10 @@ public class MainServiceImpl implements MainService {
 	@Override
 	public Object getInfo(Map<String, Object> map) throws Exception {
 		String today_date = (String) map.get("today_date");
-		
+
 		List<NoticeVO> noticeList = noticeManager.getNoticeListForMain();
 		List<EventVO> eventList = eventManager.getEventListForMain(today_date);
-		
+
 		// 오늘의 식단 메뉴 가져옴.
 		List<MealMenuVO> mealList = mealManager.getTodayMenuForMain(today_date);
 
@@ -212,12 +211,12 @@ public class MainServiceImpl implements MainService {
 		data.put("noticeList", noticeList);
 		data.put("eventList", eventList);
 		data.put("mealList", mealList);
-		
+
 		return data;
 	}
 
-	
-	
+
+
 }
 
 

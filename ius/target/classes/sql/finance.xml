@@ -45,7 +45,8 @@
 	
 	<!-- 재정등록 -->
 	<insert id="insert_finance" parameterType="financeVO">
-		INSERT INTO finance VALUES( FINANCE_SEQ.nextval, #{budget_num}, #{staff_num}, TO_DATE(#{finance_eDate},'YYYY-MM-DD'), #{finance_cls}, #{finance_iE}, #{finance_amount}, #{finance_eYear}) 
+		INSERT INTO finance(finance_num, budget_num, staff_num, finance_eDate, finance_cls, finance_iE, finance_amount, finance_eYear) 
+		VALUES( FINANCE_SEQ.nextval, #{budget_num}, #{staff_num}, TO_DATE(#{finance_eDate},'YYYY-MM-DD'), #{finance_cls}, #{finance_iE}, #{finance_amount}, #{finance_eYear}) 
 	</insert>
 	
 	<!-- 재정 상세보기 -->

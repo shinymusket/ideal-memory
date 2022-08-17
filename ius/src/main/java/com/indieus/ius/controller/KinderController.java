@@ -80,7 +80,8 @@ public class KinderController {
 
 	// 원생 등록 - 알러지 정보 입력 페이지 이동
 	@RequestMapping(value = "/select_allergy", method = RequestMethod.GET)
-	public String selectAllergy() throws Exception {
+	public String selectAllergy(@RequestParam(value = "allergy_code", required = false) int allergy_code, Model model) throws Exception {
+		model.addAttribute("allergy_code", allergy_code);
 		return "kinder/selectAllergy";
 	}
 
@@ -133,13 +134,13 @@ public class KinderController {
 		return service.getAllergyCheck(map);
 	}
 
-
-
 	// 원생 정보 수정
 	@RequestMapping(value = "/update_kinder", method = RequestMethod.POST)
 	public String updateKinder(@ModelAttribute KinderVO kVo, @RequestParam MultipartFile kinder_picFile, RedirectAttributes rttr) throws Exception {
 		rttr.addFlashAttribute("result", service.updateKinder(kVo, kinder_picFile));
 		return "redirect:./kinder_list";
 	}
+
+
 
 }

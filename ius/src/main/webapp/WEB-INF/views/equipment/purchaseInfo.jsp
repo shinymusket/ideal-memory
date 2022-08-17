@@ -9,6 +9,7 @@
 <meta charset="UTF-8">
 <title>구매 정보</title>
 <link type="text/css" rel="stylesheet" href="${path}/resources/css/articleF.css">
+<link type="text/css" rel="stylesheet" href="${path}/resources/css/equipment/purchaseInfo.css">
 </head>
 <body>
 <%@include file="../include/header.jsp" %>
@@ -27,45 +28,51 @@
 			<section>
 				<div id="content">
 					<input type="button" value="구매 목록" onclick="location.href='../equipment/purchase_list'">
-					<table border="1">
+					<table border="1" class="info">
 						<tr>
-							<th colspan="2">구매 번호</th>
-							<td colspan="2">
+							<th>구매 번호</th>
+							<td>
 								${purchase.purchase_num}
 							</td>
 						</tr>
 						<tr>
 							<th>재정 코드</th>
 							<td>${purchase.finance_num}</td>
+						</tr>
+						<tr>
 							<th>재정 항목</th>
 							<td>${purchase.finance_cls}</td>
 						</tr>
 						<tr>
-							<th colspan="2">구매자</th>
-							<td colspan="2">
+							<th>구매자</th>
+							<td>
 								${purchase.staff_name}
 							</td>
 						</tr>
 						<tr>
 							<th>구매 자산 번호</th>
 							<td>${purchase.equipment_num}</td>
+						</tr>
+						<tr>
 							<th>구매 자산 명</th>
 							<td>${purchase.equipment_name}</td>
 						</tr>
 						<tr>
-							<th colspan="2">구매 일자</th>
-							<td colspan="2">${purchase.purchase_date}</td>
+							<th>구매 일자</th>
+							<td>${purchase.purchase_date}</td>
 						</tr>
 						<tr>
-							<th>구매 가격</th>
+							<th>총 구매 가격</th>
 							<td>
 								<fmt:formatNumber value="${purchase.purchase_price}" maxFractionDigits="3"/>	
 							</td>
+						</tr>
+						<tr>
 							<th>구매 수량</th>
 							<td>${purchase.purchase_count}</td>
 						</tr>
 						<tr>
-							<td colspan="4">
+							<td colspan="2" id="button_box">
 								<input type="button" value="수정" onclick="location.href='../equipment/purchase_update_form?purchase_num=${purchase.purchase_num}'">
 								<input type="button" value="삭제" onclick="location.href='../equipment/purchase_delete?purchase_num=${purchase.purchase_num}'">
 							</td>

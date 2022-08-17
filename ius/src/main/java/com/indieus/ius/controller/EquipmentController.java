@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.indieus.ius.service.EquipmentServiceImpl;
-import com.indieus.ius.utils.PagingVO;
 import com.indieus.ius.vo.EquipClsVO;
-import com.indieus.ius.vo.EquipmentSearchVO;
 import com.indieus.ius.vo.EquipmentVO;
 import com.indieus.ius.vo.PurchaseVO;
 import com.indieus.ius.vo.StaffIdVO;
@@ -35,79 +33,21 @@ public class EquipmentController {
 
 	// 페이징 처리된 리스트 받아오기
 	@GetMapping("/equipment_list")
-	public String equipmentList(PagingVO vo, Model model
-					, @RequestParam(value = "nowPage", required=false)String nowPage
-					, @RequestParam(value = "cntPerPage", required=false)String cntPerPage) throws Exception {
-		int total = service.countEquipment();
-		if (nowPage == null && cntPerPage == null) {
-			nowPage = "1";
-			cntPerPage = "20";
-		} else if (nowPage == null) {
-				nowPage = "1";
-		} else if (cntPerPage == null) {
-				cntPerPage = "20";
-		}
-		vo = new PagingVO(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
-
-		model.addAttribute("paging", vo);
-		model.addAttribute("viewAll", service.selectEquipment(vo));
-
-		List<EquipClsVO> equipClsList = service.selEquipmentClsList();
-		model.addAttribute("equipClsList", equipClsList);
-
-
-		return "/equipment/equipmentList";
-
-	}
-
-	// 시설 비품 검색 기능
-	@RequestMapping(value = "/equipment_search", method = RequestMethod.POST)
-	public String equipmentSearch(PagingVO vo, Model model
-			, @RequestParam(value = "nowPage", required=false)String nowPage
-			, @RequestParam(value = "cntPerPage", required=false)String cntPerPage
-			, @ModelAttribute EquipmentSearchVO searchInfo) throws Exception {
-
-		int total = service.countSearchEquipment(searchInfo); // 검색된 리스트 총 갯수
-		if (nowPage == null && cntPerPage == null) {
-			nowPage = "1";
-			cntPerPage = "20";
-		} else if (nowPage == null) {
-				nowPage = "1";
-		} else if (cntPerPage == null) {
-				cntPerPage = "20";
-		}
-
-		vo = new PagingVO(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
-
-		searchInfo.setStart(vo.getStart());
-		searchInfo.setEnd(vo.getEnd());
-
-		model.addAttribute("paging", vo);
-
-
-		model.addAttribute("viewAll", service.searchEquipment(searchInfo));
+	public String equipmentList(Model model) throws Exception {
 
 		List<EquipClsVO> equipClsList = service.selEquipmentClsList();
 		model.addAttribute("equipClsList", equipClsList);
 
 		return "/equipment/equipmentList";
+
 	}
 
-
-
-
-
-
-
-
-
-
-
-//	// 시설(비품) 리스트 페이지로 이동
-//	@RequestMapping(value = "/equipment_list", method = RequestMethod.GET)
-//	public String list (Model model) throws Exception {
-//		return "/equipment/equipmentList";
-//	}
+	// 시설 비품 검색 기능 Ajax
+	@ResponseBody
+	@RequestMapping(value = "/search_equipment_list", method = RequestMethod.POST)
+	public Object searchEquipmentList(@RequestParam Map<String, Object> map) throws Exception {
+		return service.searchEquipmentList(map);
+	}
 
 	// 시설(비품) 리스트 가져오기 Ajax
 	@ResponseBody
@@ -237,8 +177,8 @@ public class EquipmentController {
 		int equipSeqNum = service.selectEquipmentSeq();
 
 		model.addAttribute("purchaseSeq", purchaseSeq);
-		model.addAttribute("staff_name", staff_name);
-		model.addAttribute("staff_num", staff_num);
+		model.addAttribute("pur_staff_name", staff_name);
+		model.addAttribute("pur_staff_num", staff_num);
 		model.addAttribute("equipSeqNum", equipSeqNum);
 
 		return "/equipment/purchaseEquipForm";

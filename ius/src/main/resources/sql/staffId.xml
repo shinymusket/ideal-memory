@@ -6,6 +6,11 @@
 		SELECT COUNT(*) from staffId WHERE staff_id = #{staff_id}	
  	</select>
  	
+ 	<!-- 사용가능한 계정인지 확인 -->
+ 	<select id="check_valid_id" parameterType="String" resultType="String">
+ 		SELECT delete_column FROM staffId WHERE staff_id = #{staff_id}
+ 	</select>
+ 	
  	<!-- 로그인 -->
  	<select id="login" parameterType="String" resultType="staffIdVO">
 		SELECT * FROM staffId WHERE staff_id = #{staff_id}

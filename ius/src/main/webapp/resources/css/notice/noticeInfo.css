@@ -1,0 +1,96 @@
+@charset "UTF-8";
+
+input[type="button"]{
+	padding: 3px;
+}
+input[type="button"]:hover {
+	cursor: pointer;
+}
+
+#button_box {
+	margin-bottom: 20px;
+	text-align: right;
+}
+
+#noticeInfo {
+	text-align : center; 
+}
+
+#noticeInfo #noticeTitleTd {
+	padding-left : 30px;
+	text-align : justify;
+}
+
+#notice_content {
+	width : 100%;
+}
+
+th#noticeTitle {
+	width : 8%;
+}
+
+td#noticeNumTd {
+	width : 150px;
+}
+
+th.noticeInfoTh {
+	width : 200px;
+}
+
+td#noticeWriterTd {
+	width : 150px;
+}
+
+td#notice_contentTd {
+	height : 300px;
+	text-align : justify;
+	padding : 14px;
+}
+
+
+input[type="text"] {
+	text-align : center;
+	padding : 3px;
+}
+
+#reply_content {
+	width : 100%;
+	text-align : justify;
+}
+
+
+
+table {
+	margin-top : 10px;
+	font-size: 14px;
+}
+
+table, th, td, tr {
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+	padding : 7px;
+}
+
+th {
+	background-color: #486890;
+	color: white;
+}
+
+tr, th, td {
+	padding: 5px;
+}
+
+td {
+	font-size: 13px;
+}
+
+#finance_amount {	
+	width: 500px;
+	text-align: center;
+}
+
+#sub_title{
+	text-align: right;
+	margin-bottom: 20px;
+	padding-right: 5px;
+}

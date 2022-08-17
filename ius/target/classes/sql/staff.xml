@@ -8,7 +8,7 @@
 		FROM staff s, jobClassifi j
 		WHERE s.staff_cls = j.staff_cls
 		AND delete_column = 'N'
-		ORDER BY staff_num ASC
+		ORDER BY TO_NUMBER(staff_num) ASC
 	</select>
 	
 	<!-- 교직원 검색 -->
@@ -80,9 +80,9 @@
 	</insert>
 	
 	<!-- 교직원 계정 삭제 -->
-	<delete id="delete_staffId" parameterType="String">
+	<update id="delete_staffId" parameterType="String">
 		UPDATE staffId SET delete_column = 'Y' WHERE staff_id = #{staff_id}
-	</delete>
+	</update>
 	
 	<!-- 교직원 등록 -->
 	<insert id="insert_staff" parameterType="staffVO">
@@ -113,9 +113,9 @@
 	</select>
 
 	<!-- 교직원 삭제 -->
-	<delete id="delete_staff" parameterType="String">
+	<update id="delete_staff" parameterType="String">
 		UPDATE staff SET delete_column = 'Y' WHERE staff_num = #{staff_num}
-	</delete>
+	</update>
 	
 	<!-- 교직원 정보 수정 -->
 	<update id="update_staff" parameterType="staffVO">

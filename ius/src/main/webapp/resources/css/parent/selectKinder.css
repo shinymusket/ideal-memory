@@ -1,0 +1,63 @@
+@charset "UTF-8";
+
+#controllBtns {
+	margin-bottom: 10px;
+}
+
+#searchDiv {
+	margin-bottom: 20px;
+}
+
+#searchDiv label {
+	font-size: 14px;
+}
+
+#jobList {
+	margin-bottom: 10px;
+}
+
+#finalAccount {
+	clear: both;
+	margin-bottom: 20px;
+	width: 500px;
+	font-size: 14px;
+}
+
+table, th, tr, td {
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+	padding: 7px;
+}
+
+.list {
+	font-size: 14px;
+	width : 450px;
+}
+
+.list td {
+	font-size: 13px;
+	text-align: center;
+}
+
+#staffInfo {
+	margin-left : 20px;
+}
+
+th{
+	font-size: 14px;
+	background-color: #486890;
+	color: white;
+}
+
+tr.bgc:hover {
+	background-color: #ccc;
+	cursor: pointer;
+}
+
+select {
+	padding: 3px;
+}
+
+input[type="button"], input[type="text"]{
+	padding: 3px;
+}

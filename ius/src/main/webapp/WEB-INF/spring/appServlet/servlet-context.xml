@@ -38,6 +38,7 @@
 	<mvc:resources mapping="/imgUpload/**" location="/ius/src/main/webapp/resources/imgUpload/" />
 	
 	<!-- C:\Users\GREEN\Documents\study\ius\src\main\webapp\resources  -->
+	
 	<!-- C:\Study\Green220308\springWorkSpaceSTS\ius\src\main\webapp\resources -->
 	
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
@@ -49,7 +50,7 @@
 	<!-- C:\javastudy\apache-tomcat-8.5.81\wtpwebapps\ius\resources -->
 	<!-- 업로드 패스 설정 --> 
 	<beans:bean class="java.lang.String" id="uploadPath">
-	 	<beans:constructor-arg value="C:\Coding\workSpaces\springWorkSpace\ius\src\main\webapp\resources" />
+	 	<beans:constructor-arg value="C:\Users\GREEN\Documents\study\ius\src\main\webapp\resources" />
 	</beans:bean>
 	
 	<!-- C:\Users\GREEN\Documents\study\ius\src\main\webapp\resources -->
@@ -73,6 +74,7 @@
 	<beans:bean id="eworksBoardController" class="com.indieus.ius.controller.EworksBoardController" />
 	<beans:bean id="mealMenuController" class="com.indieus.ius.controller.MealMenuController" />
 	<beans:bean id="kinderController" class="com.indieus.ius.controller.KinderController" />
+	<beans:bean id="shuttleBusController" class="com.indieus.ius.controller.ShuttleBusController" />
 	<beans:bean id="classController" class="com.indieus.ius.controller.ClassController" />
 	<beans:bean id="parentController" class="com.indieus.ius.controller.ParentController" />
 	<beans:bean id="attendanceController" class="com.indieus.ius.controller.AttendanceController" />
@@ -80,6 +82,7 @@
 	<beans:bean id="receiptController" class="com.indieus.ius.controller.ReceiptController" />
 	<beans:bean id="eventController" class="com.indieus.ius.controller.EventController" />
 	<beans:bean id="noticeController" class="com.indieus.ius.controller.NoticeController" />
+
 	
 	<!-- DAO -->
 	<beans:bean id="mainDAO" class="com.indieus.ius.db.MainDAO" />
@@ -93,6 +96,7 @@
 	<beans:bean id="eworksListDAO" class="com.indieus.ius.db.EworksListDAO" />
 	<beans:bean id="mealMenuDAO" class="com.indieus.ius.db.MealMenuDAO" />
 	<beans:bean id="kinderDAO" class="com.indieus.ius.db.KinderDAO" />
+	<beans:bean id="shuttleBusDAO" class="com.indieus.ius.db.ShuttleBusDAO" />
 	<beans:bean id="classDAO" class="com.indieus.ius.db.ClassDAO" />
 	<beans:bean id="parentDAO" class="com.indieus.ius.db.ParentDAO" />
 	<beans:bean id="attendanceDAO" class="com.indieus.ius.db.AttendanceDAO" />
@@ -100,6 +104,7 @@
 	<beans:bean id="receiptDAO" class="com.indieus.ius.db.ReceiptDAO" />
 	<beans:bean id="eventDAO" class="com.indieus.ius.db.EventDAO" />
 	<beans:bean id="noticeDAO" class="com.indieus.ius.db.NoticeDAO" />
+
 	
 	<!-- Service -->
 	<beans:bean id="mainServiceImpl" class="com.indieus.ius.service.MainServiceImpl" />
@@ -113,6 +118,8 @@
 	<beans:bean id="adeptDocService" class="com.indieus.ius.service.AdeptDocServiceImpl" />
 	<beans:bean id="mealMenuService" class="com.indieus.ius.service.MealMenuServiceImpl" />
 	<beans:bean id="kinderServiceImpl" class="com.indieus.ius.service.KinderServiceImpl" />
+	<beans:bean id="shuttleBusServiceImpl" class="com.indieus.ius.service.ShuttleBusServiceImpl" />
+	
 	<beans:bean id="classServiceImpl" class="com.indieus.ius.service.ClassServiceImpl" />
 	<beans:bean id="parentServiceImpl" class="com.indieus.ius.service.ParentServiceImpl" />
 	<beans:bean id="attendanceServiceImpl" class="com.indieus.ius.service.AttendanceServiceImpl" />

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="shuttle">
+	<!-- 기사 정보 불러오기 -->
+	<select id="get_driver_data" resultType="staffVO">
+		SELECT * FROM staff WHERE staff_cls = '3' AND DELETE_COLUMN = 'N'
+	</select>
+	
+	<!-- 기사 연락처 보여주기 -->
+	<select id="get_driver_tel" resultType="staffVO" parameterType="String">
+		SELECT * FROM staff WHERE staff_num = #{staff_num} AND DELETE_COLUMN = 'N'
+	</select>
+	
+	<!-- 버스 정보 등록 -->
+	<insert id="input_bus_info" parameterType="shuttleVO">
+		INSERT INTO shuttle VALUES(get_shuttle_seq, #{shuttle_carnum}, #{staff_num}, #{shuttle_name})
+	</insert>
+
+	<!-- 버스 노선 등록 -->
+	<insert id="input_bus_route" parameterType="java.util.Map">
+		<foreach collection="list" item="item" open="INSERT ALL" close="SELECT * FROM DUAL">
+		INTO shuttle_route(route_id, shuttle_num, shuttle_hour, shuttle_minute, bus_stop)
+		VALUES
+		(get_route_seq, #{item.shuttle_num}, #{item.shuttle_hour}, #{item.shuttle_minute}, #{item.bus_stop})
+		</foreach>
+	</insert>
+
+	<!-- view에 모든 셔틀 정보 보여주기 -->
+	<select id="all_shuttle_info" resultType="shuttleVO">
+		SELECT shuttle_num, shuttle_name, shuttle_carnum, sb.staff_num, staff_name, staff_tel 
+		FROM shuttle sb LEFT OUTER JOIN staff st
+		ON st.staff_num = sb.staff_num
+		ORDER BY shuttle_name ASC
+	</select>
+	
+	<!-- 다음 시퀀스 가져오기 -->
+	<select id="select_next_shuttle_seq" resultType="int">
+		SELECT LAST_NUMBER FROM USER_SEQUENCES WHERE SEQUENCE_NAME = 'SHUTTLE_SEQ'
+	</select>
+	
+	<!-- 해당 호차의 정보 불러오기 -->
+	<select id="select_route_by_shuttle_id" parameterType="int" resultType="shuttleVO">
+		SELECT shuttle_num, shuttle_name, shuttle_carnum, sb.staff_num, staff_name, staff_tel
+		FROM shuttle sb JOIN staff st
+		ON st.staff_num = sb.staff_num
+		WHERE shuttle_num = #{shuttle_num}
+	</select>
+	
+	<!-- 셔틀 노선 보여주기 -->
+	<select id="shuttle_route_by_shuttle_id" parameterType="int" resultType="shuttleVO">
+		SELECT * FROM shuttle_route
+		WHERE shuttle_num = #{shuttle_num}
+	</select>
+	
+	<!-- ajax로 노선 정보 보여주기 -->
+	<select id="get_route_by_shuttle_id" parameterType="int" resultType="shuttleVO">
+		SELECT * FROM shuttle_route
+		WHERE shuttle_num = #{shuttle_num}
+	</select>
+	
+	<!-- 노선 삭제 -->
+	<delete id="route_delete" parameterType="java.util.Map">
+		DELETE FROM shuttle_route
+		WHERE route_id = #{route_id}
+	</delete>
+	
+	<!-- 셔틀 정보 수정 -->
+	<update id="modify_bus_info" parameterType="shuttleVO">
+		UPDATE shuttle 
+		SET shuttle_name = #{shuttle_name}, shuttle_carnum = #{shuttle_carnum}, staff_num = #{staff_num}
+		WHERE shuttle_num = #{shuttle_num}
+	</update>
+	
+	<!-- 셔틀 노선 수정 or 업데이트 -->
+	<update id="modify_bus_route" parameterType="java.util.List">
+		MERGE INTO shuttle_route sr
+		USING (
+			<foreach collection="list" item="item" open="" close="" index="index" separator="UNION">
+			SELECT
+				#{item.route_id} as route_id,
+				#{item.shuttle_num} as shuttle_num,
+				#{item.shuttle_hour} as shuttle_hour,
+				#{item.shuttle_minute} as shuttle_minute,
+				#{item.bus_stop} as bus_stop
+			FROM DUAL
+			</foreach>
+			) t1
+			ON(t1.route_id = sr.route_id)
+			WHEN MATCHED THEN
+				UPDATE
+				SET
+					sr.shuttle_hour = t1.shuttle_hour,
+					sr.shuttle_minute = t1.shuttle_minute,
+					sr.bus_stop = t1.bus_stop
+			WHEN NOT MATCHED THEN
+			INSERT(route_id, shuttle_num, shuttle_hour, shuttle_minute, bus_stop)
+			VALUES(get_route_seq, t1.shuttle_num, t1.shuttle_hour, t1.shuttle_minute, t1.bus_stop)
+	</update>
+	
+	<!-- 셔틀 정보 삭제 -->
+	<delete id="delete_bus_info" parameterType="int">
+		DELETE FROM shuttle WHERE shuttle_num = #{shuttle_num}
+	</delete>
+	
+	<!-- 셔틀 노선 삭제 -->
+	<delete id="delete_bus_route" parameterType="int">
+		DELETE FROM shuttle_route WHERE shuttle_num = #{shuttle_num}
+	</delete>
+</mapper>

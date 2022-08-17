@@ -18,6 +18,12 @@ public class StaffIdDAO {
 		return sqlsession.selectOne("staffId.check_id", staff_id);
 	}
 
+	// 사용가능한 계정인지 확인
+	public String checkValidId(String staff_id) throws Exception {
+		return sqlsession.selectOne("staffId.check_valid_id", staff_id);
+	}
+
+
 	// 로그인 검사
 	public StaffIdVO login(String staff_id) throws Exception {
 		return sqlsession.selectOne("staffId.login", staff_id);

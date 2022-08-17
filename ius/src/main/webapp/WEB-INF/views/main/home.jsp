@@ -6,8 +6,9 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>index</title>
-<link type="text/css" rel="stylesheet" href="${path}/resources/css/articleF.css?">
+<title>아이어스</title>
+<link type="text/css" rel="stylesheet" href="${path}/resources/css/mainpage.css">
+<link type="text/css" rel="stylesheet" href="${path}/resources/css/articleF.css">
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script type="text/javascript">
 	function getInfo() {
@@ -33,7 +34,7 @@
 				$.each(values, function(index, value) {
 					
 					output += "<tr>";
-					output += "<td id='notice_title_td'><a href='../notice/notice_info?notice_num=" + value.notice_num + "'>" + value.notice_title + "</a></td>";
+					output += "<td id='notice_title_td'>" + "<a href='../notice/notice_info?notice_num=" + value.notice_num + "'>" + value.notice_title + "</a></td>";
 					output += "<td id='notice_writeDate'>" + value.notice_writeDate + "</td>";
 					output += "</tr>";
 				});
@@ -83,120 +84,59 @@
 						}	
 					}
 					
-				});
-				
+				});	
 				
 			}
 		});
-		
-		
-		
-		
-		
+
 		
 	}
 
 	getInfo();
 </script>
 </head>
-<style>
-	.mainDiv {
-		border : 3px solid #cfd8dc;
-		width : 700px;
-		height : 300px;
-		float : left;
-		margin : 10px; 
-	}
-	
-	.mainDiv h1.title {
-		text-align : center;
-		line-height : 1.5;
-		width : 100%;
-		height : 30px;
-		color : white;
-		background-color : #486890;
-	}
-	
-	.mainDiv h1.title:hover {
-		color : blue;;
-	}
-	
-	.contentDiv {
-		margin : 30px 15px;
-	}
-	
-	#noticeTbl {
-		width : 660px;
-	}
-	
-	#noticeTbl #notice_writeDate {
-		text-align : right;
-	}
-	
-	#noticeTbl #notice_title_td a:hover {
-		text-decoration: underline;
-	}
-	
-	#eventTbl {
-		width : 660px;
-		text-align : center;
-		font-weight: bolder;
-	}
-	
-	#eWorkCountTbl {
-		width : 660px;
-	}
-	
-	#eWorkCountTbl th.litteTitle {
-		text-align : right;
-		width : 600px;
-	}
-	
-	#mealMenuTbl {
-		width : 660px;
-		height : 190px;
-	}
-	
-	#mealMenuTbl .menuType {
-		width : 350px;
-	}
-	
-	#mealMenuTbl tr.menuInfo span.allergy {
-		color : blue;
-	}
-	
-	
-	
-</style>
+
 <body>
 <%@include file="../include/header.jsp" %>
 <%@include file="../include/nav.jsp" %>
 
 	<article>
-			<div id="title_bar">
+			<!-- <div id="title_bar">
 			</div>
 	
 			
 			<div id="title_top">
-			</div>
+			</div> -->
 	
 			<section>
 				<div id="content">
-					<div class="mainDiv" id="notice">
-						<a href="../notice/notice_list"><h1 class="title">공지사항</h1></a>
-						<div class="contentDiv">
+					<div id="notice">
+						<h2 class="main_title"><a href="../notice/notice_list">공지사항</a></h2>
+						<div id="noticeDiv">
 							<table id="noticeTbl"></table>
 						</div>
 					</div>
-					<div class="mainDiv" id="event">
-						<a href="../event/event_list"><h1 class="title">오늘의 일정</h1></a>
-						<div class="contentDiv">
-							<table id="eventTbl"></table>
-						</div> 
-					</div>
-					<div class="mainDiv" id="eWork">
-						<a href="#"><h1 class="title">전자결재</h1></a>
-						<div class="contentDiv">
+					<div id="event_and_meal">
+						<div id="event">
+							<h2 class="main_title"><a href="../event/event_list">오늘의 일정</a></h2>
+							<div id="eventDiv">
+								<table id="eventTbl"></table>
+							</div> 
+						</div>
+						<div id="meal">
+						<h2 class="main_title"><a href="../meal/meal_list">오늘의 식단</a></h2>
+						<div id="mealDiv">
+							<table id="mealMenuTbl">
+								<tr id='breakDesert'><th class="menuType">오전 간식</th></tr>
+								<tr id='lunch'><th class="menuType">점심</th></tr>
+								<tr id='afterDesert'><th class="menuType">오후 간식</th></tr>
+							</table>
+						</div>
+						</div>
+					</div>	
+					<div id="eWork">
+						<h2 class="main_title"><a href="#">전자결재</a></h2>
+						<div id="eworkDiv">
 							<table id="eWorkCountTbl">
 								<tr>
 									<th class="litteTitle">결재 대기중인 문서 :</th>
@@ -210,16 +150,7 @@
 							</table>
 						</div>
 					</div>
-					<div class="mainDiv" id="meal">
-						<a href="../meal/meal_list"><h1 class="title">오늘 식단</h1></a>
-						<div class="contentDiv">
-							<table id="mealMenuTbl">
-								<tr id='breakDesert'><th class="menuType">오전 간식</th></tr>
-								<tr id='lunch'><th class="menuType">점심</th></tr>
-								<tr id='afterDesert'><th class="menuType">오후 간식</th></tr>
-							</table>
-						</div>
-					</div>	
+					
 				</div>
 			</section>
 	</article>	

@@ -7,33 +7,10 @@
 <head>
 <meta charset="UTF-8">
 <script src="http://code.jquery.com/jquery-latest.js"></script>
-<script type="text/javascript">
-	$(function(){
-		 $("#register").click(function(){
-			 
-			if ($("#class_name").val() == "") {
-				alert("학급명을 입력해주세요.");
-				$("#class_name").val().focus();
-				return;
-			};
-			
-			if ($("#class_name").val().length > 10) {
-				alert("학급명은 10자 이하로 입력해야합니다.");
-				$("#class_name").val("");
-				return;
-			};
-			 
-			frm.submit();
-				
-		 });
-		
-		
-		
-	})
-
-</script>
+<script type="text/javascript" src="${path}/resources/js/class/classRegisterForm.js"></script>
 <title>학급 등록</title>
 <link type="text/css" rel="stylesheet" href="${path}/resources/css/articleF.css">
+<link type="text/css" rel="stylesheet" href="${path}/resources/css/class/classRegisterForm.css">
 </head>
 <body>
 <%@include file="../include/header.jsp" %>

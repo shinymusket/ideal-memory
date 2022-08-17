@@ -30,38 +30,6 @@ public class ParentServiceImpl implements ParentService {
 	public Object getKinderList() throws Exception {
 		List<KinderVO> kinderList = manager.selectKinderListIncludeParentName();
 
-//		if(kinderList.size() != 0) {
-//			for (KinderVO element : kinderList) {
-//				String kinder_num = element.getKinder_num();
-//
-//				KinderVO kVo = new KinderVO();
-//				String father_name;
-//				String mather_name;
-//
-//				Map<String, Object> info = new HashMap();
-//				info.put("kinder_num", kinder_num);
-//				info.put("relation", "부");
-//				father_name = kinderManager.selectParentNameByKinderNum(info);
-//				info.put("relation", "모");
-//				mather_name = kinderManager.selectParentNameByKinderNum(info);
-//
-//				if (father_name == null) {
-//					father_name = "";
-//				}
-//
-//				if (mather_name == null) {
-//					mather_name = "";
-//				}
-//
-//
-//				element.setFather_name(father_name);
-//				element.setMather_name(mather_name);
-//
-//			}
-//		}
-
-
-
 		Map<String, Object> data = new HashMap();
 		data.put("kinderList", kinderList);
 		return data;
@@ -72,45 +40,11 @@ public class ParentServiceImpl implements ParentService {
 	public Object searchKinderListByClass(Map<String, Object> map) throws Exception {
 		String class_number = (String) map.get("class_number");
 
-		List<KinderVO> kinderList = classManager.selectClassKinderByClassNum(class_number);
-
-		if(kinderList.size() != 0) {
-			for (KinderVO element : kinderList) {
-				String kinder_num = element.getKinder_num();
-
-				KinderVO kVo = new KinderVO();
-				String father_name;
-				String mather_name;
-
-				Map<String, Object> info = new HashMap();
-				info.put("kinder_num", kinder_num);
-				info.put("relation", "부");
-				father_name = kinderManager.selectParentNameByKinderNum(info);
-				info.put("relation", "모");
-				mather_name = kinderManager.selectParentNameByKinderNum(info);
-
-				if (father_name == null) {
-					father_name = "";
-				}
-
-				if (mather_name == null) {
-					mather_name = "";
-				}
-
-
-				element.setFather_name(father_name);
-				element.setMather_name(mather_name);
-
-			}
-		}
+		List<KinderVO> kinderList = classManager.selectClassKinderAndParentByClassNum(class_number);
 		Map<String, Object> data = new HashMap();
 		data.put("kinderList", kinderList);
 		return data;
 	}
-
-
-
-
 
 	@Override
 	// 전체 학급 리스트 가져오기

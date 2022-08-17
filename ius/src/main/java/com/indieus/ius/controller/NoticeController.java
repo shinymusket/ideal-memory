@@ -91,8 +91,9 @@ public class NoticeController {
 	// 공지사항 글 수정
 	@RequestMapping(value = "/notice_update", method = RequestMethod.POST)
 	public String updateNotice(@ModelAttribute NoticeVO nVo) throws Exception {
+		int notice_num = nVo.getNotice_num();
 		int result = service.updateNotice(nVo);
-		return "redirect:./notice_list";
+		return "redirect:./notice_info?notice_num=" + notice_num;
 	}
 
 	// 공지사항 글 검색 Ajax

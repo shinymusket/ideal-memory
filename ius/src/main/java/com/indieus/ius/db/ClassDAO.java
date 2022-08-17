@@ -31,6 +31,13 @@ public class ClassDAO {
 		return sqlsession.selectList("class.select_class_kinder_by_class_num", class_number);
 	}
 
+
+	// 학급별 학생 명단과 부모님 성함 가져오기
+	public List<KinderVO> selectClassKinderAndParentByClassNum(String class_number) throws Exception {
+		return sqlsession.selectList("class.select_class_kinder_and_parent_by_class_num", class_number);
+	}
+
+
 	// 학급 등록을 위한 마지막 학급 번호 값 가져오기
 	public int selectClassLastNumber() throws Exception {
 		return sqlsession.selectOne("class.select_class_last_number");

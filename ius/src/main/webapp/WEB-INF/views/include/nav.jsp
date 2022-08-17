@@ -16,7 +16,7 @@
                         <li id="staffManager"><a href="../staff/staff_list"><span>교직원 관리</span></a></li>
                         <li id="facilityManager"><a href="../equipment/equipment_list"><span>시설 관리</span></a></li>
                         <li id="boardManager"><a href="../board/board_list"><span>전자 결재</span></a></li>
-                        <li id="shuttleManager"><a href="#"><span>셔틀버스 관리</span></a></li>
+                        <li id="shuttleManager"><a href="../bus/shuttle_bus"><span>셔틀버스 관리</span></a></li>
                         <li id="mealManager"><a href="../meal/meal_list"><span>식단 관리</span></a></li>
                     </ul>
                 </li>
@@ -175,9 +175,6 @@ $(function(){
 //		console.log(authCode);
 		
 	};
-	
-
-	
 	
 	
 

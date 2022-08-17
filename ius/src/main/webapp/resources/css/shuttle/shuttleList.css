@@ -1,0 +1,104 @@
+@charset "UTF-8";
+
+#controllBtns {
+	margin-bottom: 10px;
+}
+
+input[type="button"] {
+	padding : 3px;
+}
+
+.list {
+	font-size: 14px;
+}
+
+.list td {
+	font-size: 13px;
+	text-align: center;
+}
+
+#busBox {
+	height: 150px;
+	overflow: auto;
+}
+
+#busInfo th {
+    position: sticky;
+    top: 0px;
+    background-color: #486890 !important;
+}
+
+#busBox::-webkit-scrollbar {
+    width: 8px;
+    
+}
+#busBox::-webkit-scrollbar-thumb {
+    background-color: #c2cad1;
+    border-radius: 10px;
+    background-clip: padding-box;
+    border: 2px solid transparent;
+}
+#busBox::-webkit-scrollbar-track {
+    background-color: white;
+    border-radius: 10px;
+}
+
+#busInfo{
+	width: 500px;
+	margin-bottom: 40px;
+	text-align: center;
+}
+
+
+#busInfo td {
+	font-size: 13px;
+}
+
+#busInfo, #busInfo tr, #busInfo th, #busInfo td {
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+	padding: 5px;
+}
+
+
+#routeInfo {
+	width: 700px;
+	text-align: center;
+	word-wrap:break-word;
+	word-break:break-all;
+	margin-top: 20px;
+	font-size: 14px;
+}
+
+.time_hour {
+	width: 40%;
+	word-wrap:break-word;
+	word-break:break-all;
+}
+
+.time_minute {
+	word-wrap:break-word;
+	word-break:break-all;
+}
+
+tr.bgc:hover {
+	background-color: #ccc;
+	cursor: pointer;
+}
+
+#routeInfo, #routeInfo tr, #routeInfo th, #routeInfo td {
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+	padding: 6px;
+}
+
+#routeInfo th, #busInfo th {
+	background-color: #486890;
+	color: white;
+}
+
+input[value='수정']{
+	border: none;
+	padding: 5px;
+	background-color: #white;
+}

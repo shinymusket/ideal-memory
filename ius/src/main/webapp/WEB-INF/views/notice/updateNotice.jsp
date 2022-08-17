@@ -10,10 +10,35 @@
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script type="text/javascript" src="${path}/resources/js/summernote/summernote-lite.js"></script>
 <script type="text/javascript" src="${path}/resources/js/summernote/lang/summernote-ko-KR.js"></script>
+<script type="text/javascript" src="${path}/resources/js/notice/updateNotice.js"></script>
 <link type="text/css" rel="stylesheet" href="${path}/resources/css/summernote/summernote-lite.css">
 <link type="text/css" rel="stylesheet" href="${path}/resources/css/articleF.css?">
 </head>
 <style>
+	table {
+		margin-top : 10px;
+		font-size: 14px;
+	}
+	
+	table, th, td, tr {
+		border: 1px solid #ccc;
+		border-collapse: collapse;
+		padding : 7px;
+	}
+	
+	th {
+		background-color: #486890;
+		color: white;
+	}
+	
+	tr, th, td {
+		padding: 5px;
+	}
+	
+	td {
+		font-size: 13px;
+	}
+
 	#notice_title {
 		height : 30px;
 	 	width : 1238px;
@@ -26,30 +51,16 @@
 		width : 50px;
 		margin: 5px auto;
 	}
+	
+	input[type=button] {
+		padding : 3px;
+	}
+	
+	#btnTd {
+		text-align : center;
+	}
 </style>
 <body>
-<script type="text/javascript">
-	var $jQ = jQuery.noConflict();
-	$jQ(document).ready(function(){
-		$jQ("#notice_content").summernote({
-			height : 300,
-			width : 1238,
-			minHeight : null,
-			maxHeight : null,
-			focus : true,
-			lang : "ko-KR",
-		});
-		
-		$jQ("#notice_content").summernote('enable');
-		
-		$jQ("#update").click(function(){
-			alert("수정이 완료되었습니다.");
-			$jQ("form").submit();
-		});
-		
-		
-	});
-</script>
 <%@include file="../include/header.jsp" %>
 <%@include file="../include/nav.jsp" %>
 	<article>
@@ -66,6 +77,9 @@
 					<div id="notice">
 						<form action="./notice_update" method="POST">
 							<table border="1">
+								<tr>
+									<th colspan="6">제목</th>
+								</tr>
 								<tr>
 									<td colspan="6">
 										<input type="text" id="notice_title" name="notice_title" value="${noticeInfo.notice_title}">
@@ -89,7 +103,7 @@
 									</td>
 								</tr>
 								<tr>
-									<td colspan="6">
+									<td colspan="6" id="btnTd">
 										<input type="button" value="수정" id="update">
 										<input type="button" value="목록" onclick="location.href='../notice/notice_list'">
 									</td>

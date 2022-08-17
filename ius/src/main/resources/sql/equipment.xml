@@ -25,6 +25,48 @@
 		WHERE RN BETWEEN #{start} AND #{end}
 	</select>
 	
+	<!--  -->
+	<select id="search_equipment_list" parameterType="hashmap" resultType="equipmentVO">
+		SELECT e.equipment_num, s.staff_name, c.equip_cls_name, e.equipment_name, e.equipment_count, TO_CHAR(e.equipment_regdate, 'YYYY-MM-DD') AS equipment_regdate, e.equipment_cate
+		FROM equipment e, staff s, equipcls c
+		WHERE e.staff_id = s.staff_id 
+		AND c.equip_cls_num = e.equip_cls_num
+
+		<choose>
+			<when test="searchType == 'equip_cls_name'">
+				AND e.equip_cls_num = #{equip_cls_num}
+			</when>
+			<when test="searchType == 'equipment_cate'">
+				<if test="equipment_cate == 'equipment'">
+				AND equipment_cate = '시설(비품)'
+				</if>
+				<if test="equipment_cate == 'purchase'">
+				AND equipment_cate = '구매품'
+				</if>
+			</when>
+			<when test="searchType == 'equipment_regdate'">
+				AND equipment_regdate IN TO_DATE(#{searchDate}, 'YYYY-MM-DD')
+			</when>
+			<when test="searchType == 'equipment_num'">
+				AND e.equipment_num = #{searchContent}
+			</when>
+			<when test="searchType == 'staff_name'">
+				AND s.staff_name = #{searchContent}
+			</when>
+			<when test="searchType == 'equipment_name'">
+				AND equipment_name = #{searchContent}
+			</when>
+			<otherwise></otherwise>
+		</choose>
+		ORDER BY equipment_num DESC
+	</select>
+	
+	
+	
+	
+	
+	
+	
 	<!-- 검색된 리스트 총 갯수 출력 -->
 	<select id="countSearchEquipment" parameterType="equipmentSearchVO"  resultType="int">
 		SELECT COUNT(*)
@@ -138,7 +180,7 @@
   	
   	<!-- 시설(비품) 분류 항목 - 항목 추가하기 -->
   	<insert id="insert_equip_cls" parameterType="equipClsVO">
-  		INSERT INTO equipcls VALUES(equipcls_seq.nextval, #{equip_cls_name}, #{equip_num})
+  		INSERT INTO equipcls(equip_cls_num, equip_cls_name, equip_num) VALUES(equipcls_seq.nextval, #{equip_cls_name}, #{equip_num})
   	</insert>
   	
   	<!-- 시설(비품) 분류 항목 전체 수 가져오기 -->
@@ -158,7 +200,7 @@
   	
   	<!-- 시설(비품) 등록하기 -->
   	<insert id="insert_equipment" parameterType="equipmentVO">
-  		INSERT INTO equipment 
+  		INSERT INTO equipment(equipment_num, staff_id, equipment_name, equipment_count, equipment_regDate, equip_cls_num, equipment_cate) 
   		VALUES(EQUIPMENT_SEQ.nextval, #{staff_id}, #{equipment_name}, #{equipment_count}, 
   		TO_DATE(#{equipment_regdate}, 'YYYY-MM-DD'), #{equip_cls_num}, #{equipment_cate})
   	</insert>

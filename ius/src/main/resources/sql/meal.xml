@@ -3,14 +3,17 @@
 
 <mapper namespace="meal">
 
+	<!-- 모든 식단 가져오기 -->
 	<select id="all_meal_menu_view" resultType="mealMenuVO">
 		SELECT * FROM menu_tbl
 	</select>
 	
+	<!-- 알러지 테이블 가져오기 -->
 	<select id="allergy_info" resultType="allergyVO">
 		SELECT * FROM Allergy_tbl
 	</select>
 	
+	<!-- 식단 추가 -->
 	<insert id="insert_meal_menu" parameterType="java.util.Map">
 		<foreach collection="list" item="item" open="INSERT ALL" close="SELECT * FROM DUAL">
 		INTO menu_tbl(menu_num, staff_num, meal_code, meal_menu, menu_eDate, menu_calorie, allergy_num, menu_wDate)
@@ -20,14 +23,17 @@
 		</foreach>
 	</insert>
 	
+	<!-- 날짜별 식단 조회 -->
 	<select id="meal_select_by_num" parameterType="String" resultType="mealMenuVO">
 		SELECT * FROM menu_tbl WHERE menu_edate = #{menu_edate}
 	</select>
 	
+	<!-- pk로 식단 삭제 -->
 	<delete id="meal_delete" parameterType="java.util.Map">
 		DELETE FROM menu_tbl WHERE menu_num = #{menu_num}
 	</delete>
 	
+	<!-- 식단 수정 or 추가 (테이블의 num과 추가될 리스트의 num을 조건으로 주어 같은 num이 있다면 그 행을 수정, 없다면 추가 -->
 	<update id="modify_update_meal_menu" parameterType="java.util.List">
 		MERGE INTO menu_tbl m
 		USING (

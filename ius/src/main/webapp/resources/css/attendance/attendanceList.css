@@ -1,0 +1,93 @@
+@charset "UTF-8";
+
+#controllBtns {
+	margin-bottom: 10px;
+}
+
+#searchDiv {
+	margin-bottom: 20px;
+}
+
+#searchDiv label {
+	font-size: 14px;
+}
+
+#finalAccount {
+	clear: both;
+	margin-bottom: 20px;
+	width: 500px;
+	font-size: 14px;
+}
+
+table, th, tr, td {
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+	padding: 7px;
+}
+
+#kinder_list_tbl {
+	width : 450px;
+}
+
+#kinderBox {
+	height: 500px;
+	overflow: auto;
+}
+
+#kinder_list_tbl th {
+    position: sticky;
+    top: 0px;
+    background-color: #486890 !important;
+}
+
+#kinderBox::-webkit-scrollbar {
+    width: 8px;
+    
+}
+#kinderBox::-webkit-scrollbar-thumb {
+    background-color: #c2cad1;
+    border-radius: 10px;
+    background-clip: padding-box;
+    border: 2px solid transparent;
+}
+
+#kinderBox::-webkit-scrollbar-track {
+    background-color: white;
+    border-radius: 10px;
+}
+
+#attendance {
+	margin-left : 15px;
+}
+
+#attendance_tbl {
+	margin-top : 20px;
+}
+
+.list {
+	font-size: 14px;
+}
+
+.list td {
+	font-size: 13px;
+	text-align: center;
+}
+
+th{
+	font-size: 14px;
+	background-color: #486890;
+	color: white;
+}
+
+tr.bgc:hover {
+	background-color: #ccc;
+	cursor: pointer;
+}
+
+select {
+	padding: 3px;
+}
+
+input[type="button"], input[type="text"], input[type="date"]{
+	padding: 3px;
+}

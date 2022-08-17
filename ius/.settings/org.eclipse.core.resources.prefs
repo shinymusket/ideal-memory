@@ -1,4 +1,11 @@
 eclipse.preferences.version=1
 encoding//src/main/resources/message/db.properties=UTF-8
 encoding//src/main/webapp/WEB-INF/views/board/buyOrder.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/views/bus/shuttleBusRegisterForm.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/views/include/footer.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/views/include/header.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/views/include/nav.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/views/meal/addMealMenu.jsp=UTF-8
+encoding//src/main/webapp/resources/css/finance/financeInfo.css=UTF-8
 encoding/<project>=UTF-8
+encoding/testSql=UTF-8

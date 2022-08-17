@@ -43,8 +43,6 @@ public class EquipmentDAO {
 		return sqlsession.selectList("equipment.search_equipment", searchInfo);
 	}
 
-
-
 	// 전체 비품 리스트 가져오기
 	public List<EquipmentVO> getAllEquipList() throws Exception {
 		return sqlsession.selectList("equipment.get_all_equipment_list");
@@ -176,6 +174,11 @@ public class EquipmentDAO {
 	@Transactional
 	public int updatePurchase(PurchaseVO pVo) throws Exception {
 		return sqlsession.update("update_purchase", pVo);
+	}
+
+	// 시설(비품) 검색
+	public List<EquipmentVO> searchEquipmentList(Map<String, Object> map) throws Exception {
+		return sqlsession.selectList("equipment.search_equipment_list", map);
 	}
 
 

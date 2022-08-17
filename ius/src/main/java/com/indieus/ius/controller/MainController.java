@@ -116,7 +116,13 @@ public class MainController {
 	public String myStaffInfo(Model model, HttpSession session) throws Exception {
 		// 세션에서 사원번호 꺼내오기
 		StaffIdVO staff = (StaffIdVO) session.getAttribute("staff");
-		String staff_id = staff.getStaff_id();
+		String staff_id;
+		try {
+			staff_id = staff.getStaff_id();
+		} catch(NullPointerException e) {
+			return "redirect:./logout";
+		}
+
 		StaffVO staffInfo = staffService.selectStaffInfoStaffId(staff_id);
 		String staff_num  = staffInfo.getStaff_num();
 		StaffVO sVo = staffService.selectStaffInfo(staff_num);

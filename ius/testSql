@@ -1,0 +1,797 @@
+-- ������ ���̺�, ������
+CREATE TABLE staff (
+    staff_num VARCHAR2(10),
+    staff_cls VARCHAR2(10),
+    staff_id VARCHAR2(20),
+    staff_name VARCHAR2(20),
+    staff_rrn1 VARCHAR2(10),
+    staff_rrn2 VARCHAR2(10),
+    staff_addr VARCHAR2(200),
+    staff_zipcode VARCHAR2(10),
+    staff_tel VARCHAR2(20),
+    staff_hireD DATE,
+    staff_retireD DATE,
+    staff_workYn VARCHAR2(2),
+    staff_salary NUMBER(10),
+    staff_email VARCHAR2(30),
+    staff_picture VARCHAR2(200),
+    CONSTRAINT staff_pk PRIMARY KEY (staff_num)
+);
+
+CREATE SEQUENCE staff_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+-- ���� �з� ���̺�, ������
+CREATE TABLE jobclassifi (
+    staff_cls VARCHAR2(10),
+    job_number NUMBER(5),
+    job_Kname VARCHAR2(20),
+    job_Ename VARCHAR2(20),
+    CONSTRAINT jobclassifi_pk PRIMARY KEY (staff_cls)
+);
+
+CREATE SEQUENCE jobclassifi_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+-- ������ ���� ���̺�
+CREATE TABLE staffId (
+    staff_id VARCHAR2(20),
+    auth_code VARCHAR2(20),
+    staff_pwd VARCHAR2(20),
+    reg_date DATE,
+    log_date DATE,
+    CONSTRAINT staffId_pk PRIMARY KEY (staff_id)
+);
+
+-- ������ ���̺� �ܷ�Ű �߰�
+ALTER TABLE staff
+ADD CONSTRAINT staff_fk FOREIGN KEY (staff_cls) REFERENCES jobclassifi(staff_cls);
+ALTER TABLE staff
+ADD CONSTRAINT staff_fk2 FOREIGN KEY (staff_id) REFERENCES staffId(staff_id);
+
+-- ���� ���̺�
+CREATE TABLE authority (
+    auth_code VARCHAR2(20),
+    auth_name VARCHAR2(30),
+    M VARCHAR2(2),
+    T VARCHAR2(2),
+    D VARCHAR2(2),
+    F VARCHAR2(2),
+    S VARCHAR2(2),
+    I VARCHAR2(2),
+    E VARCHAR2(2), 
+    G VARCHAR2(2),
+    CONSTRAINT authority_pk PRIMARY KEY (auth_code)
+);
+
+-- ������ ���� ���̺� �ܷ�Ű �߰�
+ALTER TABLE staffId
+ADD CONSTRAINT staffId_fk FOREIGN KEY (auth_code) REFERENCES authority(auth_code);
+
+-- ���� ���̺�, ������
+CREATE TABLE staffAttendance (
+    attend_code VARCHAR2(30),
+    staff_id VARCHAR2(20),
+    attend_date DATE,
+    attend_info VARCHAR2(10),
+    in_time TIMESTAMP,
+    out_time TIMESTAMP,
+    CONSTRAINT staffAttendance_pk PRIMARY KEY (attend_code)
+);
+
+CREATE SEQUENCE staffAttendance_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+-- ���� ���̺� �ܷ�Ű �߰�
+ALTER TABLE staffAttendance
+ADD CONSTRAINT staffAttendance_fk FOREIGN KEY (staff_id) REFERENCES staffId(staff_id);
+
+-- ���� ���̺�, ������ ����
+CREATE TABLE budget (
+    budget_num VARCHAR2(10),
+    budget_year VARCHAR2(20),
+    budget_iE VARCHAR2(10),
+    budget_cls VARCHAR2(30),
+    budget_total NUMBER(20),
+    CONSTRAINT budget_pk PRIMARY KEY (budget_num)
+);
+
+CREATE SEQUENCE budget_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+-- ���� ���̺�, ������ ����
+CREATE TABLE finance (
+    finance_num VARCHAR2(10),
+    budget_num VARCHAR2(10),
+    staff_num VARCHAR2(10),
+    finance_eYear VARCHAR2(20),
+    finance_eDate DATE,
+    finance_cls VARCHAR2(30),
+    finance_iE VARCHAR2(10),
+    finance_amount NUMBER(20),
+    CONSTRAINT finance_pk PRIMARY KEY (finance_num)
+);
+
+CREATE SEQUENCE finance_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+-- ���� �ܷ�Ű �߰�
+ALTER TABLE finance
+ADD CONSTRAINT finance_fk FOREIGN KEY (budget_num) REFERENCES budget(budget_num);
+
+ALTER TABLE finance
+ADD CONSTRAINT finance_fk2 FOREIGN KEY (staff_num) REFERENCES staff(staff_num);
+
+-- �ü�(��ǰ) �з� ���̺�, ������
+CREATE TABLE equipcls (
+    equip_cls_num VARCHAR2(10),
+    equip_num NUMBER(5),
+    equip_cls_name VARCHAR2(30),
+    CONSTRAINT equipcls_pk PRIMARY KEY (equip_cls_num)
+);
+
+CREATE SEQUENCE equipcls_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+-- �ü�(��ǰ) ���̺�, ������ ����
+CREATE TABLE equipment (
+    equipment_num VARCHAR2(10),
+    staff_id VARCHAR2(20),
+    equip_cls_num VARCHAR2(10),
+    equipment_name VARCHAR2(30),
+    equipment_count NUMBER(10),
+    equipment_regDate DATE,
+    equipment_cate VARCHAR2(30),
+    CONSTRAINT equipment_pk PRIMARY KEY (equipment_num)
+);
+
+CREATE SEQUENCE equipment_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+-- �ü�(��ǰ) �ܷ�Ű �߰�
+ALTER TABLE equipment
+ADD CONSTRAINT equipment_fk FOREIGN KEY (staff_id) REFERENCES staffId(staff_id);
+
+ALTER TABLE equipment
+ADD CONSTRAINT equipment_fk2 FOREIGN KEY (equip_cls_num) REFERENCES equipcls(equip_cls_num);
+
+-- ���� ���̺�, ������ ����
+CREATE TABLE purchase (
+    purchase_num VARCHAR2(10),
+    finance_num VARCHAR2(10),
+    staff_num VARCHAR2(10),
+    equipment_num VARCHAR2(10),
+    purchase_date DATE,
+    purchase_price NUMBER(20),
+    purchase_count NUMBER(10),
+    CONSTRAINT purchase_pk PRIMARY KEY (purchase_num)
+);
+
+CREATE SEQUENCE purchase_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+-- ���� �ܷ�Ű �߰�
+ALTER TABLE purchase
+ADD CONSTRAINT purchase_fk FOREIGN KEY (finance_num) REFERENCES finance(finance_num);
+ALTER TABLE purchase
+ADD CONSTRAINT purchase_fk2 FOREIGN KEY (staff_num) REFERENCES staff(staff_num);
+ALTER TABLE purchase
+ADD CONSTRAINT purchase_fk3 FOREIGN KEY (equipment_num) REFERENCES equipment(equipment_num);
+
+-- ��Ʋ���� ���̺� ����
+CREATE TABLE shuttle (
+    shuttle_num VARCHAR2(10),
+    staff_num VARCHAR2(10),
+    shuttle_carNum VARCHAR2(10),
+    CONSTRAINT shuttle_pk PRIMARY KEY (shuttle_num)
+);
+
+-- ��ġ���� ���̺�, ������ ����
+CREATE TABLE kinder (
+    kinder_num VARCHAR2(10),
+    shuttle_num VARCHAR2(10),
+    staff_num VARCHAR2(10),
+    kinder_regYn VARCHAR2(2),
+    kinder_name VARCHAR2(20),
+    kinder_rrn1 VARCHAR2(10),
+    kinder_rrn2 VARCHAR2(10),
+    kinder_addr VARCHAR2(200),
+    kinder_zipcode VARCHAR2(10),
+    kinder_tel VARCHAR2(20),
+    kinder_regdate DATE,
+    kinder_retireDate DATE,
+    kinder_picture VARCHAR2(200),
+    CONSTRAINT kinder_pk PRIMARY KEY (kinder_num)
+);
+
+CREATE SEQUENCE kinder_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+-- ��ġ���� �ܷ�Ű �߰�
+ALTER TABLE kinder
+ADD CONSTRAINT kinder_fk FOREIGN KEY (shuttle_num) REFERENCES shuttle(shuttle_num);
+
+ALTER TABLE kinder
+ADD CONSTRAINT kinder_fk2 FOREIGN KEY (staff_num) REFERENCES staff(staff_num);
+
+-- �кθ� ���̺�, ������ ����
+CREATE TABLE parent (
+    parent_num VARCHAR2(10),
+    kinder_num VARCHAR2(10),
+    relation VARCHAR2(20),
+    parent_tel VARCHAR2(20),
+    parent_email VARCHAR2(30),
+    parent_sex VARCHAR2(1),
+    parent_birth DATE,
+    parent_name VARCHAR2(20),
+    CONSTRAINT parent_pk PRIMARY KEY (parent_num)
+);
+
+CREATE SEQUENCE parent_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+-- �кθ� �ܷ�Ű �߰�
+ALTER TABLE parent
+ADD CONSTRAINT parent_fk FOREIGN KEY (kinder_num) REFERENCES kinder(kinder_num);
+
+-- �б� ���̺�, ������ ����
+CREATE TABLE class (
+    class_num VARCHAR2(10),
+    staff_num VARCHAR2(10),
+    kinder_num VARCHAR2(10),
+    class_number VARCHAR2(20),
+    class_name VARCHAR2(30),
+    CONSTRAINT class_pk PRIMARY KEY (class_num)
+);
+
+CREATE SEQUENCE class_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+-- �б� �ܷ�Ű �߰�
+ALTER TABLE class
+ADD CONSTRAINT class_fk FOREIGN KEY (staff_num) REFERENCES staff(staff_num);
+
+ALTER TABLE class
+ADD CONSTRAINT class_fk2 FOREIGN KEY (kinder_num) REFERENCES kinder(kinder_num);
+
+
+----------------------------------- ���� ������ �Է�
+COMMIT;
+
+INSERT INTO jobclassifi VALUES (JOBCLASSIFI_SEQ.nextval, '1', '����', 'director');
+INSERT INTO jobclassifi VALUES (JOBCLASSIFI_SEQ.nextval, '2', '����', 'teacher');
+INSERT INTO jobclassifi VALUES (JOBCLASSIFI_SEQ.nextval, '3', '�������', 'driver');
+INSERT INTO jobclassifi VALUES (JOBCLASSIFI_SEQ.nextval, '4', '�����', 'dietitian');
+
+INSERT INTO authority VALUES ('M', 'master', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y');
+INSERT INTO authority VALUES ('T', 'teacher', 'N', 'Y', 'N', 'N', 'N', 'N', 'N', 'N');
+INSERT INTO authority VALUES ('C', 'dirver', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N');
+INSERT INTO authority VALUES ('D', 'dietitian', 'N', 'N', 'Y', 'N', 'N', 'N', 'N', 'N');
+
+INSERT INTO staffId VALUES ('master', 'M', '260419', sysdate, sysdate);
+INSERT INTO shuttle VALUES ('1', '5', '12��1234'); 
+
+--------------------------------- �޽� ���� sql
+CREATE TABLE Allergy_tbl(
+    allergy_num VARCHAR2(10) PRIMARY KEY,
+    allergy_name VARCHAR2(20) NOT NULL
+);
+
+INSERT INTO Allergy_tbl
+VALUES(1, '����(���ݷ�)');
+INSERT INTO Allergy_tbl
+VALUES(2, '����');
+INSERT INTO Allergy_tbl
+VALUES(3, '�޹�');
+INSERT INTO Allergy_tbl
+VALUES(4, '����');
+INSERT INTO Allergy_tbl
+VALUES(5, '���');
+INSERT INTO Allergy_tbl
+VALUES(6, '��');
+INSERT INTO Allergy_tbl
+VALUES(7, '�����');
+INSERT INTO Allergy_tbl
+VALUES(8, '��');
+INSERT INTO Allergy_tbl
+VALUES(9, '����');
+INSERT INTO Allergy_tbl
+VALUES(10, '��������');
+INSERT INTO Allergy_tbl
+VALUES(11, '������');
+INSERT INTO Allergy_tbl
+VALUES(12, '�丶��');
+INSERT INTO Allergy_tbl
+VALUES(13, '��Ȳ�꿰');
+INSERT INTO Allergy_tbl
+VALUES(14, 'ȣ��');
+INSERT INTO Allergy_tbl
+VALUES(15, '�߰���');
+INSERT INTO Allergy_tbl
+VALUES(16, '�����');
+INSERT INTO Allergy_tbl
+VALUES(17, '��¡��');
+INSERT INTO Allergy_tbl
+VALUES(18, '������');
+
+COMMIT;
+
+SELECT * FROM Allergy_tbl;
+
+
+CREATE TABLE Menu_tbl(
+    menu_num VARCHAR2(10) PRIMARY KEY,
+    staff_num VARCHAR2(10),
+    meal_code VARCHAR2(5),
+    meal_menu VARCHAR2(200),
+    menu_eDate DATE,
+    menu_calorie NUMBER,
+    allergy_num VARCHAR2(10),
+    menu_wDate DATE
+);
+
+CREATE SEQUENCE menu_seq
+NOCACHE;
+
+
+
+INSERT INTO menu_tbl
+VALUES(menu_seq.nextval, 3, 'B', '�ᶱ', '2022-07-20', 130, '1', sysdate); 
+INSERT INTO menu_tbl
+VALUES(menu_seq.nextval, 3, 'L', '��', '2022-07-20', 230, '2', sysdate); 
+INSERT INTO menu_tbl
+VALUES(menu_seq.nextval, 3, 'L', '��', '2022-07-20', 130, '5', sysdate); 
+INSERT INTO menu_tbl
+VALUES(menu_seq.nextval, 3, 'L', '��', '2022-07-20', 530, '10', sysdate); 
+INSERT INTO menu_tbl
+VALUES(menu_seq.nextval, 3, 'S', '���ĳȳ�', '2022-07-20', 230, '1', sysdate);
+INSERT INTO menu_tbl
+VALUES(menu_seq.nextval, 3, 'S', '����', '2022-07-20', 230, '3', sysdate); 
+INSERT INTO menu_tbl
+VALUES(menu_seq.nextval, 3, 'S', '����', '2022-07-21', 230, '3', sysdate); 
+INSERT INTO menu_tbl
+VALUES(menu_seq.nextval, 3, 'S', '�ٳ���', '2022-07-21', 230, '3', sysdate); 
+INSERT INTO menu_tbl
+VALUES(menu_seq.nextval, 3, 'S', '����', '20220721', 230, '3', sysdate); 
+
+COMMIT;
+--LISTAGG(��ġ�������÷� , ������) WITHIN GROUP(����)  + GROUP BY �� ���ּž� �մϴ�.
+-- REGEXP_REPLACE ���Խ� �Լ��� ����Ͽ� �÷��� �ߺ��� �����ϴ� ����̸�, ���� ������ ���ĵǾ� �־�� ��Ȯ�� �ߺ����Ű� �ȴ�. (ORDER BY deptno)
+
+-- �޴���ħ, �˷��� ��ħ, ��¥��&�Ĵ��ڵ庰 �׷�
+SELECT staff_num, meal_code, listagg(meal_menu, '<br/>') within group(order by meal_code) as menu, sum(menu_calorie) as kcal, 
+menu_edate, REGEXP_REPLACE (listagg(allergy_num, ',') within group(order by menu_edate), '([^,]+)(,\1)*(,|$)', '\1\3') as allergy, menu_wdate
+FROM menu_tbl
+GROUP BY meal_code, menu_edate, staff_num, menu_wdate;
+
+SELECT * FROM menu_tbl;
+
+-- ��¥�� ��ü �޴�, Į�θ��հ�, �˷��� ����Ʈ�� ��������
+SELECT listagg(meal_menu, '<br/>') within group(order by menu_edate) as menu, sum(menu_calorie) as kcal, menu_edate, REGEXP_REPLACE (listagg(allergy_num, ',') within group(order by menu_edate), '([^,]+)(,\1)*(,|$)', '\1\3') as allergy
+FROM menu_tbl
+GROUP BY menu_edate;
+
+
+COMMIT;
+
+
+select * FROM menu_tbl WHERE menu_num = '1';
+select * FROM menu_tbl ORDER BY menu_num ASC;
+
+MERGE INTO menu_tbl m
+USING DUAL
+ON(m.menu_num = '55')
+WHEN MATCHED THEN
+    UPDATE SET m.meal_menu = '�ٳ���'
+WHEN NOT MATCHED THEN
+INSERT (menu_num, meal_menu)
+VALUES (menu_seq.nextval, '����������Ʈ');
+
+SELECT * FROM PRODUCT_COMPONENT_VERSION;
+
+---------------------------------------------------------------------------------
+-- �˷��� ���� ���̺�, ������ ����
+
+CREATE TABLE AllergyInfo (
+    allergy_code NUMBER,
+    a1 VARCHAR2(2),
+    a2 VARCHAR2(2),
+    a3 VARCHAR2(2),
+    a4 VARCHAR2(2),
+    a5 VARCHAR2(2),
+    a6 VARCHAR2(2),
+    a7 VARCHAR2(2),
+    a8 VARCHAR2(2),
+    a9 VARCHAR2(2),
+    a10 VARCHAR2(2),
+    a11 VARCHAR2(2),
+    a12 VARCHAR2(2),
+    a13 VARCHAR2(2),
+    a14 VARCHAR2(2),
+    a15 VARCHAR2(2),
+    a16 VARCHAR2(2),
+    a17 VARCHAR2(2),
+    a18 VARCHAR2(2),
+    CONSTRAINT AllergyInfo_pk PRIMARY KEY(allergy_code)
+);
+
+CREATE SEQUENCE AllergyInfo_seq
+START WITH 1
+INCREMENT  BY 1
+NOCACHE;
+
+-- ��ġ���� ���̺� ���� �˷��� �÷� ���� �� �ܷ�Ű �߰�
+ALTER TABLE kinder
+ADD allergy_code NUMBER;
+
+ALTER TABLE kinder
+ADD CONSTRAINT kinder_fk3 FOREIGN KEY (allergy_code) REFERENCES AllergyInfo(allergy_code);
+
+COMMIT;
+
+-- ���� ���̺��� �˷��� ���� ��Ȳ�� ��Ÿ�� �÷� �߰�
+ALTER TABLE kinder
+ADD allergy_check NUMBER;
+
+-- ���� ��� ���̺�, ������ ����
+CREATE TABLE attendance (
+    attend_code VARCHAR2(30),
+    kinder_num VARCHAR2(10),
+    attend_date DATE,
+    attend_info VARCHAR2(10),
+    in_time TIMESTAMP,
+    out_time TIMESTAMP,
+    CONSTRAINT attendance_pk PRIMARY KEY(attend_code)
+);
+
+CREATE SEQUENCE attendance_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+-- ������� ���̺�, ������ ����
+CREATE TABLE consult (
+    consult_code NUMBER,
+    kinder_num VARCHAR2(10),
+    parent_num VARCHAR2(10),
+    staff_num VARCHAR2(10),
+    consult_date DATE,
+    consult_content LONG,
+    CONSTRAINT consult_pk PRIMARY KEY(consult_code)
+);
+
+CREATE SEQUENCE consult_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+-- ������� �ܷ�Ű �߰�
+ALTER TABLE consult
+ADD CONSTRAINT consult_fk FOREIGN KEY (kinder_num) REFERENCES kinder(kinder_num);
+
+ALTER TABLE consult
+ADD CONSTRAINT consult_fk2 FOREIGN KEY (parent_num) REFERENCES parent(parent_num);
+
+ALTER TABLE consult
+ADD CONSTRAINT consult_fk3 FOREIGN KEY (staff_num) REFERENCES staff(staff_num);
+
+-- ���� ���̺�, ������ ����
+CREATE TABLE receipt(
+    receipt_code NUMBER,
+    kinder_num VARCHAR2(10),
+    parent_num VARCHAR2(10),
+    receipt_date DATE,
+    receipt_content LONG,
+    receipt_price NUMBER(20),
+    CONSTRAINT receipt_pk PRIMARY KEY(receipt_code)
+);
+
+CREATE SEQUENCE receipt_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+-- ���� ���̺� �ܷ�Ű �߰�
+ALTER TABLE receipt
+ADD CONSTRAINT receipt_fk FOREIGN KEY(kinder_num) REFERENCES kinder(kinder_num);
+
+ALTER TABLE receipt
+ADD CONSTRAINT receipt_fk2 FOREIGN KEY(parent_num) REFERENCES parent(parent_num);
+
+COMMIT;
+
+SELECT receipt_code, receipt_date, kinder_name, relation, parent_name, receipt_content, receipt_price
+FROM receipt r, kinder k, parent p
+WHERE r.kinder_num = k.kinder_num
+AND r.parent_num = p.parent_num
+AND r.kinder_num = '46';
+
+SELECT ROWNUM, A.*
+FROM (
+    SELECT receipt_code, receipt_date, kinder_name, relation, parent_name, receipt_content, receipt_price
+    FROM receipt r, kinder k, parent p
+    WHERE r.kinder_num = k.kinder_num
+    AND r.parent_num = p.parent_num
+    AND r.kinder_num = '46'
+    ORDER BY receipt_date DESC) A
+    WHERE ROWNUM BETWEEN 1 AND 20;
+
+SELECT receipt_code, receipt_date, kinder_name, relation, parent_name, receipt_content, receipt_price
+    FROM receipt r, kinder k, parent p
+    WHERE r.kinder_num = k.kinder_num
+    AND r.parent_num = p.parent_num
+    AND r.kinder_num = '46'
+    AND receipt_date BETWEEN #{date_from} AND #{date_to}
+    ORDER BY receipt_date DESC;
+
+SELECT * FROM staffId;
+SELECT * FROM staff;
+
+update staffId SET staff_pwd = '1234' WHERE staff_id = 'teacher';
+update staffId SET staff_pwd = '1234' WHERE staff_id = 'captin';
+COMMIT;
+SELECT * FROM receipt;
+
+UPDATE receipt SET kinder_num = '46' WHERE receipt_code = '5';
+
+COMMIT;
+
+-- �̸��Ϸ� �ش� �������� ����(���̵�, ��й�ȣ) ��������
+SELECT i.staff_id, staff_name, staff_pwd
+FROM staffId i, staff s
+WHERE i.staff_id = s.staff_id
+AND staff_email = 'zz1489@naver.com';
+
+-- staff, kinder, staffId ���̺��� delete_column �߰�
+
+ALTER TABLE staff
+ADD delete_column VARCHAR2(2);
+
+ALTER TABLE kinder
+ADD delete_column VARCHAR2(2);
+
+ALTER TABLE staffId
+ADD delete_column VARCHAR2(2);
+
+-- ��� �� ���� ���̺� ����
+CREATE TABLE event (
+    event_num NUMBER,
+    staff_id VARCHAR2(20),
+    event_name VARCHAR2(60),
+    event_date DATE,
+    CONSTRAINT event_pk PRIMARY KEY(event_num)
+);
+
+-- ��� �� ���� ������ ����
+CREATE SEQUENCE event_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+-- ��� �� ���� ���̺� �ܷ�Ű �߰�
+ALTER TABLE event
+ADD CONSTRAINT event_fk FOREIGN KEY(staff_id) REFERENCES staffId(staff_id);
+
+-- ���� ���̺� �� ������ ����
+CREATE TABLE notice (
+    notice_num NUMBER,
+    staff_id VARCHAR2(20),
+    notice_title VARCHAR2(100),
+    notice_content LONG,
+    notice_writeDate DATE,
+    notice_readCount NUMBER,
+    CONSTRAINT notice_pk PRIMARY KEY(notice_num)
+);
+
+CREATE SEQUENCE notice_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+-- ���� ���̺� �ܷ�Ű �߰�
+ALTER TABLE notice
+ADD CONSTRAINT notice_fk FOREIGN KEY(staff_id) REFERENCES staffId(staff_id);
+
+-- ���� ��� ���̺�, ������ ����
+CREATE TABLE noticeReply (
+    reply_num NUMBER,
+    notice_num NUMBER,
+    staff_id VARCHAR2(20),
+    reply_content LONG,
+    reply_date DATE,
+    CONSTRAINT noticeReply_pk PRIMARY KEY (reply_num)
+);
+
+CREATE SEQUENCE noticeReply_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+-- ���� ��� ���̺� �ܷ�Ű �߰�
+ALTER TABLE noticeReply
+ADD CONSTRAINT noticeReply_fk FOREIGN KEY (notice_num) REFERENCES notice(notice_num);
+
+ALTER TABLE noticeReply
+ADD CONSTRAINT noticeReply_fk2 FOREIGN KEY (staff_id) REFERENCES staffId(staff_id);
+
+SELECT COUNT(*)
+FROM menu_tbl m, allergy_check c
+WHERE m.menu_num = c.menu_num
+AND m.menu_num = '70';
+
+INSERT INTO allergy_check VALUES (allergy_check_seq.nextval, '57', 'Y');
+
+UPDATE allergy_check SET menu_num = '70' WHERE menu_num = '57';
+
+SELECT meal_code, meal_menu, allergy_num FROM menu_tbl WHERE menu_edate = '2022-8-11';
+
+SELECT meal_code, meal_menu, allergy_num, allergy_Yn
+FROM menu_tbl m, allergy_check c
+WHERE m.menu_num = c.menu_num(+)
+AND menu_edate = '2022-8-11';
+
+SELECT * FROM menu_tbl;
+
+
+SELECT * FROM allergy_check;
+COMMIT;
+
+SELECT * FROM kinder ;
+SELECT * FROM allergyInfo;
+
+SELECT r.*, staff_name 
+FROM noticeReply r, staff s
+WHERE r.staff_id = s.staff_id;
+
+ALTER TABLE noticeReply
+RENAME COLUMN reply_data to reply_date;
+
+SELECT event_num, event_name FROM event WHERE event_date = #{today_date} ORDER BY event_num ASC;
+
+SELECT * FROM event WHERE event_date = '2022/8/10';
+
+SELECT * FROM menu_tbl;
+
+SELECT * FROM menu_tbl WHERE menu_edate = '2022/8/10';
+
+SELECT meal_code, meal_menu, allergy_num FROM menu_tbl WHERE menu_edate = '2022/8/11';
+
+UPDATE menu_tbl 
+
+COMMIT;
+
+SELECT * FROM notice;
+
+SELECT kinder_num, kinder_name FROM kinder WHERE delete_column = 'N';
+SELECT meal_code, meal_menu, allergy_num FROM menu_tbl WHERE menu_edate = #{today_date}
+
+
+SELECT k.allergy_code, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18 
+FROM kinder k, allergyInfo i
+WHERE k.allergy_code = i.allergy_code
+AND allergy_check = 1;
+
+SELECT DISTINCT(i.allergy_code), a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18
+FROM kinder k, allergyInfo i
+WHERE allergy_check = 1;
+
+SELECT * FROM allergyInfo;
+
+SELECT k.allergy_code, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18 
+FROM kinder k, allergyInfo i
+WHERE k.allergy_code = i.allergy_code
+AND allergy_check = 1;
+
+SELECT * FROM menu_tbl WHERE menu_edate = '2022/8/11';
+
+SELECT ROWNUM A* FROM (
+    SELECT allergy_num FROM menu_tbl WHERE menu_edate = '2022/8/11'
+) WHERE ROWNUM = 1;
+
+
+SELECT menu_num 
+FROM menu_tbl 
+WHERE menu_edate = '2022/8/11'
+AND '13' IN allergy_num;
+
+SELECT 
+
+
+	SELECT *
+				FROM (
+						SELECT ROWNUM RN, A.*
+								FROM (
+										SELECT allergy_num FROM menu_tbl WHERE menu_edate = '2022/8/11'
+										) A
+								)
+		WHERE RN = 1;
+
+
+
+SELECT * FROM allergy_check;
+
+DELETE FROM allergy_check;
+DROP TABLE allergy_check;
+DROP SEQUENCE allergy_check_seq;
+
+
+
+
+
+
+
+SELECT ROWNUM 
+                FROM (
+						SELECT ROWNUM RN, A.*
+								FROM (
+										SELECT allergy_num FROM menu_tbl WHERE menu_edate = '2022/8/11'
+										) A
+								)
+		WHERE RN = 1 AND 1 IN A.ALLERGY_NUM;
+
+
+SELECT * FROM menu_tbl;
+SELECT * FROM kinder;
+
+SELECT k.kinder_num, kinder_name, p1.parent_name AS "father_name" 
+FROM kinder k, parent p1
+WHERE k.kinder_num = p1.kinder_num(+)
+AND delete_column = 'N'
+GROUP BY k.kinder_num, kinder_name, p1.parent_name;
+
+
+SELECT k.kinder_num, kinder_name, p1.parent_name AS "father_name", p2.parent_name AS "mather_name"  
+FROM kinder k, parent p1, parent p2 
+WHERE k.kinder_num = p1.kinder_num(+)
+AND k.kinder_num = p2.kinder_num(+)
+AND delete_column = 'N'
+AND p1.parent_name != p2.parent_name
+GROUP BY k.kinder_num, kinder_name, p1.parent_name, p2.parent_name;
+
+SELECT * FROM parent;
+
+SELECT k.kinder_num, kinder_name, p1.parent_name AS "father_name", p2.parent_name AS "mather_name"  
+FROM kinder k, parent p1, parent p2 
+WHERE k.kinder_num = p1.kinder_num(+)
+AND k.kinder_num = p2.kinder_num(+)
+AND (p1.relation = '��' OR p1.relation IS NULL)
+AND (p2.relation = '��' OR p2.relation IS NULL)
+AND delete_column = 'N';
+
+ALTER TABLE notice
+MODIFY notice_title VARCHAR2(100);
+
+SELECT * FROM notice;
+
+SELECT * FROM allergyInfo;
+
+SELECT * FROM staff;
+
+UPDATE staff SET delete_column = 'N';
+
+COMMIT;
+
+SELECT * FROM staffId;
+

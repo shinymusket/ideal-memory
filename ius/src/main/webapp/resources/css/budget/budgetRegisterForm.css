@@ -1,0 +1,69 @@
+@charset "UTF-8";
+
+input[type="button"], input[type="reset"], input[type="text"], input[type="number"], select {
+	padding: 3px;
+}
+input[type="button"]:hover {
+	cursor: pointer;
+}
+#finance_detail {
+	width: 100%;
+	margin-bottom: 30px;
+}
+
+#finance_detail td, #finance_detail th {
+	padding: 10px;
+}
+
+#finance_detail td {
+	font-size: 14px;
+}
+
+#amountbox{
+	text-align: center !important;	
+}
+#finance_history {
+	width: 100%;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+#button_box {
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+table {
+	margin-top : 10px;
+	font-size: 14px;
+}
+
+table, th, td, tr {
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+	padding : 7px;
+}
+
+th {
+	background-color: #486890;
+	color: white;
+}
+
+tr, th, td {
+	padding: 5px;
+}
+
+td {
+	font-size: 13px;
+}
+
+#finance_amount {	
+	width: 500px;
+	text-align: center;
+}
+
+#sub_title{
+	text-align: right;
+	margin-bottom: 20px;
+	padding-right: 5px;
+}

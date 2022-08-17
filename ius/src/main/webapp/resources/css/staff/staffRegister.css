@@ -1,0 +1,64 @@
+@charset "UTF-8";
+
+input[type="button"], input[type="reset"], input[type="text"], input[type="tel"], input[type="date"], input[type="email"], select {
+	padding: 3px;
+}
+input[type="button"]:hover {
+	cursor: pointer;
+}
+
+#staff_addr {
+	width : 400px;
+	margin-right : 5px;
+}
+#staff_email {
+	width : 300px;
+}
+
+#staff_retireD {
+	width : 156px;
+}
+
+#amountbox{
+	text-align: center !important;	
+}
+
+#button_box {
+	margin-bottom: 20px;
+	text-align: right;
+}
+
+table {
+	margin-top : 10px;
+	font-size: 14px;
+}
+
+table, th, td, tr {
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+	padding : 7px;
+}
+
+th {
+	background-color: #486890;
+	color: white;
+}
+
+tr, th, td {
+	padding: 5px;
+}
+
+td {
+	font-size: 13px;
+}
+
+#btnsTd {
+	text-align : center;
+}
+
+
+#sub_title{
+	text-align: right;
+	margin-bottom: 20px;
+	padding-right: 5px;
+}

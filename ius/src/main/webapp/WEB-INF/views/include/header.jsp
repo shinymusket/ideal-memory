@@ -7,7 +7,7 @@
         	<input type="hidden" id="login_staff_name" value="${staff_name}">
         	<input type="hidden" id="login_staff_id" value="${staff_id}">
             <div id="logInfo">
-            	<p><font id="myNameId" size="2.5"></font>님 환영합니다.<p>
+            	<p id="logLine"><font id="myNameId" size="2.5"></font>님 환영합니다<p>
                 <a href="../main/logout">로그아웃</a>
                 <a href="../main/my_staff_info">회원 정보</a>
             </div>

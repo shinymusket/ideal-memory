@@ -42,11 +42,11 @@ public class MealMenuDAO {
 	public int modifyUpdateMenu(List<MealMenuVO> list) {
 		return sqlsession.update("meal.modify_update_meal_menu", list);
 	}
-	
+
 	// 메인뷰에 띄울 오늘의 식단 정보 가져오기
 	public List<MealMenuVO> getTodayMenuForMain(String today_date) throws Exception {
 		return sqlsession.selectList("meal.select_today_menu_for_main", today_date);
 	}
 
-	
+
 }

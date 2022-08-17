@@ -21,6 +21,8 @@ public interface EquipmentService {
 	// 페이징 처리 게시글 조회
 	public List<EquipmentVO> selectEquipment(PagingVO vo) throws Exception;
 
+	public Object searchEquipmentList(Map<String, Object> map) throws Exception;
+
 	public Object getEquipmentList() throws Exception;
 
 	public int selectEquipmentSeq() throws Exception;

@@ -1,12 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib  prefix="spring" uri="http://www.springframework.org/tags" %> 
 <c:set var="path" value="${pageContext.request.contextPath}"/>     
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <script src="http://code.jquery.com/jquery-latest.js"></script>
+<%-- <script type="text/javascript" src="${path}/resources/js/kinder/kinderList.js"></script> --%>
 <script type="text/javascript">
 function view(kinder_num) {
 	var kinder_num = kinder_num;
@@ -29,7 +31,7 @@ function view(kinder_num) {
 					data.kinder.kinder_picture = "\\imgUpload\\no_image.jpg";
 				}
 				
-				$("#kinder_picture").html("<img src='" + data.kinder.kinder_picture + "' width='94.4px' height='113.3px'>");
+				$("#kinder_picture").html("<img src='" + "<spring:url value='/resources'/>" + data.kinder.kinder_picture + "' width='94.4px' height='113.3px'>");
 				
 				$("#kinder_name").val(data.kinder.kinder_name);
 				$("#class_name").val(data.kinder.class_name);
@@ -39,7 +41,9 @@ function view(kinder_num) {
 				
 				$("#shuttle_num").val(data.kinder.shuttle_num);
 				$("#kinder_rrn1").val(data.kinder.kinder_rrn1);
-				$("#kinder_rrn2").val(data.kinder.kinder_rrn2);
+				
+				rrn2 = String(data.kinder.kinder_rrn2).substr(0, 1) + "******";
+				$("#kinder_rrn2").val(rrn2);
 				$("#kinder_addr").val(data.kinder.kinder_addr);
 				$("#kinder_zipcode").val(data.kinder.kinder_zipcode);
 				$("#kinder_tel").val(data.kinder.kinder_tel);
@@ -86,7 +90,7 @@ function view(kinder_num) {
 					});
 				}
 				
-				consultInfo = data.consultInfo;
+				consultInfo = data.consultInfo; // 최근 상담 내역
 				$("#kinderInfo>tbody").append("<tr class='consultTr'><th colspan='4'>최근 상담 기록</th></tr>");
 				if(consultInfo != null) {
 					$("#kinderInfo>tbody").append("<tr class='consultTr'><td colspan='4'>"+ consultInfo.consult_content + "</td></tr>");
@@ -119,8 +123,8 @@ function getList() {
 			output = "<tr><th>원생 이름</th><th>전화</th><th>학급</th></tr>";				
 			$.each(values, function(index, value) {
 	
-				output += "<tr>";
-				output += "<td><a href=\"javascript:view(" + value.kinder_num + ");\">" + value.kinder_name + "</a></td>";
+				output += "<tr class='bgc' onclick='view(" + value.kinder_num + ")'>";
+				output += "<td>" + value.kinder_name + "</td>";
 				output += "<td>" + value.kinder_tel + "</td>";
 				output += "<td>" + value.class_name + "</td>";
 				output += "</tr>";
@@ -183,8 +187,8 @@ $(function(){
 				output = "<tr><th>원생 이름</th><th>전화</th><th>학급</th></tr>";				
 				$.each(values, function(index, value) {
 		
-					output += "<tr>";
-					output += "<td><a href=\"javascript:view(" + value.kinder_num + ");\">" + value.kinder_name + "</a></td>";
+					output += "<tr class='bgc' onclick='view(" + value.kinder_num + ")'>";
+					output += "<td>" + value.kinder_name + "</td>";
 					output += "<td>" + value.kinder_tel + "</td>";
 					output += "<td>" + value.class_name + "</td>";
 					output += "</tr>";
@@ -384,19 +388,18 @@ $(function(){
 	});
 	
 	
-	
-	
 })
+
 
 
 </script>
 <title>원생 관리</title>
 <link type="text/css" rel="stylesheet" href="${path}/resources/css/articleF.css">
+<link type="text/css" rel="stylesheet" href="${path}/resources/css/kinder/kinderList.css">
 </head>
 <body>
 <%@include file="../include/header.jsp" %>
 <%@include file="../include/nav.jsp" %>
-	
 	<article>
 			<div id="title_bar">
 				<p>원생 관리</p>
@@ -409,7 +412,7 @@ $(function(){
 	
 			<section>
 				<div id="content">
-					<div class="btns">
+					<div id="controllBtns">
 						<input type="button" value="원생 등록" onclick="location.href='../kinder/kinder_register_form'">
 						<input type="button" value="학부모 관리" onclick="location.href='../parent/parent_list'">
 						<input type="button" value="출결 관리" onclick="location.href='../attendance/attendance_list'">
@@ -417,7 +420,7 @@ $(function(){
 						<input type="button" value="수납 관리" onclick="location.href='../receipt/receipt_list'">
 					</div>
 					
-					<div class="searhBar">
+					<div id="searchDiv">
 						<select name="searchType" id="searchType" onchange="changeSearchSelect()">
 							<option value="kinder_num">원생 번호</option>
 							<option value="staff_name">담임 교사</option>
@@ -439,9 +442,11 @@ $(function(){
 						<input type="button" value="검색" id="search">
 					</div>
 					
-					<table id="kinderList" border="1" style="float : left;"></table>
-	
-					<table id="kinderInfo" border="1" style="float : left; display : none;">
+					<div id="kinderBox" style="float : left;">
+						<table id="kinderList" class="list" border="1" ></table>
+					</div>
+					
+					<table id="kinderInfo" class="list" border="1" style="float : left; display : none;">
 						<tbody>
 								<tr>
 									<th colspan="2">원생 번호</th>
@@ -591,8 +596,6 @@ $(function(){
 					<div id="allergy" style="float : left; display : none;">
 						<table id=allergyDetailInfo border="1"></table>
 					</div>
-					
-					
 					
 				</div>
 			</section>

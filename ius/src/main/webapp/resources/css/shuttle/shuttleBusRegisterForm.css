@@ -1,0 +1,65 @@
+@charset "UTF-8";
+
+input[type="button"], input[type="reset"], input[type="submit"] {
+	padding: 3px;
+}
+input[type="button"]:hover {
+	cursor: pointer;
+}
+
+.list {
+	font-size: 14px;
+}
+
+.list td {
+	font-size: 13px;
+	text-align: center;
+}
+
+
+#button_box {
+	margin-bottom: 20px;
+	text-align: right;
+}
+
+#bus_list {
+	margin-bottom: 10px;
+}
+
+#busInfo {
+	margin-bottom: 10px;
+}
+
+#bus_route {
+	margin-bottom: 10px;
+}
+
+table {
+	margin-top : 10px;
+	font-size: 14px;
+}
+
+table, th, td, tr {
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+	padding : 7px;
+}
+
+th {
+	background-color: #486890;
+	color: white;
+}
+
+tr, th, td {
+	padding: 5px;
+}
+
+td {
+	font-size: 13px;
+}
+
+#sub_title{
+	text-align: right;
+	margin-bottom: 20px;
+	padding-right: 5px;
+}

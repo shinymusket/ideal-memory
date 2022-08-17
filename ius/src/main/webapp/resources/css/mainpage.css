@@ -1,0 +1,145 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&family=Noto+Sans+KR&display=swap');
+
+.main_title{
+	font-size: 30px;
+}
+
+#notice {
+	width: 45%;
+	float: left;
+	margin-bottom: 15px;
+	margin-top: 20px;
+	height: 500px;
+	border: 1px solid #f6f6f6;
+	border-radius: 18px;
+	padding: 20px;
+}
+
+.main_title {
+	margin-bottom: 10px;
+}
+
+#noticeTbl th, #noticeTbl tr, #noticeTbl td {
+	padding-top: 13px;
+	padding-bottom: 13px;
+}
+
+#noticeTbl {
+	width : 100%;
+	padding: 10px;
+}
+
+#noticeTbl #notice_title_td a:hover {
+	/* text-decoration: underline; */
+	border-bottom: 1px solid;
+	transition: all 2s;
+	
+}
+
+#notice_title_td {
+	/* font-family: "gulim"; */
+	font-size: 13px;
+}
+#notice_writeDate {
+	font-size: 12px;
+	line-height: 12px;
+	text-align: center;
+	padding-right: 4px;
+}
+
+#eWork {
+	float: left;
+	width: 32%;
+	height: 500px;
+	border: 1px solid #f6f6f6;
+	border-radius: 18px;
+	margin-bottom: 15px;
+	margin-top: 20px;
+	margin-left: 15px;
+	padding: 20px;
+}
+
+#eWorkCountTbl, #eWorkCountTbl th, #eWorkCountTbl tr, #eWorkCountTbl td {
+	text-align: right;
+	font-size: 13px;
+	padding: 3px;
+}
+
+#event_and_meal {
+	float: right;
+	width: 20%;
+	margin-top: 20px;
+}
+
+#event {
+	border: 1px solid #f6f6f6;
+	padding: 25px;
+	text-align: center;
+	height: 250px;
+	border-radius: 20px;
+	margin-bottom: 20px;
+	background-color: #f2f6f9;
+}
+
+#eventTbl {
+	width: 100%;
+	text-align: center;
+	margin-top: 20px;
+}
+
+#eventTbl td {
+	font-size: 13px;
+	letter-spacing: -1px;
+}
+
+#meal {
+	height: 400px;
+	text-align: center;
+	padding: 25px;
+	border: 1px solid #f6f6f6;
+	border-radius: 20px;
+	background-color: #f2f6f9;
+}
+
+#mealDiv {
+	margin-top: 20px;
+}
+#mealMenuTbl{
+	margin: 0 auto;
+	text-align: left;
+}
+
+#mealMenuTbl th{
+	text-align: center;
+	font-size: 14px;
+}
+
+#mealMenuTbl td {
+	font-size: 13px;
+	letter-spacing: -1px;
+}
+#mealMenuTbl th, #mealMenuTbl td {
+	padding: 7px;
+}
+
+#mealMenuTbl th, #mealMenuTbl tr > td:last-child {
+	border-bottom: 1px solid #ccc;
+	border-collapse: collapse;
+}
+
+#meal > h2, #event > h2 {
+	font-size: 15px;
+	margin-top: 10px;
+}
+
+#notice > h2, #eWork > h2 {
+	font-size: 22px;
+	width: 110px;
+	height: 40px;
+	line-height: 40px;
+	padding-left: 7px;
+	font-color: #fff;
+	margin: 0;
+	font-family: 'Noto Sans KR', sans-serif !important;
+}

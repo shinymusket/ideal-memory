@@ -1,17 +1,35 @@
-@charset "EUC-KR";
+@charset "UTF-8";
 
 .calendar_nav {
 	width: 100%;
-	font-size: 20px;
+	font-size: 17px;
+	margin-bottom: 5px;
+	padding: 5px;
 }
 
+.calendar_nav a {
+	font-size: 13px;
+	margin-right: 5px;
+}
+
+input[type="button"]{
+	padding: 3px;
+	padding-left: 6px;
+	padding-right: 6px;
+	border: none;
+	background-color: #486890;
+	color: white;
+	border-radius: 5px;
+}
+
+input[type="button"]:hover {
+	cursor: pointer;
+}
 .meal_calendar{
 	width: 100%;
 	margin: 0 auto;
 	cellspacing: 1px;
 	cellpadding: 1px;
-	word-wrap:break-word;
-	word-break:break-all;
 	background-color: #fff;
 }
 
@@ -21,26 +39,35 @@
 }
 
 .meal_calendar > thead > tr> td {
-	width: 100px;
+	width: 8%;
 	height: 40px;
 	text-align: center;
+	word-wrap:break-word;
 	word-break:break-all;
 	font-weight: bold;
 }
 
+
 .meal_calendar > tbody > tr> td {
-	width: 100px;
+	width: 8%;
 	height: 90px;
-	padding: 5px;
-	word-break: break-all;
+	padding: 10px;
+	word-wrap:break-word;
+	word-break:break-all;
 	line-height: 24px;
+	font-size: 13px;
 }
 
+.mealdatebox {
+	word-wrap:break-word;
+	word-break:break-all;
+}
 
 .break_menu, .lunch_menu, .snack_menu {
 	width: 100%;
 	line-height: 25px;
 	text-align: center;
+	margin-bottom: 4px;
 }
 
 .menu_title{

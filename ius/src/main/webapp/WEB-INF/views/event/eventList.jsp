@@ -41,43 +41,10 @@
 <HEAD>
 <TITLE>행사 및 일정</TITLE>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<link rel="stylesheet" href="${path}/resources/css/article.css">
-<link rel="stylesheet" href="${path}/resources/css/event.css">
+<link rel="stylesheet" href="${path}/resources/css/articleF.css">
+<link rel="stylesheet" href="${path}/resources/css/event/eventList.css">
 <script src="http://code.jquery.com/jquery-latest.js"></script>
-<script type="text/javaScript">
-function getCookie(name) {	// 저장된 쿠키 가져오기
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(';');
-    for(var i=0;i < ca.length;i++) {
-        var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1,c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-    }
-    return null;
-};
-
-$(function(){
-	var teacher = getCookie("teacher");
-	if (teacher == "N") {
-		$(".menu_info").removeAttr("href");
-	}
-	
-	$("#eventRegister").click(function(){ // 행사 및 일정 등록은 교사 권한이 있어야 가능.
-		
-		var teacher = getCookie("teacher");
-		if (teacher == "N") {  
-			alert("권한이 없습니다.");
-			return;
-		} else if (teacher == "Y") {
-			location.href='../event/event_select_by_event_date';
-		}	
-	});
-	
-})
-
-
-
-</script>
+<script type="text/javascript" src="${path}/resources/js/event/eventList.js"></script>
 </HEAD>
 <BODY>
 <%@include file="../include/header.jsp" %>
@@ -91,27 +58,19 @@ $(function(){
 
                     <!-- 오른쪽 기능 박스 (검색)-->
                     <div id="title_top">
-                        <input type="text" name="">
-                        <input type="button" value="검색">
-                        <input type="button" value="등록">
-                        <input type="button" value="삭제">
                     </div>
 
                 <!-- 내용 구간 -->
                 <!-- 내용 넣으면 길이 알아서 늘어나요(아마도) -->
             <section>
                 <div id="content">
+                
+                <div id="controllBtns">
+                	<input type="button" onclick="location.href='./event_list'" value="오늘"/>
+					<input type="button" id="eventRegister" value="일정 등록"/>
+                </div>
 
 <!-- <DIV id="content" style="width:900px"> -->
-<table width="100%" border="0" cellspacing="1" cellpadding="1">
-	<tr>
-		<td align ="right">
-			<input type="button" onclick="location.href='./event_list'" value="오늘"/>
-			<input type="button" id="eventRegister" value="일정 등록"/>
-		</td>
-	
-	</tr>
-</table>
 
 <!--날짜 네비게이션  -->
 
@@ -163,11 +122,11 @@ $(function(){
 			<TD width='100px'>
 			<font color="red">일</font>
 			</TD>
-			<TD width='100px'>월</TD>
-			<TD width='100px'>화</TD>
-			<TD width='100px'>수</TD>
-			<TD width='100px'>목</TD>
-			<TD width='100px'>금</TD>
+			<TD width='100px'><font color="white">월</font></TD>
+			<TD width='100px'><font color="white">화</font></TD>
+			<TD width='100px'><font color="white">수</font></TD>
+			<TD width='100px'><font color="white">목</font></TD>
+			<TD width='100px'><font color="white">금</font></TD>
 			<TD width='100px'>
 			<font color="#529dbc">토</font>
 			</TD>

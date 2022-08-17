@@ -1,4 +1,5 @@
-@charset "EUC-KR";
+
+@charset "UTF-8";
 
 table {
 	width: 100%;
@@ -8,6 +9,21 @@ table {
 }
 
 th, tr, td {
+	border: 1px solid #fff;
+	border-collapse: collapse;
+	padding: 10px;
+	font-size: 14px;
+}
+
+#navAddMenu {
+	word-break:break-all;
+}
+
+.dateinput{
+	text-align:left;
+}
+
+#break, #lunch, #snack {
 	border: 1px solid;
 	border-collapse: collapse;
 	padding: 10px;
@@ -17,9 +33,52 @@ th, tr, td {
 	padding: 10px;
 }
 
+#break tr:nth-child(odd), #lunch tr:nth-child(odd), #snack tr:nth-child(odd){
+	background-color: #eee;
+}
+
+#break tr:nth-child(even), #lunch tr:nth-child(even), #snack tr:nth-child(even){
+	background-color: #ccc;
+}
+
+
 th {
 	background-color: #486890;
 	color: #fff;
+}
+
+
+input[name="addButton"]{
+	margin-left: 10px;
+	background-color: none;
+	width: 20px;
+}
+
+input[type="text"] {
+	width: 81%;
+	height: 100%;
+	padding: 5px;
+	border: none;
+	outline: none;
+}
+
+input[name="menu[]"], input[name="kcal[]"]{
+	border-radius: 5px;
+}
+
+input[name="allergy[]"]{
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+.allchoice{
+	width: 70px;
+	padding: 5px;
+	border: none;
+	background-color: #486890;
+	color: #fff;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	margin-left: -5px;
 }
 
 input[type="text"] {
@@ -27,10 +86,41 @@ input[type="text"] {
 	height: 25px;
 }
 
+
 #deleteInput:hover {
 	cursor: pointer;
 }
 
+
+#deleteInput {
+	font-size: 20px;
+	font-weight: bold;
+}
+
+input[type="button"], input[type="submit"], input[type="reset"], input[type="date"] {
+	cursor: pointer;
+}
+
+input[type="submit"], input[type="reset"], input[class="turnList"]{
+	padding: 5px;
+	margin-top: 10px;
+}
+
+input[type="date"]{
+	outline: none;
+	border: none;
+	width: 168px;
+}
+
+input[type="date"]::before {
+  content: attr(data-placeholder);
+  width:100%;
+}
+
+input[type='date']:focus::before,
+input[type='date']:valid::before {
+  display: none;
+}
 input[type="button"] {
 	cursor: pointer;
 }

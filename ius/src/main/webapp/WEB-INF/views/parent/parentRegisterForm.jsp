@@ -7,89 +7,10 @@
 <head>
 <meta charset="UTF-8">
 <script src="http://code.jquery.com/jquery-latest.js"></script>
-<script type="text/javascript">
-
-	$(function(){
-		
-		$("#relation").change(function(){
-			var kinder_num = $("#kinder_num").val();
-			var relation = $("#relation").val();
-			
-			$.ajax({
-				url : "/ius/parent/check_kinder_parent",
-				type : "POST",
-				data : {
-					kinder_num : kinder_num,
-					relation : relation
-				},
-				success: function(result) {
-					if (result.count > 0) {
-						$("#check").html('해당 데이터가 이미 존재합니다.');
-						$("#check").attr('color', 'red');
-					} else {
-						$("#check").html('');
-					}
-					
-				}
-				
-			})	
-		});
-		
-		$("#select").focus(function(){
-			$("#relation").val("").prop("selected", true);
-			$("#check").html('');
-		});
-		
-		$("#parent_name").focus(function(){
-			if ($("#relation").val() == "부") {
-				$("#parent_sex").val("M");
-			} else if ($("#relation").val() == "모") {
-				$("#parent_sex").val("F");
-			}
-			
-		});
-		
-		
-		$("#select").click(function(){
-			url = "./select_kinder";
-			window.open(url, "_blank_1", "toolbar=no, menubar=no, scrollbar=yes, resizeable=no, width=400, height=400");
-		});
-		
-		$("#register").click(function(){
-			
-			if ($("#kinder_num").val() == "") {
-				alert("자녀 이름을 입력해주세요.");
-				return;
-			};
-			
-			if ($("#relation").val() == "") {
-				alert("가족 관계를 선택해주세요.");
-				$("#relation").val().focus();
-				return;
-			};
-			
-			if ($("#parent_name").val() == "") {
-				alert("이름을 입력해주세요.");
-				$("#parent_name").val().focus();
-				return;
-			};
-			
-			if ($("#parent_tel").val() == "") {
-				alert("전화번호를 입력해주세요.");
-				$("#parent_tel").val().focus();
-				return;
-			};
-			
-			$("form").submit();
-			
-		});
-		
-		
-	})
-
-</script>
+<script type="text/javascript" src="${path}/resources/js/parent/parentRegisterForm.js"></script>
 <title>학부모 정보 입력</title>
 <link type="text/css" rel="stylesheet" href="${path}/resources/css/articleF.css">
+<link type="text/css" rel="stylesheet" href="${path}/resources/css/parent/parentRegisterForm.css">
 </head>
 <body>
 <%@include file="../include/header.jsp" %>
@@ -105,15 +26,17 @@
 	
 			<section>
 				<div id="content">
+					<input type="button" value="학부모 목록" onclick="location.href='../parent/parent_list'">
+					
 					<form action="./parent_register" method="POST" name="frm">
-						<table border="1">
+						<table id="parent_register_tbl" border="1" class="list">
 							<tr>
 								<th>자녀 이름</th>
 								<td>
 									<input type="text" id="kinder_name" name="kinder_name" readonly="readonly">
 									<input type="hidden" id="kinder_num" name="kinder_num">
 									<input type="button" value="조회" id="select">
-								<td>
+								</td>
 							</tr>
 							<tr>
 								<th>가족 관계</th>
@@ -147,11 +70,7 @@
 							<tr>
 								<th>성별</th>
 								<td>
-									<input type="text" id="parent_sex" name="parent_sex" readonly="readonly"> 
-<!-- 									<select id="parent_sex" name="parent_sex">
-										<option value="M">남성</option>
-										<option value="F">여성</option>
-									</select> -->
+									<input type="text" id="parent_sex" name="parent_sex" readonly="readonly">
 								</td>
 							</tr>
 							<tr>
@@ -161,13 +80,13 @@
 								</td>
 							</tr>
 							<tr>
-								<td colspan="2">
+								<td colspan="2" id="btnsTd">
 									<input type="button" value="등록" id="register">
 								</td>
 							</tr>
 						</table>
 					</form>
-				</div>
+				</div>		
 			</section>
 	</article>	
 <%@include file="../include/footer.jsp" %>	

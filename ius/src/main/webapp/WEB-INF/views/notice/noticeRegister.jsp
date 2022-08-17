@@ -10,6 +10,7 @@
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script type="text/javascript" src="${path}/resources/js/summernote/summernote-lite.js"></script>
 <script type="text/javascript" src="${path}/resources/js/summernote/lang/summernote-ko-KR.js"></script>
+<script type="text/javascript" src="${path}/resources/js/notice/noticeRegister.js"></script>
 <link type="text/css" rel="stylesheet" href="${path}/resources/css/summernote/summernote-lite.css">
 <link type="text/css" rel="stylesheet" href="${path}/resources/css/articleF.css?">
 </head>
@@ -26,44 +27,32 @@
 		width : 50px;
 		margin: 5px auto;
 	}
+	
+	input[type="button"] {
+		padding : 3px;
+	}
+	
+	#controllBtns {
+		margin-bottom : 10px;
+	}
+	
+	#registerBtnTd {
+		text-align : center;
+	}
+	
+	table, th, td, tr {
+		border: 1px solid #ccc;
+		border-collapse: collapse;
+		padding : 7px;
+	}
+	
+	
+	th {
+		background-color: #486890;
+		color: white;
+	}
 </style>
 <body>
-<script type="text/javascript">
-	var $jQ = jQuery.noConflict();
-	$jQ(document).ready(function(){
-		$jQ("#notice_content").summernote({
-			height : 300,
-			width : 1238,
-			minHeight : null,
-			maxHeight : null,
-			focus : true,
-			lang : "ko-KR",
-			placeholder : '내용을 입력하세요'
-		});
-		
-		$jQ("#register").click(function(){
-			var notice_title =  $jQ("#notice_title").val();
-			var notice_content = $jQ("#notice_content").val();
-			
-			if (notice_title == "") {
-				alert("제목을 입력해주세요.");
-				return;
-			};
-			
-			if (notice_content == "") {
-				alert("내용을 입력해주세요.");
-				return;
-			};
-			
-			alert("정상적으로 글이 등록 되었습니다.");
-			$jQ("form").submit();
-			
-		});
-	
-		
-			
-	});
-</script>
 <%@include file="../include/header.jsp" %>
 <%@include file="../include/nav.jsp" %>
 	<article>
@@ -77,14 +66,21 @@
 	
 			<section>
 				<div id="content">
+					<div id="controllBtns">
+						<input type="button" value="목록" onclick="location.href='../notice/notice_list'">						
+					</div>
+				
 					<div id="notice">
 						<form action="./notice_register" method="POST">
 							<table border="1">
 								<tr>
-									<th>
+									<th>제목</th>
+								</tr>
+								<tr>
+									<td>
 										<input type="hidden" id="staff_id" name="staff_id" value="${staff_id}">
-										<input type="text" id="notice_title" name="notice_title" placeholder="제목">
-									</th>
+										<input type="text" id="notice_title" name="notice_title" placeholder="제목을 입력하세요.">
+									</td>
 								</tr>
 								<tr>
 									<td>
@@ -92,7 +88,7 @@
 									</td>
 								<tr>
 								<tr>
-									<td>
+									<td id="registerBtnTd">
 										<input type="button" value="등록" id="register">
 									</td>
 								</tr>

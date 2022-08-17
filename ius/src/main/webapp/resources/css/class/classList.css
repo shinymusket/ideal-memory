@@ -1,0 +1,120 @@
+@charset "UTF-8";
+
+#controllBtns {
+	margin-bottom: 10px;
+}
+
+#searchDiv {
+	margin-bottom: 20px;
+}
+
+#searchDiv label {
+	font-size: 14px;
+}
+
+#finalAccount {
+	clear: both;
+	margin-bottom: 20px;
+	width: 500px;
+	font-size: 14px;
+}
+
+table, th, tr, td {
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+	padding: 7px;
+}
+
+#classBox {
+	height: 500px;
+	overflow: auto;
+}
+
+#classList th {
+    position: sticky;
+    top: 0px;
+    background-color: #486890 !important;
+}
+
+#classBox::-webkit-scrollbar {
+    width: 8px;
+    
+}
+#classBox::-webkit-scrollbar-thumb {
+    background-color: #c2cad1;
+    border-radius: 10px;
+    background-clip: padding-box;
+    border: 2px solid transparent;
+}
+#classBox::-webkit-scrollbar-track {
+    background-color: white;
+    border-radius: 10px;
+}
+
+
+#classList {
+	width : 300px;
+}
+
+#class_number, #class_name {
+	width : 100%;	
+}
+
+#classInfo {
+	margin-left : 20px;
+}
+
+#classKinder {
+	width : 250px;
+	margin-top : 10px;
+}
+
+.list {
+	font-size: 14px;
+}
+
+.list td {
+	font-size: 13px;
+	text-align: center;
+}
+#homeTeacher {
+	margin-top : 2px;
+	width : 100%;
+}
+
+#staffInfo {
+	margin-left : 20px;
+}
+
+#attendanceInfo {
+	margin-left: 20px;
+	font-size: 14px;
+}
+
+#attendanceInfo td {
+	font-size: 13px;
+	text-align: center;
+}
+
+#btnsTd {
+	text-align : center;	
+}
+
+th{
+	font-size: 14px;
+	background-color: #486890;
+	color: white;
+}
+
+tr.bgc:hover {
+	background-color: #ccc;
+	cursor: pointer;
+}
+
+select {
+	padding: 3px;
+}
+
+input[type="button"], input[type="text"]{
+	padding: 3px;
+}

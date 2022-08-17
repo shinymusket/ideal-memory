@@ -7,7 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>알러지 유발</title>
-<link rel="stylesheet" href="${path}/resources/css/allergy.css">
+<link rel="stylesheet" href="${path}/resources/css/mealCss/allergy.css">
 </head>
 <body>
 <form name="allergy">
